@@ -1,0 +1,98 @@
+[gd_scene load_steps=2 format=3 uid="uid://c8etlfti6k06a"]
+
+[ext_resource type="Script" uid="uid://dhhhdtikbg482" path="res://Scripts/ChapterSelect.gd" id="1_33sqm"]
+
+[node name="ChapterSelect" type="Node2D"]
+script = ExtResource("1_33sqm")
+
+[node name="Background" type="TextureRect" parent="."]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TopBar" type="HBoxContainer" parent="CanvasLayer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_top = 41.0
+offset_bottom = 72.0
+grow_horizontal = 2
+theme_override_constants/separation = 50
+
+[node name="BackButton" type="Button" parent="CanvasLayer/TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "← HOME"
+icon_alignment = 1
+
+[node name="Title" type="Label" parent="CanvasLayer/TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "SELECT CHAPTER"
+
+[node name="BackButton2" type="Button" parent="CanvasLayer/TopBar"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Continue"
+icon_alignment = 1
+
+[node name="TopBar2" type="HBoxContainer" parent="CanvasLayer"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = -5.5
+offset_top = 1203.0
+offset_right = 5.5
+offset_bottom = 1267.0
+grow_horizontal = 2
+theme_override_constants/separation = 50
+
+[node name="BackButton" type="Button" parent="CanvasLayer/TopBar2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "← HOME"
+icon_alignment = 1
+
+[node name="Title" type="Label" parent="CanvasLayer/TopBar2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 35
+text = "SELECT CHAPTER"
+
+[node name="BackButton2" type="Button" parent="CanvasLayer/TopBar2"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Continue"
+icon_alignment = 1
+
+[node name="ScrollContainer" type="ScrollContainer" parent="CanvasLayer"]
+anchors_preset = -1
+anchor_top = 0.148
+anchor_right = 1.0
+anchor_bottom = 0.9250001
+offset_left = 64.0
+offset_top = -35.440002
+offset_right = 64.0
+offset_bottom = 51.52173
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.83999956, 0.91999996)
+size_flags_horizontal = 4
+horizontal_scroll_mode = 0
+
+[node name="ChapterGrid" type="GridContainer" parent="CanvasLayer/ScrollContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+columns = 2
+
+[node name="CoinDisplay" type="HBoxContainer" parent="CanvasLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -1.0
+offset_bottom = 23.0
+grow_horizontal = 0
+
+[node name="coin_label" type="Label" parent="CanvasLayer/CoinDisplay"]
+layout_mode = 2
+text = "1000
+"
