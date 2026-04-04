@@ -156,17 +156,18 @@ anchor_left = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
 offset_left = -50.0
-offset_top = 600.0
-offset_right = -33.98999
-offset_bottom = -180.0
+offset_top = 941.0
+offset_right = -30.0
+offset_bottom = -139.0
 grow_horizontal = 0
 grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_frbhw")
 theme_override_styles/fill = SubResource("StyleBoxFlat_abugw")
-max_value = 99.975
+min_value = 50.0
+max_value = 250.0
 step = 15.0
-value = 75.0
-fill_mode = 2
+value = 110.0
+fill_mode = 3
 
 [node name="CoinDisplay" type="CanvasLayer" parent="."]
 

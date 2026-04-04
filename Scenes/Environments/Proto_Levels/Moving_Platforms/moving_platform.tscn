@@ -1,7 +1,8 @@
-[gd_scene load_steps=7 format=3 uid="uid://dmkxl3vi3shkq"]
+[gd_scene load_steps=8 format=3 uid="uid://dmkxl3vi3shkq"]
 
 [ext_resource type="Script" uid="uid://nnx4br26btg6" path="res://Scenes/Environments/Proto_Levels/Moving_Platforms/moving_platform.gd" id="1_2dvgw"]
 [ext_resource type="Texture2D" uid="uid://bxhy4p2m0coxb" path="res://Assets/Environment/Test_Block/box.jpeg" id="1_unbqp"]
+[ext_resource type="Texture2D" uid="uid://ccf05640ckx6m" path="res://Main/Assets/bgandTiles/bgAssetsNight.png" id="3_xa2vf"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_unbqp"]
 size = Vector2(94, 32)
@@ -30,6 +31,7 @@ position = Vector2(16, 16)
 shape = SubResource("RectangleShape2D_unbqp")
 
 [node name="TileMapLayer" type="TileMapLayer" parent="."]
+visible = false
 tile_map_data = PackedByteArray(0, 0, 255, 255, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0)
 tile_set = SubResource("TileSet_xa2vf")
 collision_visibility_mode = 1
@@ -43,3 +45,10 @@ shape = SubResource("RectangleShape2D_2dvgw")
 [node name="DirectionTimer" type="Timer" parent="."]
 
 [node name="DisappearTimer" type="Timer" parent="."]
+
+[node name="BgAssetsNight13" type="Sprite2D" parent="."]
+position = Vector2(15.000015, 12.000015)
+scale = Vector2(0.1, 0.1)
+texture = ExtResource("3_xa2vf")
+region_enabled = true
+region_rect = Rect2(2584, 1720, 856, 392)

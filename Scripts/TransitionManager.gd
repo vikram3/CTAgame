@@ -5,8 +5,12 @@ var game_instance: Node = null
 var transition_overlay: ColorRect = null
 var is_transitioning: bool = false
 
-var current_panel_index: int = -1
-var current_game_index: int = -1
+var current_panel_index:  int   = -1
+var current_game_index:   int   = -1
+var current_coins_reward: int   = 0     # passed from ChapterData segment def
+var last_segment_time:    float = 0.0   # seconds spent in the level (speedrun achievement)
+
+var _segment_start_time:  float = 0.0   # internal
 
 
 func _ready():
@@ -42,6 +46,7 @@ func start_game_segment(scene_path: String, reader: Node):
 	print("Signal connections: ", game_instance.level_completed.get_connections())
 	
 	reader_ref.hide()
+	_segment_start_time = Time.get_ticks_msec() / 1000.0
 	await fade_to_clear()
 	print("Game started, waiting for level_completed...")
 
@@ -50,7 +55,7 @@ func _on_level_completed(success: bool):
 	if is_transitioning:
 		return
 	is_transitioning = true
-	
+	last_segment_time = (Time.get_ticks_msec() / 1000.0) - _segment_start_time
 	await end_game_segment(success)
 
 func end_game_segment(success: bool):

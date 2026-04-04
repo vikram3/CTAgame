@@ -98,10 +98,6 @@ func _ready():
 
 	get_viewport().size_changed.connect(_on_viewport_size_changed)
 
-	# Only fire first_read once, never again on re-entry
-	if not GameData.has_achievement("first_read"):
-		AchievementManager.check_and_unlock("first_read")
-
 
 # ════════════════════════════════════════════
 #  SETUP
@@ -259,10 +255,10 @@ func _fade_ui(show: bool):
 	var duration = 0.25 if show else 0.6
 
 	var tween = create_tween().set_parallel(true)
-	tween.tween_property($CanvasLayer/TopBar, "modulate:a", target, duration)
-	tween.tween_property($CanvasLayer/ZoomBar, "modulate:a",
-		target if show else 0.35, duration)
-
+	tween.tween_property($CanvasLayer/TopBar,        "modulate:a", target, duration)
+	tween.tween_property($CanvasLayer/ZoomBar,       "modulate:a", target if show else 0.0, duration)
+	tween.tween_property($CanvasLayer/ScrollIndicator, "modulate:a", target, duration)
+	tween.tween_property($CoinDisplay,               "modulate:a", target, duration)
 
 # ════════════════════════════════════════════
 #  SCROLL INDICATOR
@@ -481,8 +477,16 @@ func smooth_scroll_to(target_y: float):
 func _on_play_pressed(entry: ChapterData.PanelEntry, panel_index: int):
 	saved_scroll_position = scroll_container.scroll_vertical
 	GameData.save_chapter_progress(current_chapter, saved_scroll_position)
+
+	# Record that this segment was launched (timestamps + play_count)
+	GameData.record_segment_played(current_chapter, entry.game_index)
+
+	# Achievement: first ever segment launch
+	AchievementManager.on_segment_played(current_chapter, entry.game_index)
+
 	TransitionManager.current_panel_index = panel_index
 	TransitionManager.current_game_index  = entry.game_index
+	TransitionManager.current_coins_reward = entry.coins_reward
 	TransitionManager.start_game_segment(entry.playable_scene, self)
 
 
@@ -496,19 +500,27 @@ func restore_scroll_only():
 
 
 func advance_past_playable():
-	var panel_index      = TransitionManager.current_panel_index
-	var game_index       = TransitionManager.current_game_index
-	var first_time_game  = not GameData.is_game_completed(current_chapter, game_index)
+	var panel_index  = TransitionManager.current_panel_index
+	var game_index   = TransitionManager.current_game_index
+	var coins_reward = TransitionManager.current_coins_reward
+	var time_taken   = TransitionManager.last_segment_time   # seconds in level (0 if unknown)
+
 	var was_chapter_done = GameData.is_chapter_fully_completed(current_chapter)
+	var first_time_game  = not GameData.is_game_completed(current_chapter, game_index)
 
-	GameData.mark_game_completed(current_chapter, game_index)
+	# Single call: marks completed, awards coins (first time only), saves everything
+	var coins_awarded = GameData.record_segment_completed(current_chapter, game_index, coins_reward)
 
-	# Coins are earned by playing games — 25 per segment, first time only
-	if first_time_game:
-		GameData.add_coins(25)
-		_show_segment_banner(current_chapter, game_index)  # shows name + coins
+	# Show banner and trigger coin achievements only when coins were actually awarded
+	if coins_awarded > 0:
+		_show_segment_banner(current_chapter, game_index, coins_awarded)
+		AchievementManager.on_coins_changed()
 
 	coin_label.text = str(GameData.data.coins)
+
+	# Segment-based achievements (pass time_taken for speedrun check)
+	if first_time_game:
+		AchievementManager.on_segment_completed(current_chapter, game_index, time_taken)
 
 	# Switch trigger panel to "Play Again"
 	for child in panel_container.get_children():
@@ -517,7 +529,7 @@ func advance_past_playable():
 				child.set_play_again_mode()
 			break
 
-	# Chapter fully done — just unlock next chapter, no coins, no banner
+	# Chapter fully done?
 	if GameData.check_chapter_complete(current_chapter, total_games):
 		if not was_chapter_done:
 			_on_chapter_fully_completed()
@@ -541,22 +553,22 @@ func _scroll_to_next_panel_after(panel_index: int):
 #  CHAPTER COMPLETION
 # ════════════════════════════════════════════
 func _on_chapter_fully_completed():
-	# Unlock next chapter — no banner, no extra coins, coins come from game segments
-	AchievementManager.check_and_unlock("chapter_" + str(current_chapter))
+	# Unlock next chapter — coins come from game segments, not chapter completion
 	GameData.unlock_chapter(current_chapter + 1)
 	next_btn.disabled = false
+	# Chapter-clear achievement is handled inside on_segment_completed
+	# (AchievementManager checks chapter completion state after every segment)
 
 
 # Shows which game segment was just completed and how many coins were earned.
-# Text comes from ChapterData so it always matches the actual segment name.
-func _show_segment_banner(chapter: int, game_index: int):
+func _show_segment_banner(chapter: int, game_index: int, coins_awarded: int):
 	var defs = ChapterData.get_playable_definitions(chapter)
 	var segment_name = "Game %d" % (game_index + 1)  # fallback
 	for d in defs:
 		if d.game_index == game_index:
 			segment_name = d.text
 			break
-	_show_banner("✅  %s\n+25 🪙 coins earned!" % segment_name, 22, 2.5)
+	_show_banner("✅  %s\n+%d 🪙 coins earned!" % [segment_name, coins_awarded], 22, 2.5)
 
 
 # No coins for chapter — just quietly unlocks next chapter.

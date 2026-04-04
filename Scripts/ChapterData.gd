@@ -1,43 +1,81 @@
 class_name ChapterData
 extends Node
 
-enum PanelType { STATIC, PLAYABLE }
+# ─────────────────────────────────────────────────────────────────────────────
+#  ChapterData.gd  (res://Scripts/ChapterData.gd)
+#
+#  PAGE COUNTS — real asset counts confirmed by team:
+#    Ch1=19  Ch2=34  Ch3=22  Ch4=18  Ch5=24  Ch6=26  Ch7=18  Ch8=26
+#
+#  SEGMENT PLACEMENT — before_page values are proportionally scaled from the
+#  Game Segment Design Document (which used draft page counts) to the real
+#  page counts above. Ratio preserved: new = round(pdf_before / pdf_total * real_total)
+#
+#  COINS PER SEGMENT (first-completion reward, scaling by chapter difficulty):
+#    Ch1 → 30  |  Ch2 → 35  |  Ch3 → 35  |  Ch4 → 40
+#    Ch5 → 40  |  Ch6 → 45  |  Ch7 → 45  |  Ch8 → 50
+#
+#  CHAPTER UNLOCK COSTS  (formula: (chapter_num - 1) × 50):
+#    Ch1 = 0 (free)  |  Ch2 = 50  |  Ch3 = 100  |  Ch4 = 150
+#    Ch5 = 200       |  Ch6 = 250 |  Ch7 = 300  |  Ch8 = 350
+# ─────────────────────────────────────────────────────────────────────────────
 
+enum PanelType { STATIC, PLAYABLE }
 
 const PANEL_WIDTH = 720.0
 
-# ── CHAPTER PAGE COUNTS ─────────────────────────────────────
+# ── PAGE COUNTS (real asset counts) ──────────────────────────────────────────
 const CHAPTER_PAGE_COUNTS = {
-	1:  19,
-	2:  34,
-	3:  22,
-	4:  18,
-	5:  24,
-	6:  26,
-	7:  18,
-	8:  26,
+	1: 19,
+	2: 34,
+	3: 22,
+	4: 18,
+	5: 24,
+	6: 26,
+	7: 18,
+	8: 26,
 }
 
-class PanelEntry:
-	var type: PanelType
-	var image_path: String
-	var playable_scene: String
-	var transition_text: String
-	var game_index: int
+# ── CHAPTER UNLOCK COSTS ──────────────────────────────────────────────────────
+const CHAPTER_UNLOCK_COSTS = {
+	1: 0,
+	2: 50,
+	3: 100,
+	4: 150,
+	5: 200,
+	6: 250,
+	7: 300,
+	8: 350,
+}
 
-	func _init(t, img="", scene="", text="", idx=0):
+static func get_unlock_cost(chapter: int) -> int:
+	return CHAPTER_UNLOCK_COSTS.get(chapter, (chapter - 1) * 50)
+
+
+# ── PANEL ENTRY ───────────────────────────────────────────────────────────────
+class PanelEntry:
+	var type:             int
+	var image_path:       String
+	var playable_scene:   String
+	var transition_text:  String
+	var game_index:       int
+	var coins_reward:     int
+
+	func _init(t, img = "", scene = "", text = "", idx = 0, coins = 0):
 		type            = t
 		image_path      = img
 		playable_scene  = scene
 		transition_text = text
 		game_index      = idx
+		coins_reward    = coins
 
-# ── MAIN ENTRY POINT ────────────────────────────────────────
+
+# ── MAIN ENTRY POINT ──────────────────────────────────────────────────────────
 static func get_chapter(num: int) -> Array:
 	var panels: Array = []
 
 	if not CHAPTER_PAGE_COUNTS.has(num):
-		push_error("Chapter " + str(num) + " page count not set!")
+		push_error("ChapterData: Chapter %d page count not set!" % num)
 		return panels
 
 	var page_count    = CHAPTER_PAGE_COUNTS[num]
@@ -48,61 +86,428 @@ static func get_chapter(num: int) -> Array:
 		for pd in playable_defs:
 			if pd.before_page == page:
 				panels.append(PanelEntry.new(
-					PanelType.PLAYABLE, "", scene, pd.text, pd.game_index
+					PanelType.PLAYABLE, "", scene,
+					pd.text, pd.game_index, pd.coins_reward
 				))
 		var path = ChapterData.get_page_path(num, page)
 		panels.append(PanelEntry.new(PanelType.STATIC, path))
 
+	# Triggers with before_page > page_count appended at the very end
 	for pd in playable_defs:
 		if pd.before_page > page_count:
 			panels.append(PanelEntry.new(
-				PanelType.PLAYABLE, "", scene, pd.text, pd.game_index
+				PanelType.PLAYABLE, "", scene,
+				pd.text, pd.game_index, pd.coins_reward
 			))
 
 	return panels
 
-# ── PATH FORMAT PER CHAPTER ─────────────────────────────────
+
+# ── IMAGE PATH RESOLVER ───────────────────────────────────────────────────────
 static func get_page_path(chapter: int, page: int) -> String:
 	var page_str = str(page).pad_zeros(2)
 	var base = ""
 	match chapter:
-		1: base = "res://Assets/webtoon/Ch1/ch1_" + page_str
-		2: base = "res://Assets/webtoon/Ch2/Ch2_" + page_str
-		3: base = "res://Assets/webtoon/Ch3/Ch3_" + page_str
-		4: base = "res://Assets/webtoon/Ch4/Ch4_" + page_str
-		5: base = "res://Assets/webtoon/Ch5/Ch5_" + page_str
-		6: base = "res://Assets/webtoon/Ch6/Ch6_" + page_str
-		7: base = "res://Assets/webtoon/Ch7/Ch7_" + page_str
-		8: base = "res://Assets/webtoon/Ch8/Ch8_" + page_str
-		_: return ""
+		1: base = "res://Assets/webtoon/Ch1/ch1_"  + page_str
+		2: base = "res://Assets/webtoon/Ch2/Ch2_"  + page_str
+		3: base = "res://Assets/webtoon/Ch3/Ch3_"  + page_str
+		4: base = "res://Assets/webtoon/Ch4/Ch4_"  + page_str
+		5: base = "res://Assets/webtoon/Ch5/Ch5_"  + page_str
+		6: base = "res://Assets/webtoon/Ch6/Ch6_"  + page_str
+		7: base = "res://Assets/webtoon/Ch7/Ch7_"  + page_str
+		8: base = "res://Assets/webtoon/Ch8/Ch8_"  + page_str
+		_:
+			push_error("ChapterData: No path pattern for chapter %d" % chapter)
+			return ""
 
 	if ResourceLoader.exists(base + ".jpg"):
 		return base + ".jpg"
 	elif ResourceLoader.exists(base + ".png"):
 		return base + ".png"
 	else:
-		push_error("Image not found: " + base + ".jpg or .png")
+		push_error("ChapterData: Image not found: %s (.jpg/.png)" % base)
 		return base + ".jpg"
 
+
+# ── CONVENIENCE HELPERS ───────────────────────────────────────────────────────
 static func get_total_games(chapter: int) -> int:
 	return get_playable_definitions(chapter).size()
 
 static func get_total_chapters() -> int:
 	return CHAPTER_PAGE_COUNTS.size()
 
-# ── GAME SEGMENTS PER CHAPTER ────────────────────────────────
+
+# ─────────────────────────────────────────────────────────────────────────────
+#  GAME SEGMENT DEFINITIONS  —  Chapters 1–8
+#
+#  Source: Chapter 1–8 Game Segment Design Document
+#
+#  before_page values are proportionally scaled to real page counts.
+#  PDF ratios shown in comments for reference: pdf_before / pdf_total → new_before / real_total
+#
+#  Each entry:
+#    before_page   → trigger panel inserted just BEFORE this real page number
+#    text          → narrative teaser shown on the PlayableTriggerPanel
+#    game_index    → 0-based index within the chapter (save key)
+#    coins_reward  → coins awarded on FIRST successful completion only
+# ─────────────────────────────────────────────────────────────────────────────
 static func get_playable_definitions(chapter: int) -> Array:
 	match chapter:
+
+		# ══════════════════════════════════════════════════════════════════════
+		# CHAPTER 1  |  2 segments  |  19 real pages  (pdf: 37 pages)
+		#
+		# Story beats:
+		#   Pages  1–6   CT sneaks through bush maze, grabs coins, dodges skulls
+		#   Pages  7–12  CT spots treasure chest, climbs tower, sees rival
+		#   Pages 13–15  CT races through bush maze toward chest
+		#   Pages 16–17  CT bursts chest open — glowing suit, not coins
+		#   Pages 18–19  Big Boss furious, jumps from castle window
+		# ══════════════════════════════════════════════════════════════════════
 		1: return [
-			{"before_page": 3,  "text": "Look for coins!",         "game_index": 0},
-			{"before_page": 18, "text": "The Troll faces danger!", "game_index": 1},
+			{
+				# pdf: before_page=7 / 37 pages (ratio 0.19) → real: 4 / 19
+				# Type      : Light platforming, coin collecting, slow skull patrol
+				# Character : CT
+				# NPCs      : Skull enemies (fixed patrol, contact damage)
+				# Level     : Hedge maze — narrow corridors, small jumps
+				#             25–35 coins along safe routes
+				# Win       : Collect 20 coins OR reach maze exit
+				# Difficulty: Very low — onboarding / movement tutorial
+				"before_page":  4,
+				"text":         "Time to grab those coins before anyone notices...",
+				"game_index":   0,
+				"coins_reward": 30,
+			},
+			{
+				# pdf: before_page=24 / 37 pages (ratio 0.65) → real: 12 / 19
+				# Type      : Timed chase, obstacle dodging, enemy combat
+				# Character : CT  |  Rival as background silhouette
+				# NPCs      : Faster skulls, 1 Elite Skull blocking path
+				# Level     : Bush maze reconfigured — falling hedges, moving skulls,
+				#             elevated platforms, 60-second timer pressure
+				# Win       : Reach glowing chest marker OR survive 60 seconds
+				# Difficulty: Medium spike — urgency and required combat
+				"before_page":  12,
+				"text":         "Those coins are MINE — gotta beat him there!",
+				"game_index":   1,
+				"coins_reward": 30,
+			},
 		]
+
+		# ══════════════════════════════════════════════════════════════════════
+		# CHAPTER 2  |  3 segments  |  34 real pages  (pdf: 50 pages)
+		#
+		# Story beats:
+		#   Pages  1–5   World goes online — shadow avatars flood in, title page
+		#   Pages  6–10  Big Boss jumps castle, attacks CT with sword slashes
+		#   Pages 11–15  CT cornered; Big Boss full attack; big clash
+		#   Pages 16–19  Sigih (Pink Girl) appears with shield, blocks Big Boss
+		#   Pages 20–34  Sigih vs Big Boss full battle — Sigih KOs Big Boss
+		# ══════════════════════════════════════════════════════════════════════
 		2: return [
-			{"before_page": 8,  "text": "Into the cave!",   "game_index": 0},
-			{"before_page": 20, "text": "Boss fight!",      "game_index": 1},
-			{"before_page": 30, "text": "Final escape!",    "game_index": 2},
+			{
+				# pdf: before_page=9 / 50 pages (ratio 0.18) → real: 6 / 34
+				# Type      : Coin collecting + obstacle dodging (chaotic open map)
+				# Character : CT
+				# NPCs      : Shadow Avatars — spawn flash 2 sec before, shockwave
+				#             on land, 40 coins scattered, despawn after 8 sec
+				# Win       : Collect 30 coins, avoid 5 collision bursts
+				# Difficulty: Low-medium — controlled chaos, no direct combat
+				"before_page":  6,
+				"text":         "New players flooding in... better grab what I can before it gets crazy!",
+				"game_index":   0,
+				"coins_reward": 35,
+			},
+			{
+				# pdf: before_page=14 / 50 pages (ratio 0.28) → real: 10 / 34
+				# Type      : Pure survival — dodge Big Boss sword slashes + shockwaves
+				# Character : CT
+				# NPCs      : Big Boss (non-killable) — horizontal slash + ground slam,
+				#             all attacks telegraphed 0.8 sec before impact
+				# Level     : Circular arena, 90-second survival timer
+				# Win       : Survive full duration — no coins (pure tension)
+				# Difficulty: Medium — dodge timing and pattern recognition
+				"before_page":  10,
+				"text":         "Big Boss is coming — MOVE!",
+				"game_index":   1,
+				"coins_reward": 35,
+			},
+			{
+				# pdf: before_page=34 / 50 pages (ratio 0.68) → real: 23 / 34
+				# Type      : Wave defense — fight skull reinforcements in 3 waves
+				# Character : CT
+				# NPCs      : Skull reinforcements — 3 escalating waves
+				# Background: Sigih vs Big Boss fight animation
+				# Level     : Side corridor — stop skulls reaching the main arena
+				# Win       : Clear all 3 waves
+				# Difficulty: Medium — wave management, increasing enemy pressure
+				"before_page":  23,
+				"text":         "She's holding her own... but Big Boss has one more trick!",
+				"game_index":   2,
+				"coins_reward": 35,
+			},
 		]
+
+		# ══════════════════════════════════════════════════════════════════════
+		# CHAPTER 3  |  2 segments  |  22 real pages  (pdf: 44 pages)
+		#
+		# Story beats:
+		#   Pages  1–4   Alex & Felix flying machine; Felix ejected into forest
+		#   Pages  5–8   Sigih meets CT, offers training, leaves via portal
+		#   Pages  9–13  CT daydreams; Horn ambush; Sword warns; CT falls off cliff
+		#   Pages 14–18  CT lands on Felix — funny first meeting, banter
+		#   Pages 19–22  CT & Felix walk forest; Felix gives map; they bond
+		# ══════════════════════════════════════════════════════════════════════
 		3: return [
-			{"before_page": 10, "text": "Chapter 3 battle!", "game_index": 0},
+			{
+				# pdf: before_page=18 / 44 pages (ratio 0.41) → real: 9 / 22
+				# Type      : Obstacle dodging + enemy combat (narrow cliff platforms)
+				# Character : CT
+				# NPCs      : Horn (non-killable, charge attack, knockback)
+				#             Skull enemies (minor support)
+				# Mechanic  : Hit near edge → forced fall, scripted segment end
+				# Win       : Survive 60 seconds OR get knocked off cliff (scripted)
+				# Difficulty: Medium — spatial awareness, Horn charge timing
+				"before_page":  9,
+				"text":         "Better snap out of it... something doesn't feel right.",
+				"game_index":   0,
+				"coins_reward": 35,
+			},
+			{
+				# pdf: before_page=34 / 44 pages (ratio 0.77) → real: 17 / 22
+				# Type      : Exploration + coin collecting (new forest biome)
+				# Character : CT  |  Felix (AI companion — follows, idle comments)
+				# NPCs      : Light forest enemies (minimal)
+				# Level     : Open forest — hidden coin clusters, 50 total coins
+				# Win       : Collect 35 coins
+				# Difficulty: Very low — relaxed, matches CT & Felix bonding tone
+				"before_page":  17,
+				"text":         "Alright Flex, lead the way — but watch out for what's in these woods!",
+				"game_index":   1,
+				"coins_reward": 35,
+			},
 		]
+
+		# ══════════════════════════════════════════════════════════════════════
+		# CHAPTER 4  |  2 segments  |  18 real pages  (pdf: 30 pages)
+		#
+		# Story beats:
+		#   Pages  1–4   Horn dives after CT; Sword follows via stairs
+		#   Pages  5–6   Title page + forest establishing shot
+		#   Pages  7–12  CT & Flex run through Barreldugo territory; Flex teaches
+		#                combat type system (Tank / Speed / Projectile)
+		#   Pages 13–15  Flex tames Barreldugo; they ride toward the flying ship
+		#   Pages 16–17  Alex arrives chased by armored beasts; Queen descends
+		#   Page  18     Credits + bonus Horn gag
+		# ══════════════════════════════════════════════════════════════════════
+		4: return [
+			{
+				# pdf: before_page=11 / 30 pages (ratio 0.37) → real: 7 / 18
+				# Type      : Auto-scrolling chase (left-to-right) + obstacle dodging
+				# Character : CT  |  Felix (runs alongside)
+				# NPCs      : Projectile enemies, Horn in background
+				# Level     : Auto-scroll forest — tree trunks, falling logs, restart if caught
+				# Win       : Reach end of auto-scroll without being caught
+				# Difficulty: Medium — reaction timing, varied obstacles
+				"before_page":  7,
+				"text":         "Horn is somewhere in these woods... keep moving!",
+				"game_index":   0,
+				"coins_reward": 40,
+			},
+			{
+				# pdf: before_page=17 / 30 pages (ratio 0.57) → real: 10 / 18
+				# Type      : Enemy combat + puzzle (apply type-weakness system)
+				# Character : CT  |  Felix (combat advisor)
+				# Enemies   : Tank type (slow, high HP)
+				#             Speed type (fast, low HP)
+				#             Barreldugo / Projectile type (close-range weakness)
+				# Win       : Defeat all 3 enemy types
+				# Difficulty: Medium — must exploit type weaknesses
+				"before_page":  10,
+				"text":         "A Barreldugo! Flex says get close — let's try it!",
+				"game_index":   1,
+				"coins_reward": 40,
+			},
+		]
+
+		# ══════════════════════════════════════════════════════════════════════
+		# CHAPTER 5  |  2 segments  |  24 real pages  (pdf: 42 pages)
+		#
+		# Story beats:
+		#   Pages  1–6   Queen intercepts armored bulls chasing Alex; bulls retreat
+		#   Pages  7–8   Ship traveling; crew reunites on deck
+		#   Pages  9–14  CT meets Lala; she analyzes CT's suit and the Queen
+		#   Pages 15–20  Lala explains Queen's powers + CT's rare suit in depth
+		#   Pages 21–24  Sacavuelo challenges Alex to a duel; everyone gathers
+		# ══════════════════════════════════════════════════════════════════════
+		5: return [
+			{
+				# pdf: before_page=1 / 42 pages (ratio 0.02) → real: 1 / 24
+				# Hot-open from Ch4 cliffhanger — fires before the very first page
+				# Type      : Obstacle dodging + enemy combat
+				# Character : CT (ground level watching chaos)
+				# Background: Queen fighting main bull boss, Alex present
+				# NPCs      : Charging Bulls — straight-line charge, turn on collision
+				# Win       : Survive 4 bull charges + defeat 2 minor bulls
+				# Difficulty: Medium — dodge timing, direction prediction
+				"before_page":  1,
+				"text":         "The Queen stepped in — but those bulls aren't done yet!",
+				"game_index":   0,
+				"coins_reward": 40,
+			},
+			{
+				# pdf: before_page=42 / 42 pages (ratio 1.00) → real: 24 / 24
+				# Fires just before the final page — duel cliffhanger setup
+				# Type      : Enemy combat + coin collecting (warm-up before duel)
+				# Character : CT
+				# Present   : Alex, Felix, Lala on deck, crowd hyped
+				# NPCs      : Flying ship creatures — 2 waves, light projectile hazards
+				# Win       : Collect 25 coins + clear 2 enemy waves
+				# Difficulty: Low-medium — energy booster before Chapter 6
+				"before_page":  24,
+				"text":         "Alex accepted the duel... somebody's gotta warm up for him!",
+				"game_index":   1,
+				"coins_reward": 40,
+			},
+		]
+
+		# ══════════════════════════════════════════════════════════════════════
+		# CHAPTER 6  |  2 segments  |  26 real pages  (pdf: 44 pages)
+		#
+		# Story beats:
+		#   Pages  1–5   Big Boss recovers; rages; vows revenge
+		#   Pages  6–12  Duel begins; Big Bird goes boomerang; Alex uses shield
+		#   Pages 13–19  Alex's bow shot overshoots crowd; Queen blasts it
+		#   Pages 20–25  Big Bird flanks shield, hits Alex; Alex on one knee
+		#   Page  26     Alex draws batons — fierce comeback cliffhanger
+		# ══════════════════════════════════════════════════════════════════════
+		6: return [
+			{
+				# pdf: before_page=20 / 44 pages (ratio 0.45) → real: 12 / 26
+				# Type      : Obstacle dodging + enemy combat (close-range boss fight)
+				# Character : ALEX  ← plays as Alex, not CT — unique segment
+				# NPCs      : Big Bird (boss) — boomerang projectile tracking,
+				#             shield-break mechanic
+				# Mechanic  : Must close distance to deal damage; shield pickup;
+				#             projectile pressure increases if too slow
+				# Background: Queen observing, CT & Lala doing commentary
+				# Win       : Land 5 close-range hits on Big Bird
+				# Difficulty: Medium-hard — tracking projectiles + positioning
+				"before_page":  12,
+				"text":         "Big Bird went straight for projectiles — dodge and get close!",
+				"game_index":   0,
+				"coins_reward": 45,
+			},
+			{
+				# pdf: before_page=44 / 44 pages (ratio 1.00) → real: 26 / 26
+				# Fires just before the final page — baton comeback cliffhanger
+				# Type      : Coin collecting + obstacle dodging (emotional low point)
+				# Character : CT (crowd area, frantic scavenge)
+				# Present   : Alex (on one knee, injured)
+				# Hazards   : Falling debris, heavy boomerang projectile arcs
+				# Win       : Survive 60 seconds + collect 20 coins
+				# Difficulty: Medium — multi-hazard dodge while collecting
+				"before_page":  26,
+				"text":         "Alex is on one knee... he's not done yet. Neither are we!",
+				"game_index":   1,
+				"coins_reward": 45,
+			},
+		]
+
+		# ══════════════════════════════════════════════════════════════════════
+		# CHAPTER 7  |  2 segments  |  18 real pages  (pdf: 32 pages)
+		#
+		# Story beats:
+		#   Pages  1–6   Alex baton comeback; combos Big Bird; wins; crowd wild
+		#   Pages  7–10  Night; Alex & Flex sell items; CT realizes items = coins
+		#   Pages 11–13  Alex demos Doodaboom; rocket backfires, hits ship
+		#   Pages 14–16  Ship tilting; everyone holding poles for dear life
+		#   Pages 17–18  Queen levitates; orders guards; emergency landing attempt
+		# ══════════════════════════════════════════════════════════════════════
+		7: return [
+			{
+				# pdf: before_page=11 / 32 pages (ratio 0.34) → real: 6 / 18
+				# Type      : Coin collecting + exploration (celebratory rush)
+				# Character : CT
+				# Present   : Alex & Felix selling items on ship deck at night
+				# NPCs      : Crowd (coin drop effect only — no combat)
+				# Level     : Ship deck, coins raining from sky + crowd drops
+				# Win       : Collect 40 coins
+				# Difficulty: Very low — joyful reward after duel victory
+				"before_page":  6,
+				"text":         "Alex won! Now the coins are flowing — grab what you can!",
+				"game_index":   0,
+				"coins_reward": 45,
+			},
+			{
+				# pdf: before_page=23 / 32 pages (ratio 0.72) → real: 13 / 18
+				# Type      : Obstacle dodging + puzzle (tilting ship survival)
+				# Character : CT
+				# Background: Queen performing emergency rescue
+				# Mechanics : Slanted deck physics — sliding crates, moving platforms,
+				#             hold-to-grab poles, reach top deck safety zone
+				# NPCs      : Physics obstacles only — no enemies
+				# Win       : Reach safety zone at top deck
+				# Difficulty: Medium-high — spatial orientation + moving hazards
+				"before_page":  13,
+				"text":         "The ship is going DOWN — hold on and get to safety!",
+				"game_index":   1,
+				"coins_reward": 45,
+			},
+		]
+
+		# ══════════════════════════════════════════════════════════════════════
+		# CHAPTER 8  |  3 segments  |  26 real pages  (pdf: 41 pages)
+		#
+		# Story beats:
+		#   Pages  1–7   Diskoreck cold open — extorts desert town, rides off
+		#   Pages  8–10  Ship crash-lands; Queen exhausted; Flex & Alex bolt
+		#   Pages 11–16  Queen furious; Lala explains Sand Land + Ahrena
+		#   Pages 17–20  Mayor offers coin bag; CT signs contract without reading
+		#   Pages 21–24  CT realizes the trap; ring can't be removed (explodes)
+		#   Pages 25–26  CT stewing; massive sand wormfish charges toward town
+		# ══════════════════════════════════════════════════════════════════════
+		8: return [
+			{
+				# pdf: before_page=12 / 41 pages (ratio 0.29) → real: 8 / 26
+				# Type      : Exploration + coin collecting (new desert biome intro)
+				# Character : CT  |  No active characters present
+				# Mechanics : Sand slows movement; collapsing ruins; hidden coin piles
+				# Win       : Explore 60% of map + collect 30 coins
+				# Difficulty: Low — environment focus, biome introduction
+				"before_page":  8,
+				"text":         "Welcome to Sand Land... and it does NOT look friendly.",
+				"game_index":   0,
+				"coins_reward": 50,
+			},
+			{
+				# pdf: before_page=33 / 41 pages (ratio 0.80) → real: 21 / 26
+				# Type      : Coin collecting + obstacle dodging (frantic scramble)
+				# Character : CT
+				# Present   : Mayor (cutscene only), Lala (non-playable, mouth sealed)
+				# Hazards   : Quicksand pits, projectile collapsing ruins, sand traps
+				# Win       : Reach mayor's coin bag + collect 25 coins
+				# Difficulty: Medium — multi-trap awareness, fast pacing
+				"before_page":  21,
+				"text":         "I signed WHAT?! Gotta do something — find those coins first!",
+				"game_index":   1,
+				"coins_reward": 50,
+			},
+			{
+				# pdf: before_page=41 / 41 pages (ratio 1.00) → real: 26 / 26
+				# Fires just before the final page — wormfish cliffhanger
+				# Type      : Chase + obstacle dodging (pure panic sprint)
+				# Character : CT
+				# NPCs      : Sand Wormfish (chase AI — erupts from sand behind player)
+				# Level     : Auto-scrolling desert — falling rocks, worm eruptions
+				# Win       : Survive the full chase sequence — no combat
+				# Difficulty: Medium-high — pure reaction sprint
+				"before_page":  26,
+				"text":         "A sand wormfish?! Everyone scatter!",
+				"game_index":   2,
+				"coins_reward": 50,
+			},
+		]
+
 		_: return []
