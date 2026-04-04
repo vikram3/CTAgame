@@ -163,8 +163,9 @@ grow_horizontal = 0
 grow_vertical = 2
 theme_override_styles/background = SubResource("StyleBoxFlat_frbhw")
 theme_override_styles/fill = SubResource("StyleBoxFlat_abugw")
+max_value = 99.975
 step = 15.0
-value = 80.0
+value = 75.0
 fill_mode = 2
 
 [node name="CoinDisplay" type="CanvasLayer" parent="."]

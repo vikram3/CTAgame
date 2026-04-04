@@ -1,5 +1,30 @@
 extends Control
 
+# ─────────────────────────────────────────────
+#  NODE REFERENCES
+#  Scene tree expected layout:
+#
+#  WebtoonReader (Control, full rect)
+#  ├── ScrollContainer              (full rect, offset_top = 64)
+#  │   └── CenterContainer          (HBoxContainer, SIZE_EXPAND_FILL, ALIGNMENT_CENTER)
+#  │       └── PanelContainer       (VBoxContainer, SIZE_SHRINK_CENTER, separation = 0)
+#  └── CanvasLayer
+#      ├── TopBar                   (HBoxContainer pinned top)
+#      │   └── HBoxContainer
+#      │       ├── PrevButton
+#      │       ├── ChapterLabel
+#      │       ├── NextButton
+#      │       ├── HomeButton
+#      │       └── ChapterSelectButton
+#      ├── ZoomBar                  (HBoxContainer pinned bottom-right)
+#      │   ├── ZoomOut
+#      │   ├── ZoomLabel
+#      │   ├── ZoomIn
+#      │   └── ZoomReset
+#      ├── ScrollIndicator          (ProgressBar, vertical, pinned right edge)
+#      └── CoinDisplay
+#          └── CoinLabel
+# ─────────────────────────────────────────────
 @onready var scroll_container   = $ScrollContainer
 @onready var center_container   = $ScrollContainer/CenterContainer
 @onready var panel_container    = $ScrollContainer/CenterContainer/PanelContainer
@@ -61,23 +86,45 @@ func _ready():
 
 	build_chapter()
 
-	# Wait for layout to settle, then restore scroll
-	for _i in 4:
-		await get_tree().process_frame
-	panel_container.queue_sort()
-	await get_tree().process_frame
+	# Wait for the entire async image load queue to finish,
+	# then restore scroll — panel_container.size.y is only
+	# correct after all panels have their real texture sizes.
+	await _wait_for_load_complete()
 
 	var saved = GameData.get_chapter_progress(current_chapter)
 	if saved > 0:
 		scroll_container.scroll_vertical = int(saved)
+		print("Restored scroll to: ", saved)
 
 	get_viewport().size_changed.connect(_on_viewport_size_changed)
-	AchievementManager.check_and_unlock("first_read")
+
+	# Only fire first_read once, never again on re-entry
+	if not GameData.has_achievement("first_read"):
+		AchievementManager.check_and_unlock("first_read")
 
 
 # ════════════════════════════════════════════
 #  SETUP
 # ════════════════════════════════════════════
+
+# Waits until the async image load queue is empty AND
+# the VBoxContainer has had time to measure all children.
+func _wait_for_load_complete():
+	# Poll until queue drains
+	while _is_loading or not _load_queue.is_empty():
+		await get_tree().process_frame
+	# Extra frames so VBoxContainer recalculates sizes
+	for _i in 3:
+		await get_tree().process_frame
+	panel_container.queue_sort()
+	await get_tree().process_frame
+
+# Lightweight layout wait — for use after returning from game
+# (images are already loaded, just need VBox to settle)
+func _wait_for_layout():
+	for _i in 3:
+		await get_tree().process_frame
+
 func _setup_scroll_container():
 	scroll_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	scroll_container.offset_top = 64
@@ -356,8 +403,7 @@ func _add_static_panel(entry: ChapterData.PanelEntry, index: int):
 
 
 func _add_playable_trigger_panel(entry: ChapterData.PanelEntry, index: int):
-	if GameData.is_game_completed(current_chapter, entry.game_index):
-		return
+	var already_done = GameData.is_game_completed(current_chapter, entry.game_index)
 
 	var trigger = preload("res://Scenes/PlayableTriggerPanel.tscn").instantiate()
 	trigger.name                    = "Playable_" + str(index)
@@ -365,6 +411,11 @@ func _add_playable_trigger_panel(entry: ChapterData.PanelEntry, index: int):
 	trigger.custom_minimum_size.x   = _panel_width()
 	panel_container.add_child(trigger)
 	trigger.setup(entry.transition_text)
+
+	if already_done:
+		# Show as "Play Again" — still visible, just marked complete
+		trigger.set_play_again_mode()
+
 	trigger.play_pressed.connect(_on_play_pressed.bind(entry, index))
 
 
@@ -436,32 +487,44 @@ func _on_play_pressed(entry: ChapterData.PanelEntry, panel_index: int):
 
 
 func restore_scroll_only():
-	await get_tree().process_frame
-	await get_tree().process_frame
-	scroll_container.scroll_vertical = int(GameData.get_chapter_progress(current_chapter))
+	# Called by TransitionManager when player presses "Back to Story"
+	# WITHOUT completing the game. No coins, no panel changes, no banners.
+	# Just silently restore scroll to where it was before the game launched.
+	await _wait_for_layout()
+	scroll_container.scroll_vertical = int(saved_scroll_position)
+	print("Back to story — restored scroll to: ", saved_scroll_position)
 
 
 func advance_past_playable():
-	var panel_index = TransitionManager.current_panel_index
-	var game_index  = TransitionManager.current_game_index
+	var panel_index      = TransitionManager.current_panel_index
+	var game_index       = TransitionManager.current_game_index
+	var first_time_game  = not GameData.is_game_completed(current_chapter, game_index)
+	var was_chapter_done = GameData.is_chapter_fully_completed(current_chapter)
 
 	GameData.mark_game_completed(current_chapter, game_index)
+
+	# Coins are earned by playing games — 25 per segment, first time only
+	if first_time_game:
+		GameData.add_coins(25)
+		_show_segment_banner(current_chapter, game_index)  # shows name + coins
+
 	coin_label.text = str(GameData.data.coins)
 
+	# Switch trigger panel to "Play Again"
 	for child in panel_container.get_children():
 		if child.name == "Playable_" + str(panel_index):
-			child.hide()
+			if child.has_method("set_play_again_mode"):
+				child.set_play_again_mode()
 			break
 
+	# Chapter fully done — just unlock next chapter, no coins, no banner
 	if GameData.check_chapter_complete(current_chapter, total_games):
-		_on_chapter_fully_completed()
+		if not was_chapter_done:
+			_on_chapter_fully_completed()
 
-	for _i in 3:
-		await get_tree().process_frame
+	# Restore scroll to where game launched from
+	await _wait_for_layout()
 	scroll_container.scroll_vertical = int(saved_scroll_position)
-
-	await get_tree().create_timer(0.5).timeout
-	_scroll_to_next_panel_after(panel_index)
 
 
 func _scroll_to_next_panel_after(panel_index: int):
@@ -478,13 +541,32 @@ func _scroll_to_next_panel_after(panel_index: int):
 #  CHAPTER COMPLETION
 # ════════════════════════════════════════════
 func _on_chapter_fully_completed():
+	# Unlock next chapter — no banner, no extra coins, coins come from game segments
 	AchievementManager.check_and_unlock("chapter_" + str(current_chapter))
 	GameData.unlock_chapter(current_chapter + 1)
 	next_btn.disabled = false
-	_show_completion_banner()
 
 
+# Shows which game segment was just completed and how many coins were earned.
+# Text comes from ChapterData so it always matches the actual segment name.
+func _show_segment_banner(chapter: int, game_index: int):
+	var defs = ChapterData.get_playable_definitions(chapter)
+	var segment_name = "Game %d" % (game_index + 1)  # fallback
+	for d in defs:
+		if d.game_index == game_index:
+			segment_name = d.text
+			break
+	_show_banner("✅  %s\n+25 🪙 coins earned!" % segment_name, 22, 2.5)
+
+
+# No coins for chapter — just quietly unlocks next chapter.
+# _show_completion_banner no longer called, kept in case needed later.
 func _show_completion_banner():
+	pass
+
+
+# Generic animated banner — reused by both banner types.
+func _show_banner(msg: String, font_size: int, hold_sec: float):
 	var canvas = CanvasLayer.new()
 	canvas.layer = 10
 	add_child(canvas)
@@ -493,17 +575,24 @@ func _show_completion_banner():
 	panel.set_anchors_preset(Control.PRESET_CENTER)
 	canvas.add_child(panel)
 
+	var mg = MarginContainer.new()
+	mg.add_theme_constant_override("margin_left",  20)
+	mg.add_theme_constant_override("margin_right", 20)
+	mg.add_theme_constant_override("margin_top",   12)
+	mg.add_theme_constant_override("margin_bottom",12)
+	panel.add_child(mg)
+
 	var label = Label.new()
-	label.text = "⭐  Chapter " + str(current_chapter) + " Complete!  ⭐"
-	label.add_theme_font_size_override("font_size", 28)
+	label.text = msg
+	label.add_theme_font_size_override("font_size", font_size)
 	label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	panel.add_child(label)
+	mg.add_child(label)
 
 	panel.modulate.a = 0.0
 	var tween = create_tween()
-	tween.tween_property(panel, "modulate:a", 1.0, 0.35)
-	tween.tween_interval(2.5)
-	tween.tween_property(panel, "modulate:a", 0.0, 0.5)
+	tween.tween_property(panel, "modulate:a", 1.0, 0.3)
+	tween.tween_interval(hold_sec)
+	tween.tween_property(panel, "modulate:a", 0.0, 0.45)
 	await tween.finished
 	canvas.queue_free()
 

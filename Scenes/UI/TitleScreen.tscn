@@ -149,12 +149,14 @@ scroll_following_visible_characters = true
 metadata/_edit_use_anchors_ = true
 
 [node name="ButtonsPanel" type="VBoxContainer" parent="CanvasLayer"]
-anchors_preset = 12
+anchors_preset = 7
+anchor_left = 0.5
 anchor_top = 1.0
-anchor_right = 1.0
+anchor_right = 0.5
 anchor_bottom = 1.0
-offset_top = -281.0
-offset_bottom = -123.0
+offset_left = -321.0
+offset_top = -231.0
+offset_right = 321.0
 grow_horizontal = 2
 grow_vertical = 0
 size_flags_horizontal = 6
