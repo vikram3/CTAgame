@@ -1,28 +1,84 @@
 extends Control
 
-@onready var coin_label = $CanvasLayer/ButtonsPanel/CoinDisplay/HBoxContainer2/CoinLabel
+@onready var coin_label   = $CanvasLayer/ButtonsPanel/CoinDisplay/HBoxContainer2/CoinLabel
 @onready var continue_btn = $CanvasLayer/ButtonsPanel/HBoxContainer/ContinueButton
-@onready var anim_player = $AnimationPlayer
+@onready var anim_player  = $AnimationPlayer
+
+# ── Background node reference ─────────────────────────────────
+# Expects a TextureRect named "Background" as a direct child of
+# this Control node (NOT inside the CanvasLayer).
+# Set it up in the editor:
+#   • Node type : TextureRect
+#   • Name      : Background
+#   • Texture   : your background image
+#   • All other properties are overridden by this script.
+@onready var background: TextureRect = $Background
+
 
 func _ready():
-	# Update coin display
+	_setup_background()
+
+	# Coin display
 	coin_label.text = str(GameData.data.coins)
-	
-	# Show continue only if progress exists
-	var has_progress = not GameData.data.chapter_progress.is_empty()
-	continue_btn.visible = has_progress
-	
-	# Comic style title animation
+
+	# Continue button only visible if there is saved progress
+	continue_btn.visible = not GameData.data.chapter_progress.is_empty()
+
+	# Title entrance animation
 	anim_player.play("title_entrance")
-	
-	# Connect buttons
+
+	# Button connections
 	$CanvasLayer/ButtonsPanel/HBoxContainer/StartButton.pressed.connect(_on_start)
 	$CanvasLayer/ButtonsPanel/HBoxContainer/ContinueButton.pressed.connect(_on_continue)
 	$CanvasLayer/ButtonsPanel/HBoxContainer/ChaptersButton.pressed.connect(_on_chapters)
 	$CanvasLayer/ButtonsPanel/HBoxContainer2/SettingsButton.pressed.connect(_on_settings)
 
+	# Re-fit background whenever the window / screen is resized
+	get_viewport().size_changed.connect(_setup_background)
+
+
+# ── Background fitting ────────────────────────────────────────
+#
+#  Strategy: "cover" — scale the image so it fills the whole
+#  viewport with no empty bars, then centre it.
+#  Works like CSS  background-size: cover; background-position: center.
+#
+func _setup_background():
+	if background == null or background.texture == null:
+		return
+
+	var vp      : Vector2 = get_viewport().get_visible_rect().size
+	var tex_sz  : Vector2 = background.texture.get_size()
+
+	if tex_sz.x <= 0 or tex_sz.y <= 0:
+		return
+
+	# Scale factor needed to cover the viewport in each axis
+	var scale_x : float = vp.x / tex_sz.x
+	var scale_y : float = vp.y / tex_sz.y
+
+	# "Cover" = use the LARGER scale so no axis has empty space
+	var scale   : float = max(scale_x, scale_y)
+
+	var new_size : Vector2 = tex_sz * scale
+
+	# Apply
+	background.stretch_mode        = TextureRect.STRETCH_KEEP_ASPECT_COVERED
+	background.expand_mode         = TextureRect.EXPAND_IGNORE_SIZE
+	background.size                = new_size
+	background.custom_minimum_size = new_size
+
+	# Centre within the viewport (may be slightly larger than vp on one axis)
+	background.position = (vp - new_size) * 0.5
+
+	# Make sure it renders behind the CanvasLayer UI
+	background.z_index = -1
+	move_child(background, 0)
+
+
+# ── Navigation ────────────────────────────────────────────────
 func _on_start():
-	GameData.data.chapter_progress.clear()  # fresh start
+	GameData.data.chapter_progress.clear()
 	SceneManager.go_to_chapter(1)
 
 func _on_continue():
