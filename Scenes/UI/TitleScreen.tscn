@@ -198,18 +198,18 @@ layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="StartButton" type="Button" parent="CanvasLayer/ButtonsPanel/HBoxContainer"]
-layout_mode = 2
-size_flags_horizontal = 4
-size_flags_vertical = 4
-icon = ExtResource("3_plnf0")
-
 [node name="ContinueButton" type="Button" parent="CanvasLayer/ButtonsPanel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 50
 text = "Continue"
+
+[node name="StartButton" type="Button" parent="CanvasLayer/ButtonsPanel/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+icon = ExtResource("3_plnf0")
 
 [node name="ChaptersButton" type="Button" parent="CanvasLayer/ButtonsPanel/HBoxContainer"]
 layout_mode = 2

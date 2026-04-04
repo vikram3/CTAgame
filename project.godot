@@ -36,7 +36,7 @@ window/size/mode=3
 window/size/window_width_override=800
 window/size/window_height_override=1700
 window/stretch/mode="canvas_items"
-window/stretch/aspect="keep_width"
+window/stretch/aspect="expand"
 window/handheld/orientation=1
 
 [editor]

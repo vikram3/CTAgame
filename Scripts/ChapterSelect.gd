@@ -9,6 +9,10 @@ const CHAPTERS = [
 	{"num": 2, "title": "The Coin Cave",      "coins_to_unlock": 50},
 	{"num": 3, "title": "Bridge of Doom",     "coins_to_unlock": 100},
 	{"num": 4, "title": "The Final Troll",    "coins_to_unlock": 200},
+	{"num": 5, "title": "The Troll Awakens", "coins_to_unlock": 0},
+	{"num": 6, "title": "The Coin Cave",      "coins_to_unlock": 50},
+	{"num": 7, "title": "Bridge of Doom",     "coins_to_unlock": 100},
+	{"num": 8, "title": "The Final Troll",    "coins_to_unlock": 200},
 ]
 
 func _ready():
