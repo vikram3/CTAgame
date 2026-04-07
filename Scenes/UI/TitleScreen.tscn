@@ -91,27 +91,37 @@ metadata/_edit_use_anchors_ = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="Control" type="Control" parent="CanvasLayer"]
-layout_mode = 3
-anchors_preset = 15
+[node name="RootLayout" type="MarginContainer" parent="CanvasLayer"]
+anchors_preset = 12
+anchor_top = 1.0
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -912.0
 grow_horizontal = 2
-grow_vertical = 2
+grow_vertical = 0
+theme_override_constants/margin_left = 16
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_right = 16
+theme_override_constants/margin_bottom = 20
 
-[node name="Label" type="Label" parent="CanvasLayer/Control"]
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/RootLayout"]
+layout_mode = 2
+
+[node name="sypnosis" type="Control" parent="CanvasLayer/RootLayout/VBoxContainer"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="Label" type="Label" parent="CanvasLayer/RootLayout/VBoxContainer/sypnosis"]
 layout_mode = 1
 anchors_preset = -1
-anchor_left = 0.054
-anchor_top = 0.3591059
-anchor_right = 0.316
-anchor_bottom = 0.41810593
-offset_left = -0.20000076
-offset_top = -0.4800415
-offset_right = 0.19998169
-offset_bottom = -0.50006104
-grow_horizontal = 2
-grow_vertical = 2
+anchor_left = 0.0076511614
+anchor_top = 0.10206422
+anchor_right = 0.27465117
+anchor_bottom = 0.15906423
+offset_left = -0.26399994
+offset_top = -56.0
+offset_right = 0.039993286
+offset_bottom = -55.70401
 size_flags_horizontal = 4
 theme = SubResource("Theme_plnf0")
 theme_override_colors/font_color = Color(0, 0, 0, 1)
@@ -122,18 +132,15 @@ text = "SYNOPSIS"
 vertical_alignment = 1
 autowrap_trim_flags = 64
 clip_text = true
-metadata/_edit_use_anchors_ = true
 
-[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/Control"]
+[node name="RichTextLabel" type="RichTextLabel" parent="CanvasLayer/RootLayout/VBoxContainer/sypnosis"]
 layout_mode = 1
-anchors_preset = -1
-anchor_left = 0.05
-anchor_top = 0.41110596
-anchor_right = 0.9560001
-anchor_bottom = 0.77880603
-offset_top = -0.3600464
-offset_right = 0.19995117
-offset_bottom = 0.27978516
+anchors_preset = 14
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_top = -339.0
+offset_bottom = 227.0
 grow_horizontal = 2
 grow_vertical = 2
 theme_override_colors/default_color = Color(0, 0, 0, 1)
@@ -146,98 +153,87 @@ Read it. Play it. Collect everything."
 fit_content = true
 scroll_following = true
 scroll_following_visible_characters = true
-metadata/_edit_use_anchors_ = true
 
-[node name="ButtonsPanel" type="VBoxContainer" parent="CanvasLayer"]
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -321.0
-offset_top = -231.0
-offset_right = 321.0
-grow_horizontal = 2
-grow_vertical = 0
-size_flags_horizontal = 6
-size_flags_vertical = 6
+[node name="ButtonsPanel" type="VBoxContainer" parent="CanvasLayer/RootLayout"]
+layout_mode = 2
+size_flags_vertical = 10
 
-[node name="CoinDisplay" type="HBoxContainer" parent="CanvasLayer/ButtonsPanel"]
+[node name="CoinDisplay" type="HBoxContainer" parent="CanvasLayer/RootLayout/ButtonsPanel"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/ButtonsPanel/CoinDisplay"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/RootLayout/ButtonsPanel/CoinDisplay"]
 layout_mode = 2
 
-[node name="CoinIcon" type="AnimatedSprite2D" parent="CanvasLayer/ButtonsPanel/CoinDisplay/HBoxContainer"]
+[node name="CoinIcon" type="AnimatedSprite2D" parent="CanvasLayer/RootLayout/ButtonsPanel/CoinDisplay/HBoxContainer"]
 position = Vector2(-45.999996, 32.999996)
 scale = Vector2(0.1, 0.1)
 sprite_frames = SubResource("SpriteFrames_obdur")
 autoplay = "default"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/ButtonsPanel/CoinDisplay"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/RootLayout/ButtonsPanel/CoinDisplay"]
 layout_mode = 2
 
-[node name="CoinLabel" type="Label" parent="CanvasLayer/ButtonsPanel/CoinDisplay/HBoxContainer2"]
+[node name="CoinLabel" type="Label" parent="CanvasLayer/RootLayout/ButtonsPanel/CoinDisplay/HBoxContainer2"]
 layout_mode = 2
 theme_override_font_sizes/font_size = 50
 text = "Coins"
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="CanvasLayer/ButtonsPanel/CoinDisplay"]
+[node name="HBoxContainer3" type="HBoxContainer" parent="CanvasLayer/RootLayout/ButtonsPanel/CoinDisplay"]
 layout_mode = 2
 
-[node name="CoinIcon" type="AnimatedSprite2D" parent="CanvasLayer/ButtonsPanel/CoinDisplay/HBoxContainer3"]
+[node name="CoinIcon" type="AnimatedSprite2D" parent="CanvasLayer/RootLayout/ButtonsPanel/CoinDisplay/HBoxContainer3"]
 position = Vector2(50.999996, 34.999996)
 scale = Vector2(0.1, 0.1)
 sprite_frames = SubResource("SpriteFrames_obdur")
 autoplay = "default"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/ButtonsPanel"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/RootLayout/ButtonsPanel"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="ContinueButton" type="Button" parent="CanvasLayer/ButtonsPanel/HBoxContainer"]
+[node name="ContinueButton" type="Button" parent="CanvasLayer/RootLayout/ButtonsPanel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 50
 text = "Continue"
 
-[node name="StartButton" type="Button" parent="CanvasLayer/ButtonsPanel/HBoxContainer"]
+[node name="StartButton" type="Button" parent="CanvasLayer/RootLayout/ButtonsPanel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 icon = ExtResource("3_plnf0")
 
-[node name="ChaptersButton" type="Button" parent="CanvasLayer/ButtonsPanel/HBoxContainer"]
+[node name="ChaptersButton" type="Button" parent="CanvasLayer/RootLayout/ButtonsPanel/HBoxContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 50
 text = "Chapters"
 
-[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/ButtonsPanel"]
+[node name="HBoxContainer2" type="HBoxContainer" parent="CanvasLayer/RootLayout/ButtonsPanel"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 
-[node name="SettingsButton" type="Button" parent="CanvasLayer/ButtonsPanel/HBoxContainer2"]
+[node name="SettingsButton" type="Button" parent="CanvasLayer/RootLayout/ButtonsPanel/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 50
 text = "Settings"
 
-[node name="credits" type="Button" parent="CanvasLayer/ButtonsPanel/HBoxContainer2"]
+[node name="credits" type="Button" parent="CanvasLayer/RootLayout/ButtonsPanel/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 theme_override_font_sizes/font_size = 50
 text = "credits"
 
-[node name="quit" type="Button" parent="CanvasLayer/ButtonsPanel/HBoxContainer2"]
+[node name="quit" type="Button" parent="CanvasLayer/RootLayout/ButtonsPanel/HBoxContainer2"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
@@ -265,3 +261,5 @@ offset_bottom = 40.0
 libraries = {
 &"": SubResource("AnimationLibrary_m3d7j")
 }
+
+[connection signal="pressed" from="CanvasLayer/RootLayout/ButtonsPanel/HBoxContainer2/quit" to="." method="_on_quit_pressed"]

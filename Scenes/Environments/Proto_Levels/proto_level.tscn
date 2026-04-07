@@ -116,13 +116,13 @@ shape = SubResource("RectangleShape2D_tkxru")
 position = Vector2(46, 172.00002)
 scale = Vector2(0.1, 0.1)
 texture_normal = ExtResource("9_1uvqt")
-action = "left"
+action = "right"
 
 [node name="TouchScreenButton2" type="TouchScreenButton" parent="control"]
 position = Vector2(4.0000076, 171)
 scale = Vector2(0.1, 0.1)
 texture_normal = ExtResource("8_ta6m8")
-action = "right"
+action = "left"
 
 [node name="TouchScreenButton3" type="TouchScreenButton" parent="control"]
 position = Vector2(272.99997, 136)

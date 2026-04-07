@@ -1,39 +1,22 @@
 extends Control
 
-@onready var coin_label   = $CanvasLayer/ButtonsPanel/CoinDisplay/HBoxContainer2/CoinLabel
-@onready var continue_btn = $CanvasLayer/ButtonsPanel/HBoxContainer/ContinueButton
+@onready var coin_label   = $CanvasLayer/RootLayout/ButtonsPanel/CoinDisplay/HBoxContainer2/CoinLabel
+@onready var continue_btn = $CanvasLayer/RootLayout/ButtonsPanel/HBoxContainer/ContinueButton
 @onready var anim_player  = $AnimationPlayer
-
-# ── Background node reference ─────────────────────────────────
-# Expects a TextureRect named "Background" as a direct child of
-# this Control node (NOT inside the CanvasLayer).
-# Set it up in the editor:
-#   • Node type : TextureRect
-#   • Name      : Background
-#   • Texture   : your background image
-#   • All other properties are overridden by this script.
 @onready var background: TextureRect = $Background
+@onready var quit: Button = $CanvasLayer/RootLayout/ButtonsPanel/HBoxContainer2/quit
 
 
 func _ready():
 	_setup_background()
-
-	# Coin display
 	coin_label.text = str(GameData.data.coins)
-
-	# Continue button only visible if there is saved progress
 	continue_btn.visible = not GameData.data.chapter_progress.is_empty()
-
-	# Title entrance animation
 	anim_player.play("title_entrance")
 
-	# Button connections
-	$CanvasLayer/ButtonsPanel/HBoxContainer/StartButton.pressed.connect(_on_start)
-	$CanvasLayer/ButtonsPanel/HBoxContainer/ContinueButton.pressed.connect(_on_continue)
-	$CanvasLayer/ButtonsPanel/HBoxContainer/ChaptersButton.pressed.connect(_on_chapters)
-	$CanvasLayer/ButtonsPanel/HBoxContainer2/SettingsButton.pressed.connect(_on_settings)
-
-	# Re-fit background whenever the window / screen is resized
+	$CanvasLayer/RootLayout/ButtonsPanel/HBoxContainer/StartButton.pressed.connect(_on_start)
+	$CanvasLayer/RootLayout/ButtonsPanel/HBoxContainer/ContinueButton.pressed.connect(_on_continue)
+	$CanvasLayer/RootLayout/ButtonsPanel/HBoxContainer/ChaptersButton.pressed.connect(_on_chapters)
+	$CanvasLayer/RootLayout/ButtonsPanel/HBoxContainer2/SettingsButton.pressed.connect(_on_settings)
 	get_viewport().size_changed.connect(_setup_background)
 
 
@@ -89,3 +72,8 @@ func _on_chapters():
 
 func _on_settings():
 	SceneManager.go_to_settings()
+
+
+func _on_quit_pressed() -> void:
+	get_tree().quit()
+	pass # Replace with function body.

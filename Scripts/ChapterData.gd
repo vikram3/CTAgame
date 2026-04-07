@@ -1,24 +1,6 @@
 class_name ChapterData
 extends Node
 
-# ─────────────────────────────────────────────────────────────────────────────
-#  ChapterData.gd  (res://Scripts/ChapterData.gd)
-#
-#  PAGE COUNTS — real asset counts confirmed by team:
-#    Ch1=19  Ch2=34  Ch3=22  Ch4=18  Ch5=24  Ch6=26  Ch7=18  Ch8=26
-#
-#  SEGMENT PLACEMENT — before_page values are proportionally scaled from the
-#  Game Segment Design Document (which used draft page counts) to the real
-#  page counts above. Ratio preserved: new = round(pdf_before / pdf_total * real_total)
-#
-#  COINS PER SEGMENT (first-completion reward, scaling by chapter difficulty):
-#    Ch1 → 30  |  Ch2 → 35  |  Ch3 → 35  |  Ch4 → 40
-#    Ch5 → 40  |  Ch6 → 45  |  Ch7 → 45  |  Ch8 → 50
-#
-#  CHAPTER UNLOCK COSTS  (formula: (chapter_num - 1) × 50):
-#    Ch1 = 0 (free)  |  Ch2 = 50  |  Ch3 = 100  |  Ch4 = 150
-#    Ch5 = 200       |  Ch6 = 250 |  Ch7 = 300  |  Ch8 = 350
-# ─────────────────────────────────────────────────────────────────────────────
 
 enum PanelType { STATIC, PLAYABLE }
 
@@ -108,14 +90,14 @@ static func get_page_path(chapter: int, page: int) -> String:
 	var page_str = str(page).pad_zeros(2)
 	var base = ""
 	match chapter:
-		1: base = "res://Assets/webtoon/Ch1/ch1_"  + page_str
-		2: base = "res://Assets/webtoon/Ch2/Ch2_"  + page_str
-		3: base = "res://Assets/webtoon/Ch3/Ch3_"  + page_str
-		4: base = "res://Assets/webtoon/Ch4/Ch4_"  + page_str
-		5: base = "res://Assets/webtoon/Ch5/Ch5_"  + page_str
-		6: base = "res://Assets/webtoon/Ch6/Ch6_"  + page_str
-		7: base = "res://Assets/webtoon/Ch7/Ch7_"  + page_str
-		8: base = "res://Assets/webtoon/Ch8/Ch8_"  + page_str
+		1: base = "res://Assets/webtoon/ch1/ch1_"  + page_str
+		2: base = "res://Assets/webtoon/ch2/ch2_"  + page_str
+		3: base = "res://Assets/webtoon/ch3/ch3_"  + page_str
+		4: base = "res://Assets/webtoon/ch4/ch4_"  + page_str
+		5: base = "res://Assets/webtoon/ch5/ch5_"  + page_str
+		6: base = "res://Assets/webtoon/ch6/ch6_"  + page_str
+		7: base = "res://Assets/webtoon/ch7/ch7_"  + page_str
+		8: base = "res://Assets/webtoon/ch8/ch8_"  + page_str
 		_:
 			push_error("ChapterData: No path pattern for chapter %d" % chapter)
 			return ""

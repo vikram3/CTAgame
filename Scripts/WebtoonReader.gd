@@ -2,28 +2,6 @@ extends Control
 
 # ─────────────────────────────────────────────
 #  NODE REFERENCES
-#  Scene tree expected layout:
-#
-#  WebtoonReader (Control, full rect)
-#  ├── ScrollContainer              (full rect, offset_top = 64)
-#  │   └── CenterContainer          (HBoxContainer, SIZE_EXPAND_FILL, ALIGNMENT_CENTER)
-#  │       └── PanelContainer       (VBoxContainer, SIZE_SHRINK_CENTER, separation = 0)
-#  └── CanvasLayer
-#      ├── TopBar                   (HBoxContainer pinned top)
-#      │   └── HBoxContainer
-#      │       ├── PrevButton
-#      │       ├── ChapterLabel
-#      │       ├── NextButton
-#      │       ├── HomeButton
-#      │       └── ChapterSelectButton
-#      ├── ZoomBar                  (HBoxContainer pinned bottom-right)
-#      │   ├── ZoomOut
-#      │   ├── ZoomLabel
-#      │   ├── ZoomIn
-#      │   └── ZoomReset
-#      ├── ScrollIndicator          (ProgressBar, vertical, pinned right edge)
-#      └── CoinDisplay
-#          └── CoinLabel
 # ─────────────────────────────────────────────
 @onready var scroll_container   = $ScrollContainer
 @onready var center_container   = $ScrollContainer/CenterContainer
@@ -43,38 +21,54 @@ extends Control
 # ─────────────────────────────────────────────
 #  TUNABLE CONSTANTS
 # ─────────────────────────────────────────────
-const BASE_PANEL_WIDTH    = 720.0   # webtoon column width at 100% zoom (px)
-const MIN_ZOOM            = 0.5
-const MAX_ZOOM            = 2.5
-const ZOOM_STEP           = 0.15
-const SMOOTH_SCROLL_TIME  = 0.4    # seconds
-const AUTO_SAVE_INTERVAL  = 2.0
-const UI_HIDE_DELAY       = 3.5    # seconds idle before top/zoom bar fades
+var   BASE_PANEL_WIDTH: float = 720.0
+const MIN_ZOOM           = 0.5
+const MAX_ZOOM           = 2.5
+const ZOOM_STEP          = 0.15
+const SMOOTH_SCROLL_TIME = 0.4
+const AUTO_SAVE_INTERVAL = 2.0
+const UI_HIDE_DELAY      = 3.5
 
 # ─────────────────────────────────────────────
 #  STATE
 # ─────────────────────────────────────────────
-var chapter_panels: Array         = []
-var current_chapter: int          = 1
-var total_games: int              = 0
-var saved_scroll_position: float  = 0.0
+var chapter_panels: Array        = []
+var current_chapter: int         = 1
+var total_games: int             = 0
+var saved_scroll_position: float = 0.0
 
-var _zoom: float                  = 1.0
-var _zoom_busy: bool              = false   # re-entry guard
-var _load_queue: Array            = []
-var _is_loading: bool             = false
-var _save_timer: float            = 0.0
-var _resize_timer: float          = 0.0
-var _resize_pending: bool         = false
-var _scroll_tween: Tween          = null
-var _ui_visible: bool             = true
-var _ui_hide_timer: float         = UI_HIDE_DELAY
+var _zoom: float         = 1.0
+var _zoom_busy: bool     = false
+var _load_queue: Array   = []
+var _is_loading: bool    = false
+var _save_timer: float   = 0.0
+var _resize_timer: float = 0.0
+var _resize_pending: bool = false
+var _scroll_tween: Tween = null
+var _ui_visible: bool    = true
+var _ui_hide_timer: float = UI_HIDE_DELAY
+
+# ─────────────────────────────────────────────
+#  PINCH-TO-ZOOM STATE
+# ─────────────────────────────────────────────
+var _touch_points: Dictionary = {}   # finger index → position
+var _pinch_initial_distance: float = 0.0
+var _pinch_initial_zoom: float     = 1.0
+var _is_pinching: bool             = false
+
+# Tap detection (single tap = toggle UI)
+var _tap_start_pos: Vector2  = Vector2.ZERO
+var _tap_start_time: float   = 0.0
+const TAP_MAX_DISTANCE       = 20.0   # px — more than this = scroll, not tap
+const TAP_MAX_DURATION       = 0.25   # seconds
 
 
 # ════════════════════════════════════════════
 #  READY
 # ════════════════════════════════════════════
 func _ready():
+	BASE_PANEL_WIDTH = get_viewport().get_visible_rect().size.x
+
 	current_chapter = GameData.data.current_chapter
 	chapter_panels  = ChapterData.get_chapter(current_chapter)
 	total_games     = ChapterData.get_total_games(current_chapter)
@@ -86,9 +80,6 @@ func _ready():
 
 	build_chapter()
 
-	# Wait for the entire async image load queue to finish,
-	# then restore scroll — panel_container.size.y is only
-	# correct after all panels have their real texture sizes.
 	await _wait_for_load_complete()
 
 	var saved = GameData.get_chapter_progress(current_chapter)
@@ -102,39 +93,32 @@ func _ready():
 # ════════════════════════════════════════════
 #  SETUP
 # ════════════════════════════════════════════
-
-# Waits until the async image load queue is empty AND
-# the VBoxContainer has had time to measure all children.
 func _wait_for_load_complete():
-	# Poll until queue drains
 	while _is_loading or not _load_queue.is_empty():
 		await get_tree().process_frame
-	# Extra frames so VBoxContainer recalculates sizes
 	for _i in 3:
 		await get_tree().process_frame
 	panel_container.queue_sort()
 	await get_tree().process_frame
 
-# Lightweight layout wait — for use after returning from game
-# (images are already loaded, just need VBox to settle)
+
 func _wait_for_layout():
 	for _i in 3:
 		await get_tree().process_frame
 
+
 func _setup_scroll_container():
 	scroll_container.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
-	scroll_container.offset_top = 64
+	await get_tree().process_frame
+	scroll_container.offset_top = $CanvasLayer/TopBar.size.y
 	scroll_container.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll_container.vertical_scroll_mode   = ScrollContainer.SCROLL_MODE_AUTO
 
-	# CenterContainer: horizontal centering wrapper
 	center_container.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	center_container.alignment             = BoxContainer.ALIGNMENT_CENTER
 
-	# PanelContainer: vertical strip of panels
 	panel_container.size_flags_horizontal  = Control.SIZE_SHRINK_CENTER
 	panel_container.add_theme_constant_override("separation", 0)
-
 
 
 func _setup_navigation():
@@ -174,26 +158,23 @@ func _setup_scroll_indicator():
 
 
 # ════════════════════════════════════════════
-#  PROCESS  (delta loop)
+#  PROCESS
 # ════════════════════════════════════════════
 func _process(delta: float):
-	# — Debounced resize rebuild —
 	if _resize_pending:
 		_resize_timer -= delta
 		if _resize_timer <= 0.0:
 			_resize_pending = false
 			_rebuild_for_new_size()
 
-	# — Auto-save scroll —
 	_save_timer += delta
 	if _save_timer >= AUTO_SAVE_INTERVAL:
 		_save_timer = 0.0
 		GameData.save_chapter_progress(current_chapter, scroll_container.scroll_vertical)
 
-	# — Scroll indicator (every frame — works with tweens and direct sets) —
 	_update_scroll_indicator()
 
-	# — UI auto-hide —
+	# UI auto-hide — only counts down when UI is visible
 	if _ui_visible:
 		_ui_hide_timer -= delta
 		if _ui_hide_timer <= 0.0:
@@ -201,26 +182,21 @@ func _process(delta: float):
 
 
 # ════════════════════════════════════════════
-#  INPUT  (keyboard + ctrl-scroll for PC)
+#  INPUT — keyboard, mouse-wheel zoom, touch
 # ════════════════════════════════════════════
-func _unhandled_input(event: InputEvent):
-	var vp_h = scroll_container.size.y
+func _input(event: InputEvent):
 
+	# ── Keyboard ────────────────────────────
 	if event is InputEventKey and event.pressed:
 		_wake_ui()
+		var vp_h = scroll_container.size.y
 		match event.keycode:
-			KEY_DOWN, KEY_S:
-				smooth_scroll_to(scroll_container.scroll_vertical + 300)
-			KEY_UP, KEY_W:
-				smooth_scroll_to(scroll_container.scroll_vertical - 300)
-			KEY_PAGEDOWN:
-				smooth_scroll_to(scroll_container.scroll_vertical + vp_h * 0.85)
-			KEY_PAGEUP:
-				smooth_scroll_to(scroll_container.scroll_vertical - vp_h * 0.85)
-			KEY_HOME:
-				smooth_scroll_to(0)
-			KEY_END:
-				smooth_scroll_to(panel_container.size.y)
+			KEY_DOWN, KEY_S:   smooth_scroll_to(scroll_container.scroll_vertical + 300)
+			KEY_UP,   KEY_W:   smooth_scroll_to(scroll_container.scroll_vertical - 300)
+			KEY_PAGEDOWN:      smooth_scroll_to(scroll_container.scroll_vertical + vp_h * 0.85)
+			KEY_PAGEUP:        smooth_scroll_to(scroll_container.scroll_vertical - vp_h * 0.85)
+			KEY_HOME:          smooth_scroll_to(0)
+			KEY_END:           smooth_scroll_to(panel_container.size.y)
 			KEY_EQUAL, KEY_KP_ADD:
 				if event.ctrl_pressed: _zoom_in()
 			KEY_MINUS, KEY_KP_SUBTRACT:
@@ -228,21 +204,90 @@ func _unhandled_input(event: InputEvent):
 			KEY_0:
 				if event.ctrl_pressed: _zoom_reset()
 
-	# Ctrl + mouse wheel = zoom on PC
+	# ── Mouse wheel zoom (Ctrl held on PC) ──
 	if event is InputEventMouseButton and event.pressed:
-		_wake_ui()
 		if event.ctrl_pressed:
+			_wake_ui()
 			if event.button_index == MOUSE_BUTTON_WHEEL_UP:   _zoom_in()
 			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN: _zoom_out()
 
-	# Touch: tap centre of screen to toggle UI
-	if event is InputEventScreenTouch and event.pressed:
+	# ── Touch ────────────────────────────────
+	if event is InputEventScreenTouch:
+		_handle_touch(event)
+
+	if event is InputEventScreenDrag:
+		_handle_drag(event)
+
+
+# ════════════════════════════════════════════
+#  TOUCH HANDLING  (tap + pinch)
+# ════════════════════════════════════════════
+func _handle_touch(event: InputEventScreenTouch):
+	if event.pressed:
+		_touch_points[event.index] = event.position
+
+		if _touch_points.size() == 1:
+			# Record potential tap start
+			_tap_start_pos  = event.position
+			_tap_start_time = Time.get_ticks_msec() / 1000.0
+
+		elif _touch_points.size() == 2:
+			# Second finger down — begin pinch
+			_is_pinching            = true
+			_pinch_initial_distance = _pinch_distance()
+			_pinch_initial_zoom     = _zoom
+			# Cancel pending tap
+			_tap_start_time = -1.0
+
+	else:
+		# Finger lifted
+		var lift_time = Time.get_ticks_msec() / 1000.0
+
+		if _touch_points.size() == 1 and not _is_pinching:
+			# Check if this qualifies as a tap
+			var duration = lift_time - _tap_start_time
+			var dist     = event.position.distance_to(_tap_start_pos)
+			if duration <= TAP_MAX_DURATION and dist <= TAP_MAX_DISTANCE and _tap_start_time >= 0.0:
+				_toggle_ui()
+
+		_touch_points.erase(event.index)
+
+		if _touch_points.size() < 2:
+			_is_pinching = false
+
+
+func _handle_drag(event: InputEventScreenDrag):
+	_touch_points[event.index] = event.position
+
+	if _touch_points.size() == 2 and _is_pinching:
+		# Cancel any tap
+		_tap_start_time = -1.0
+
+		var current_dist = _pinch_distance()
+		if _pinch_initial_distance > 0.0:
+			var new_zoom = _pinch_initial_zoom * (current_dist / _pinch_initial_distance)
+			new_zoom = clamp(new_zoom, MIN_ZOOM, MAX_ZOOM)
+			if abs(new_zoom - _zoom) > 0.01:
+				_apply_zoom_immediate(new_zoom)
+
+
+func _pinch_distance() -> float:
+	var keys = _touch_points.keys()
+	if keys.size() < 2:
+		return 0.0
+	return _touch_points[keys[0]].distance_to(_touch_points[keys[1]])
+
+
+# ════════════════════════════════════════════
+#  UI TOGGLE / FADE
+# ════════════════════════════════════════════
+func _toggle_ui():
+	if _ui_visible:
+		_fade_ui(false)
+	else:
 		_wake_ui()
 
 
-# ════════════════════════════════════════════
-#  UI FADE (auto-hide top/zoom bars)
-# ════════════════════════════════════════════
 func _wake_ui():
 	_ui_hide_timer = UI_HIDE_DELAY
 	if not _ui_visible:
@@ -250,15 +295,26 @@ func _wake_ui():
 
 
 func _fade_ui(show: bool):
-	_ui_visible = show
-	var target   = 1.0 if show else 0.0
-	var duration = 0.25 if show else 0.6
+	_ui_visible   = show
+	var target    = 1.0 if show else 0.0
+	var duration  = 0.25 if show else 0.6
 
 	var tween = create_tween().set_parallel(true)
-	tween.tween_property($CanvasLayer/TopBar,        "modulate:a", target, duration)
-	tween.tween_property($CanvasLayer/ZoomBar,       "modulate:a", target if show else 0.0, duration)
-	tween.tween_property($CanvasLayer/ScrollIndicator, "modulate:a", target, duration)
-	tween.tween_property($CoinDisplay,               "modulate:a", target, duration)
+	tween.tween_property($CanvasLayer/TopBar,           "modulate:a", target, duration)
+	tween.tween_property($CanvasLayer/ZoomBar,          "modulate:a", target, duration)
+	tween.tween_property($CanvasLayer/ScrollIndicator,  "modulate:a", target, duration)
+	tween.tween_property($CoinDisplay/CoinLabel,        "modulate:a", target, duration)
+
+	# Disable button interaction while hidden so hidden bar can't be accidentally pressed
+	tween.tween_callback(_sync_ui_interaction).set_delay(duration)
+
+
+func _sync_ui_interaction():
+	$CanvasLayer/TopBar.mouse_filter = \
+		Control.MOUSE_FILTER_STOP if _ui_visible else Control.MOUSE_FILTER_IGNORE
+	$CanvasLayer/ZoomBar.mouse_filter = \
+		Control.MOUSE_FILTER_STOP if _ui_visible else Control.MOUSE_FILTER_IGNORE
+
 
 # ════════════════════════════════════════════
 #  SCROLL INDICATOR
@@ -273,7 +329,7 @@ func _update_scroll_indicator():
 
 
 # ════════════════════════════════════════════
-#  ZOOM
+#  ZOOM  (button-driven — smooth + scroll-preserving)
 # ════════════════════════════════════════════
 func _zoom_in():
 	if _zoom < MAX_ZOOM - 0.001:
@@ -292,23 +348,33 @@ func _do_zoom(new_zoom: float):
 		return
 	_zoom_busy = true
 
-	new_zoom = clamp(new_zoom, MIN_ZOOM, MAX_ZOOM)
+	new_zoom      = clamp(new_zoom, MIN_ZOOM, MAX_ZOOM)
+	var total_h   = panel_container.size.y
+	var ratio     = float(scroll_container.scroll_vertical) / max(total_h, 1.0)
 
-	# Save ratio before any change
-	var total_h = panel_container.size.y
-	var ratio   = float(scroll_container.scroll_vertical) / max(total_h, 1.0)
-
-	# Apply synchronously
 	_zoom = new_zoom
 	_refresh_zoom_ui()
 	_resize_all_panels()
 
-	# Wait for layout then restore scroll
 	await get_tree().process_frame
 	await get_tree().process_frame
 	scroll_container.scroll_vertical = int(ratio * panel_container.size.y)
 
 	_zoom_busy = false
+
+
+# Pinch zoom — applied every drag event, no async needed
+func _apply_zoom_immediate(new_zoom: float):
+	var total_h = panel_container.size.y
+	var ratio   = float(scroll_container.scroll_vertical) / max(total_h, 1.0)
+
+	_zoom = new_zoom
+	_refresh_zoom_ui()
+	_resize_all_panels()
+
+	# Restore proportional scroll position after one layout frame
+	await get_tree().process_frame
+	scroll_container.scroll_vertical = int(ratio * panel_container.size.y)
 
 
 func _refresh_zoom_ui():
@@ -342,8 +408,9 @@ func _resize_all_panels():
 #  VIEWPORT RESIZE / ROTATION
 # ════════════════════════════════════════════
 func _on_viewport_size_changed():
-	_resize_pending = true
-	_resize_timer   = 0.25   # seconds debounce
+	BASE_PANEL_WIDTH = get_viewport().get_visible_rect().size.x
+	_resize_pending  = true
+	_resize_timer    = 0.25
 
 
 func _rebuild_for_new_size():
@@ -380,12 +447,11 @@ func build_chapter():
 
 
 func _add_static_panel(entry: ChapterData.PanelEntry, index: int):
-	var pw           = _panel_width()
-	var rect         = TextureRect.new()
-	rect.name        = "Panel_" + str(index)
-	# Placeholder size until image loads (roughly manga aspect)
-	rect.custom_minimum_size       = Vector2(pw, pw * 1.45)
-	rect.size_flags_horizontal     = Control.SIZE_SHRINK_CENTER
+	var pw   = _panel_width()
+	var rect = TextureRect.new()
+	rect.name                  = "Panel_" + str(index)
+	rect.custom_minimum_size   = Vector2(pw, pw * 1.45)
+	rect.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	rect.set_meta("image_path", entry.image_path)
 	panel_container.add_child(rect)
 
@@ -402,14 +468,13 @@ func _add_playable_trigger_panel(entry: ChapterData.PanelEntry, index: int):
 	var already_done = GameData.is_game_completed(current_chapter, entry.game_index)
 
 	var trigger = preload("res://Scenes/PlayableTriggerPanel.tscn").instantiate()
-	trigger.name                    = "Playable_" + str(index)
-	trigger.size_flags_horizontal   = Control.SIZE_SHRINK_CENTER
-	trigger.custom_minimum_size.x   = _panel_width()
+	trigger.name                  = "Playable_" + str(index)
+	trigger.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	trigger.custom_minimum_size.x = _panel_width()
 	panel_container.add_child(trigger)
 	trigger.setup(entry.transition_text)
 
 	if already_done:
-		# Show as "Play Again" — still visible, just marked complete
 		trigger.set_play_again_mode()
 
 	trigger.play_pressed.connect(_on_play_pressed.bind(entry, index))
@@ -423,19 +488,26 @@ func _process_load_queue():
 		_is_loading = false
 		return
 
-	_is_loading  = true
-	var item     = _load_queue.pop_front()
+	_is_loading       = true
+	var item          = _load_queue.pop_front()
 	var rect: TextureRect = item["rect"]
 	var path: String      = item["path"]
 
-	# Yield one frame to keep UI responsive between loads
-	await get_tree().process_frame
+	ResourceLoader.load_threaded_request(path, "Texture2D")
 
-	if not is_instance_valid(rect):
-		_process_load_queue()
-		return
+	while true:
+		var status = ResourceLoader.load_threaded_get_status(path)
+		if status == ResourceLoader.THREAD_LOAD_LOADED:
+			break
+		elif status == ResourceLoader.THREAD_LOAD_FAILED \
+		  or status == ResourceLoader.THREAD_LOAD_INVALID_RESOURCE:
+			push_error("Failed to load image: " + path)
+			_process_load_queue()
+			return
+		await get_tree().process_frame
 
-	var texture = ResourceLoader.load(path, "Texture2D")
+	var texture = ResourceLoader.load_threaded_get(path)
+
 	if is_instance_valid(rect):
 		_apply_texture(rect, texture)
 
@@ -447,12 +519,11 @@ func _apply_texture(rect: TextureRect, texture: Texture2D):
 		return
 	var pw     = _panel_width()
 	var aspect = float(texture.get_height()) / float(texture.get_width())
-	rect.texture              = texture
-	# KEEP_ASPECT_CENTERED ensures no stretching — letterboxes if aspect differs
-	rect.stretch_mode         = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-	rect.expand_mode          = TextureRect.EXPAND_IGNORE_SIZE
-	rect.size                 = Vector2(pw, pw * aspect)
-	rect.custom_minimum_size  = rect.size
+	rect.texture               = texture
+	rect.stretch_mode          = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	rect.expand_mode           = TextureRect.EXPAND_IGNORE_SIZE
+	rect.size                  = Vector2(pw, pw * aspect)
+	rect.custom_minimum_size   = rect.size
 	rect.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 
 
@@ -477,23 +548,16 @@ func smooth_scroll_to(target_y: float):
 func _on_play_pressed(entry: ChapterData.PanelEntry, panel_index: int):
 	saved_scroll_position = scroll_container.scroll_vertical
 	GameData.save_chapter_progress(current_chapter, saved_scroll_position)
-
-	# Record that this segment was launched (timestamps + play_count)
 	GameData.record_segment_played(current_chapter, entry.game_index)
-
-	# Achievement: first ever segment launch
 	AchievementManager.on_segment_played(current_chapter, entry.game_index)
 
-	TransitionManager.current_panel_index = panel_index
-	TransitionManager.current_game_index  = entry.game_index
-	TransitionManager.current_coins_reward = entry.coins_reward
+	TransitionManager.current_panel_index   = panel_index
+	TransitionManager.current_game_index    = entry.game_index
+	TransitionManager.current_coins_reward  = entry.coins_reward
 	TransitionManager.start_game_segment(entry.playable_scene, self)
 
 
 func restore_scroll_only():
-	# Called by TransitionManager when player presses "Back to Story"
-	# WITHOUT completing the game. No coins, no panel changes, no banners.
-	# Just silently restore scroll to where it was before the game launched.
 	await _wait_for_layout()
 	scroll_container.scroll_vertical = int(saved_scroll_position)
 	print("Back to story — restored scroll to: ", saved_scroll_position)
@@ -503,38 +567,32 @@ func advance_past_playable():
 	var panel_index  = TransitionManager.current_panel_index
 	var game_index   = TransitionManager.current_game_index
 	var coins_reward = TransitionManager.current_coins_reward
-	var time_taken   = TransitionManager.last_segment_time   # seconds in level (0 if unknown)
+	var time_taken   = TransitionManager.last_segment_time
 
 	var was_chapter_done = GameData.is_chapter_fully_completed(current_chapter)
 	var first_time_game  = not GameData.is_game_completed(current_chapter, game_index)
 
-	# Single call: marks completed, awards coins (first time only), saves everything
 	var coins_awarded = GameData.record_segment_completed(current_chapter, game_index, coins_reward)
 
-	# Show banner and trigger coin achievements only when coins were actually awarded
 	if coins_awarded > 0:
 		_show_segment_banner(current_chapter, game_index, coins_awarded)
 		AchievementManager.on_coins_changed()
 
 	coin_label.text = str(GameData.data.coins)
 
-	# Segment-based achievements (pass time_taken for speedrun check)
 	if first_time_game:
 		AchievementManager.on_segment_completed(current_chapter, game_index, time_taken)
 
-	# Switch trigger panel to "Play Again"
 	for child in panel_container.get_children():
 		if child.name == "Playable_" + str(panel_index):
 			if child.has_method("set_play_again_mode"):
 				child.set_play_again_mode()
 			break
 
-	# Chapter fully done?
 	if GameData.check_chapter_complete(current_chapter, total_games):
 		if not was_chapter_done:
 			_on_chapter_fully_completed()
 
-	# Restore scroll to where game launched from
 	await _wait_for_layout()
 	scroll_container.scroll_vertical = int(saved_scroll_position)
 
@@ -553,17 +611,13 @@ func _scroll_to_next_panel_after(panel_index: int):
 #  CHAPTER COMPLETION
 # ════════════════════════════════════════════
 func _on_chapter_fully_completed():
-	# Unlock next chapter — coins come from game segments, not chapter completion
 	GameData.unlock_chapter(current_chapter + 1)
 	next_btn.disabled = false
-	# Chapter-clear achievement is handled inside on_segment_completed
-	# (AchievementManager checks chapter completion state after every segment)
 
 
-# Shows which game segment was just completed and how many coins were earned.
 func _show_segment_banner(chapter: int, game_index: int, coins_awarded: int):
 	var defs = ChapterData.get_playable_definitions(chapter)
-	var segment_name = "Game %d" % (game_index + 1)  # fallback
+	var segment_name = "Game %d" % (game_index + 1)
 	for d in defs:
 		if d.game_index == game_index:
 			segment_name = d.text
@@ -571,13 +625,10 @@ func _show_segment_banner(chapter: int, game_index: int, coins_awarded: int):
 	_show_banner("✅  %s\n+%d 🪙 coins earned!" % [segment_name, coins_awarded], 22, 2.5)
 
 
-# No coins for chapter — just quietly unlocks next chapter.
-# _show_completion_banner no longer called, kept in case needed later.
 func _show_completion_banner():
 	pass
 
 
-# Generic animated banner — reused by both banner types.
 func _show_banner(msg: String, font_size: int, hold_sec: float):
 	var canvas = CanvasLayer.new()
 	canvas.layer = 10
@@ -588,10 +639,10 @@ func _show_banner(msg: String, font_size: int, hold_sec: float):
 	canvas.add_child(panel)
 
 	var mg = MarginContainer.new()
-	mg.add_theme_constant_override("margin_left",  20)
-	mg.add_theme_constant_override("margin_right", 20)
-	mg.add_theme_constant_override("margin_top",   12)
-	mg.add_theme_constant_override("margin_bottom",12)
+	mg.add_theme_constant_override("margin_left",   20)
+	mg.add_theme_constant_override("margin_right",  20)
+	mg.add_theme_constant_override("margin_top",    12)
+	mg.add_theme_constant_override("margin_bottom", 12)
 	panel.add_child(mg)
 
 	var label = Label.new()
@@ -609,9 +660,7 @@ func _show_banner(msg: String, font_size: int, hold_sec: float):
 	canvas.queue_free()
 
 
-# ════════════════════════════════════════════
-#  NAVIGATION
-# ════════════════════════════════════════════
+
 func save_progress():
 	GameData.save_chapter_progress(current_chapter, scroll_container.scroll_vertical)
 
