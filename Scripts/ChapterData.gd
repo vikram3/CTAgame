@@ -6,6 +6,8 @@ enum PanelType { STATIC, PLAYABLE }
 
 const PANEL_WIDTH = 720.0
 
+const PROTO_LEVEL = "res://Scenes/Environments/Proto_Levels/proto_level.tscn"
+
 # ── PAGE COUNTS (real asset counts) ──────────────────────────────────────────
 const CHAPTER_PAGE_COUNTS = {
 	1: 19,
@@ -62,13 +64,13 @@ static func get_chapter(num: int) -> Array:
 
 	var page_count    = CHAPTER_PAGE_COUNTS[num]
 	var playable_defs = ChapterData.get_playable_definitions(num)
-	var scene         = "res://Scenes/Environments/Proto_Levels/proto_level.tscn"
 
 	for page in range(1, page_count + 1):
 		for pd in playable_defs:
 			if pd.before_page == page:
 				panels.append(PanelEntry.new(
-					PanelType.PLAYABLE, "", scene,
+					PanelType.PLAYABLE, "",
+					pd.get("scene", PROTO_LEVEL),
 					pd.text, pd.game_index, pd.coins_reward
 				))
 		var path = ChapterData.get_page_path(num, page)
@@ -78,7 +80,8 @@ static func get_chapter(num: int) -> Array:
 	for pd in playable_defs:
 		if pd.before_page > page_count:
 			panels.append(PanelEntry.new(
-				PanelType.PLAYABLE, "", scene,
+				PanelType.PLAYABLE, "",
+				pd.get("scene", PROTO_LEVEL),
 				pd.text, pd.game_index, pd.coins_reward
 			))
 
@@ -90,14 +93,14 @@ static func get_page_path(chapter: int, page: int) -> String:
 	var page_str = str(page).pad_zeros(2)
 	var base = ""
 	match chapter:
-		1: base = "res://Assets/webtoon/ch1/ch1_"  + page_str
-		2: base = "res://Assets/webtoon/ch2/ch2_"  + page_str
-		3: base = "res://Assets/webtoon/ch3/ch3_"  + page_str
-		4: base = "res://Assets/webtoon/ch4/ch4_"  + page_str
-		5: base = "res://Assets/webtoon/ch5/ch5_"  + page_str
-		6: base = "res://Assets/webtoon/ch6/ch6_"  + page_str
-		7: base = "res://Assets/webtoon/ch7/ch7_"  + page_str
-		8: base = "res://Assets/webtoon/ch8/ch8_"  + page_str
+		1: base = "res://Assets/webtoon/ch1/" + page_str
+		2: base = "res://Assets/webtoon/ch2/ch2_" + page_str
+		3: base = "res://Assets/webtoon/ch3/ch3_" + page_str
+		4: base = "res://Assets/webtoon/ch4/ch4_" + page_str
+		5: base = "res://Assets/webtoon/ch5/ch5_" + page_str
+		6: base = "res://Assets/webtoon/ch6/ch6_" + page_str
+		7: base = "res://Assets/webtoon/ch7/ch7_" + page_str
+		8: base = "res://Assets/webtoon/ch8/ch8_" + page_str
 		_:
 			push_error("ChapterData: No path pattern for chapter %d" % chapter)
 			return ""
@@ -122,22 +125,18 @@ static func get_total_chapters() -> int:
 # ─────────────────────────────────────────────────────────────────────────────
 #  GAME SEGMENT DEFINITIONS  —  Chapters 1–8
 #
-#  Source: Chapter 1–8 Game Segment Design Document
-#
-#  before_page values are proportionally scaled to real page counts.
-#  PDF ratios shown in comments for reference: pdf_before / pdf_total → new_before / real_total
-#
 #  Each entry:
 #    before_page   → trigger panel inserted just BEFORE this real page number
 #    text          → narrative teaser shown on the PlayableTriggerPanel
 #    game_index    → 0-based index within the chapter (save key)
 #    coins_reward  → coins awarded on FIRST successful completion only
+#    scene         → scene path for this segment (swap out PROTO_LEVEL when ready)
 # ─────────────────────────────────────────────────────────────────────────────
 static func get_playable_definitions(chapter: int) -> Array:
 	match chapter:
 
 		# ══════════════════════════════════════════════════════════════════════
-		# CHAPTER 1  |  2 segments  |  19 real pages  (pdf: 37 pages)
+		# CHAPTER 1  |  2 segments  |  19 real pages
 		#
 		# Story beats:
 		#   Pages  1–6   CT sneaks through bush maze, grabs coins, dodges skulls
@@ -148,7 +147,6 @@ static func get_playable_definitions(chapter: int) -> Array:
 		# ══════════════════════════════════════════════════════════════════════
 		1: return [
 			{
-				# pdf: before_page=7 / 37 pages (ratio 0.19) → real: 4 / 19
 				# Type      : Light platforming, coin collecting, slow skull patrol
 				# Character : CT
 				# NPCs      : Skull enemies (fixed patrol, contact damage)
@@ -160,9 +158,9 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "Time to grab those coins before anyone notices...",
 				"game_index":   0,
 				"coins_reward": 30,
+				"scene":        PROTO_LEVEL, # TODO: replace with hedge maze scene
 			},
 			{
-				# pdf: before_page=24 / 37 pages (ratio 0.65) → real: 12 / 19
 				# Type      : Timed chase, obstacle dodging, enemy combat
 				# Character : CT  |  Rival as background silhouette
 				# NPCs      : Faster skulls, 1 Elite Skull blocking path
@@ -174,11 +172,12 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "Those coins are MINE — gotta beat him there!",
 				"game_index":   1,
 				"coins_reward": 30,
+				"scene":        PROTO_LEVEL, # TODO: replace with timed chase scene
 			},
 		]
 
 		# ══════════════════════════════════════════════════════════════════════
-		# CHAPTER 2  |  3 segments  |  34 real pages  (pdf: 50 pages)
+		# CHAPTER 2  |  3 segments  |  34 real pages
 		#
 		# Story beats:
 		#   Pages  1–5   World goes online — shadow avatars flood in, title page
@@ -189,7 +188,6 @@ static func get_playable_definitions(chapter: int) -> Array:
 		# ══════════════════════════════════════════════════════════════════════
 		2: return [
 			{
-				# pdf: before_page=9 / 50 pages (ratio 0.18) → real: 6 / 34
 				# Type      : Coin collecting + obstacle dodging (chaotic open map)
 				# Character : CT
 				# NPCs      : Shadow Avatars — spawn flash 2 sec before, shockwave
@@ -200,9 +198,9 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "New players flooding in... better grab what I can before it gets crazy!",
 				"game_index":   0,
 				"coins_reward": 35,
+				"scene":        PROTO_LEVEL, # TODO: replace with shadow avatar arena scene
 			},
 			{
-				# pdf: before_page=14 / 50 pages (ratio 0.28) → real: 10 / 34
 				# Type      : Pure survival — dodge Big Boss sword slashes + shockwaves
 				# Character : CT
 				# NPCs      : Big Boss (non-killable) — horizontal slash + ground slam,
@@ -214,9 +212,9 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "Big Boss is coming — MOVE!",
 				"game_index":   1,
 				"coins_reward": 35,
+				"scene":        PROTO_LEVEL, # TODO: replace with circular arena scene
 			},
 			{
-				# pdf: before_page=34 / 50 pages (ratio 0.68) → real: 23 / 34
 				# Type      : Wave defense — fight skull reinforcements in 3 waves
 				# Character : CT
 				# NPCs      : Skull reinforcements — 3 escalating waves
@@ -228,11 +226,12 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "She's holding her own... but Big Boss has one more trick!",
 				"game_index":   2,
 				"coins_reward": 35,
+				"scene":        PROTO_LEVEL, # TODO: replace with wave defense corridor scene
 			},
 		]
 
 		# ══════════════════════════════════════════════════════════════════════
-		# CHAPTER 3  |  2 segments  |  22 real pages  (pdf: 44 pages)
+		# CHAPTER 3  |  2 segments  |  22 real pages
 		#
 		# Story beats:
 		#   Pages  1–4   Alex & Felix flying machine; Felix ejected into forest
@@ -243,7 +242,6 @@ static func get_playable_definitions(chapter: int) -> Array:
 		# ══════════════════════════════════════════════════════════════════════
 		3: return [
 			{
-				# pdf: before_page=18 / 44 pages (ratio 0.41) → real: 9 / 22
 				# Type      : Obstacle dodging + enemy combat (narrow cliff platforms)
 				# Character : CT
 				# NPCs      : Horn (non-killable, charge attack, knockback)
@@ -255,9 +253,9 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "Better snap out of it... something doesn't feel right.",
 				"game_index":   0,
 				"coins_reward": 35,
+				"scene":        PROTO_LEVEL, # TODO: replace with cliff platform scene
 			},
 			{
-				# pdf: before_page=34 / 44 pages (ratio 0.77) → real: 17 / 22
 				# Type      : Exploration + coin collecting (new forest biome)
 				# Character : CT  |  Felix (AI companion — follows, idle comments)
 				# NPCs      : Light forest enemies (minimal)
@@ -268,11 +266,12 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "Alright Flex, lead the way — but watch out for what's in these woods!",
 				"game_index":   1,
 				"coins_reward": 35,
+				"scene":        PROTO_LEVEL, # TODO: replace with open forest scene
 			},
 		]
 
 		# ══════════════════════════════════════════════════════════════════════
-		# CHAPTER 4  |  2 segments  |  18 real pages  (pdf: 30 pages)
+		# CHAPTER 4  |  2 segments  |  18 real pages
 		#
 		# Story beats:
 		#   Pages  1–4   Horn dives after CT; Sword follows via stairs
@@ -285,7 +284,6 @@ static func get_playable_definitions(chapter: int) -> Array:
 		# ══════════════════════════════════════════════════════════════════════
 		4: return [
 			{
-				# pdf: before_page=11 / 30 pages (ratio 0.37) → real: 7 / 18
 				# Type      : Auto-scrolling chase (left-to-right) + obstacle dodging
 				# Character : CT  |  Felix (runs alongside)
 				# NPCs      : Projectile enemies, Horn in background
@@ -296,9 +294,9 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "Horn is somewhere in these woods... keep moving!",
 				"game_index":   0,
 				"coins_reward": 40,
+				"scene":        PROTO_LEVEL, # TODO: replace with auto-scroll forest scene
 			},
 			{
-				# pdf: before_page=17 / 30 pages (ratio 0.57) → real: 10 / 18
 				# Type      : Enemy combat + puzzle (apply type-weakness system)
 				# Character : CT  |  Felix (combat advisor)
 				# Enemies   : Tank type (slow, high HP)
@@ -310,11 +308,12 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "A Barreldugo! Flex says get close — let's try it!",
 				"game_index":   1,
 				"coins_reward": 40,
+				"scene":        PROTO_LEVEL, # TODO: replace with type-weakness combat scene
 			},
 		]
 
 		# ══════════════════════════════════════════════════════════════════════
-		# CHAPTER 5  |  2 segments  |  24 real pages  (pdf: 42 pages)
+		# CHAPTER 5  |  2 segments  |  24 real pages
 		#
 		# Story beats:
 		#   Pages  1–6   Queen intercepts armored bulls chasing Alex; bulls retreat
@@ -325,8 +324,6 @@ static func get_playable_definitions(chapter: int) -> Array:
 		# ══════════════════════════════════════════════════════════════════════
 		5: return [
 			{
-				# pdf: before_page=1 / 42 pages (ratio 0.02) → real: 1 / 24
-				# Hot-open from Ch4 cliffhanger — fires before the very first page
 				# Type      : Obstacle dodging + enemy combat
 				# Character : CT (ground level watching chaos)
 				# Background: Queen fighting main bull boss, Alex present
@@ -337,10 +334,9 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "The Queen stepped in — but those bulls aren't done yet!",
 				"game_index":   0,
 				"coins_reward": 40,
+				"scene":        PROTO_LEVEL, # TODO: replace with bull charge arena scene
 			},
 			{
-				# pdf: before_page=42 / 42 pages (ratio 1.00) → real: 24 / 24
-				# Fires just before the final page — duel cliffhanger setup
 				# Type      : Enemy combat + coin collecting (warm-up before duel)
 				# Character : CT
 				# Present   : Alex, Felix, Lala on deck, crowd hyped
@@ -351,11 +347,12 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "Alex accepted the duel... somebody's gotta warm up for him!",
 				"game_index":   1,
 				"coins_reward": 40,
+				"scene":        PROTO_LEVEL, # TODO: replace with ship deck combat scene
 			},
 		]
 
 		# ══════════════════════════════════════════════════════════════════════
-		# CHAPTER 6  |  2 segments  |  26 real pages  (pdf: 44 pages)
+		# CHAPTER 6  |  2 segments  |  26 real pages
 		#
 		# Story beats:
 		#   Pages  1–5   Big Boss recovers; rages; vows revenge
@@ -366,7 +363,6 @@ static func get_playable_definitions(chapter: int) -> Array:
 		# ══════════════════════════════════════════════════════════════════════
 		6: return [
 			{
-				# pdf: before_page=20 / 44 pages (ratio 0.45) → real: 12 / 26
 				# Type      : Obstacle dodging + enemy combat (close-range boss fight)
 				# Character : ALEX  ← plays as Alex, not CT — unique segment
 				# NPCs      : Big Bird (boss) — boomerang projectile tracking,
@@ -380,10 +376,9 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "Big Bird went straight for projectiles — dodge and get close!",
 				"game_index":   0,
 				"coins_reward": 45,
+				"scene":        PROTO_LEVEL, # TODO: replace with Big Bird boss fight scene
 			},
 			{
-				# pdf: before_page=44 / 44 pages (ratio 1.00) → real: 26 / 26
-				# Fires just before the final page — baton comeback cliffhanger
 				# Type      : Coin collecting + obstacle dodging (emotional low point)
 				# Character : CT (crowd area, frantic scavenge)
 				# Present   : Alex (on one knee, injured)
@@ -394,11 +389,12 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "Alex is on one knee... he's not done yet. Neither are we!",
 				"game_index":   1,
 				"coins_reward": 45,
+				"scene":        PROTO_LEVEL, # TODO: replace with debris dodge scene
 			},
 		]
 
 		# ══════════════════════════════════════════════════════════════════════
-		# CHAPTER 7  |  2 segments  |  18 real pages  (pdf: 32 pages)
+		# CHAPTER 7  |  2 segments  |  18 real pages
 		#
 		# Story beats:
 		#   Pages  1–6   Alex baton comeback; combos Big Bird; wins; crowd wild
@@ -409,7 +405,6 @@ static func get_playable_definitions(chapter: int) -> Array:
 		# ══════════════════════════════════════════════════════════════════════
 		7: return [
 			{
-				# pdf: before_page=11 / 32 pages (ratio 0.34) → real: 6 / 18
 				# Type      : Coin collecting + exploration (celebratory rush)
 				# Character : CT
 				# Present   : Alex & Felix selling items on ship deck at night
@@ -421,9 +416,9 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "Alex won! Now the coins are flowing — grab what you can!",
 				"game_index":   0,
 				"coins_reward": 45,
+				"scene":        PROTO_LEVEL, # TODO: replace with ship deck celebration scene
 			},
 			{
-				# pdf: before_page=23 / 32 pages (ratio 0.72) → real: 13 / 18
 				# Type      : Obstacle dodging + puzzle (tilting ship survival)
 				# Character : CT
 				# Background: Queen performing emergency rescue
@@ -436,11 +431,12 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "The ship is going DOWN — hold on and get to safety!",
 				"game_index":   1,
 				"coins_reward": 45,
+				"scene":        PROTO_LEVEL, # TODO: replace with tilting ship scene
 			},
 		]
 
 		# ══════════════════════════════════════════════════════════════════════
-		# CHAPTER 8  |  3 segments  |  26 real pages  (pdf: 41 pages)
+		# CHAPTER 8  |  3 segments  |  26 real pages
 		#
 		# Story beats:
 		#   Pages  1–7   Diskoreck cold open — extorts desert town, rides off
@@ -452,7 +448,6 @@ static func get_playable_definitions(chapter: int) -> Array:
 		# ══════════════════════════════════════════════════════════════════════
 		8: return [
 			{
-				# pdf: before_page=12 / 41 pages (ratio 0.29) → real: 8 / 26
 				# Type      : Exploration + coin collecting (new desert biome intro)
 				# Character : CT  |  No active characters present
 				# Mechanics : Sand slows movement; collapsing ruins; hidden coin piles
@@ -462,9 +457,9 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "Welcome to Sand Land... and it does NOT look friendly.",
 				"game_index":   0,
 				"coins_reward": 50,
+				"scene":        PROTO_LEVEL, # TODO: replace with desert exploration scene
 			},
 			{
-				# pdf: before_page=33 / 41 pages (ratio 0.80) → real: 21 / 26
 				# Type      : Coin collecting + obstacle dodging (frantic scramble)
 				# Character : CT
 				# Present   : Mayor (cutscene only), Lala (non-playable, mouth sealed)
@@ -475,10 +470,9 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "I signed WHAT?! Gotta do something — find those coins first!",
 				"game_index":   1,
 				"coins_reward": 50,
+				"scene":        PROTO_LEVEL, # TODO: replace with quicksand trap scene
 			},
 			{
-				# pdf: before_page=41 / 41 pages (ratio 1.00) → real: 26 / 26
-				# Fires just before the final page — wormfish cliffhanger
 				# Type      : Chase + obstacle dodging (pure panic sprint)
 				# Character : CT
 				# NPCs      : Sand Wormfish (chase AI — erupts from sand behind player)
@@ -489,6 +483,7 @@ static func get_playable_definitions(chapter: int) -> Array:
 				"text":         "A sand wormfish?! Everyone scatter!",
 				"game_index":   2,
 				"coins_reward": 50,
+				"scene":        PROTO_LEVEL, # TODO: replace with wormfish chase scene
 			},
 		]
 
