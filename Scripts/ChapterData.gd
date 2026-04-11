@@ -10,7 +10,7 @@ const PROTO_LEVEL = "res://Scenes/Environments/Proto_Levels/proto_level.tscn"
 
 # ── PAGE COUNTS (real asset counts) ──────────────────────────────────────────
 const CHAPTER_PAGE_COUNTS = {
-	1: 19,
+	1: 85,
 	2: 34,
 	3: 22,
 	4: 18,
