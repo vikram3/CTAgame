@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=4 uid="uid://c5wvuxmxhqdtv"]
+[gd_scene load_steps=19 format=4 uid="uid://c5wvuxmxhqdtv"]
 
 [ext_resource type="Texture2D" uid="uid://d01xp86ncl5w5" path="res://Main/Assets/Video game/Backrounds/1.png" id="1_mndx4"]
 [ext_resource type="Texture2D" uid="uid://d12isvbycybdx" path="res://Main/Assets/Video game/Backrounds/2.png" id="2_5dg3n"]
@@ -14,7 +14,7 @@
 [ext_resource type="Texture2D" uid="uid://d37wqccnm1q7o" path="res://Main/Assets/Video game/Backrounds/12.png" id="12_5lemw"]
 [ext_resource type="PackedScene" uid="uid://b8u54nwif8s4d" path="res://Scenes/Characters/Player/player.tscn" id="13_x6v1v"]
 [ext_resource type="PackedScene" uid="uid://d05pgtiygcxgi" path="res://Scenes/Camera/cam_root.tscn" id="14_x6v1v"]
-[ext_resource type="Script" uid="uid://6yoxh44m7caa" path="res://Main/Utility/Tutorial_Manager/tutorial_manager.gd" id="16_oe4t1"]
+[ext_resource type="PackedScene" uid="uid://1hqvs8htbom0" path="res://Main/Scenes/Enemies/1/enemy_troll_1.tscn" id="15_ou0oy"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ou0oy"]
 texture = ExtResource("12_5lemw")
@@ -286,9 +286,6 @@ sources/2 = SubResource("TileSetAtlasSource_ou0oy")
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_x6v1v"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_k8et8"]
-size = Vector2(25, 1)
-
 [node name="Scene" type="Node2D"]
 
 [node name="Background" type="Node2D" parent="."]
@@ -352,141 +349,7 @@ visible = true
 [node name="CollisionShape2D" parent="Cam_Root/Dead_Zone" index="0"]
 shape = SubResource("RectangleShape2D_x6v1v")
 
-[node name="right" type="Node2D" parent="." node_paths=PackedStringArray("label")]
-position = Vector2(300.09, 205.43)
-script = ExtResource("16_oe4t1")
-action_name = "right"
-completion_count = 10
-label = NodePath("Label")
-
-[node name="Tutorial_Trigger" type="Area2D" parent="right"]
-collision_layer = 0
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="right/Tutorial_Trigger"]
-shape = SubResource("RectangleShape2D_k8et8")
-
-[node name="Label" type="Label" parent="right"]
-offset_left = -68.09
-offset_top = -149.43
-offset_right = 60.910004
-offset_bottom = -126.42999
-text = "lkcslcvmllsvlsmb"
-
-[node name="left" type="Node2D" parent="." node_paths=PackedStringArray("label")]
-position = Vector2(324.775, 205.43)
-script = ExtResource("16_oe4t1")
-action_name = "left"
-completion_count = 10
-label = NodePath("Label")
-
-[node name="Tutorial_Trigger" type="Area2D" parent="left"]
-collision_layer = 0
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="left/Tutorial_Trigger"]
-shape = SubResource("RectangleShape2D_k8et8")
-
-[node name="Label" type="Label" parent="left"]
-offset_left = -68.09
-offset_top = -149.43
-offset_right = 60.910004
-offset_bottom = -126.42999
-text = "lkcslcvmllsvlsmb"
-
-[node name="jump" type="Node2D" parent="." node_paths=PackedStringArray("label")]
-position = Vector2(381.18, 205.43)
-script = ExtResource("16_oe4t1")
-action_name = "jump"
-completion_count = 1
-one_shot_input = true
-label = NodePath("Label")
-
-[node name="Tutorial_Trigger" type="Area2D" parent="jump"]
-collision_layer = 0
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="jump/Tutorial_Trigger"]
-shape = SubResource("RectangleShape2D_k8et8")
-
-[node name="Label" type="Label" parent="jump"]
-offset_left = -68.09
-offset_top = -149.43
-offset_right = 60.910004
-offset_bottom = -126.42999
-text = "lkcslcvmllsvlsmb"
-
-[node name="double_jump" type="Node2D" parent="." node_paths=PackedStringArray("label")]
-position = Vector2(510.3, 205.43)
-script = ExtResource("16_oe4t1")
-action_name = "jump"
-completion_count = 2
-one_shot_input = true
-label = NodePath("Label")
-
-[node name="Tutorial_Trigger" type="Area2D" parent="double_jump"]
-collision_layer = 0
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="double_jump/Tutorial_Trigger"]
-shape = SubResource("RectangleShape2D_k8et8")
-
-[node name="Label" type="Label" parent="double_jump"]
-offset_left = -68.09
-offset_top = -149.43
-offset_right = 60.910004
-offset_bottom = -126.42999
-text = "lkcslcvmllsvlsmb"
-
-[node name="attack" type="Node2D" parent="." node_paths=PackedStringArray("label")]
-position = Vector2(637.255, 205.43)
-script = ExtResource("16_oe4t1")
-action_name = "Attack"
-completion_count = 1
-one_shot_input = true
-label = NodePath("Label")
-
-[node name="Tutorial_Trigger" type="Area2D" parent="attack"]
-collision_layer = 0
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="attack/Tutorial_Trigger"]
-shape = SubResource("RectangleShape2D_k8et8")
-
-[node name="Label" type="Label" parent="attack"]
-offset_left = -68.09
-offset_top = -149.43
-offset_right = 60.910004
-offset_bottom = -126.42999
-text = "lkcslcvmllsvlsmb"
-
-[node name="combo_attack" type="Node2D" parent="." node_paths=PackedStringArray("label")]
-position = Vector2(700, 205.43)
-script = ExtResource("16_oe4t1")
-action_name = "Attack"
-completion_count = 3
-one_shot_input = true
-label = NodePath("Label")
-
-[node name="Tutorial_Trigger" type="Area2D" parent="combo_attack"]
-collision_layer = 0
-collision_mask = 2
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="combo_attack/Tutorial_Trigger"]
-shape = SubResource("RectangleShape2D_k8et8")
-
-[node name="Label" type="Label" parent="combo_attack"]
-offset_left = -68.09
-offset_top = -149.43
-offset_right = 60.910004
-offset_bottom = -126.42999
-text = "lkcslcvmllsvlsmb"
-
-[connection signal="body_entered" from="right/Tutorial_Trigger" to="right" method="_on_tutorial_trigger_body_entered"]
-[connection signal="body_entered" from="left/Tutorial_Trigger" to="left" method="_on_tutorial_trigger_body_entered"]
-[connection signal="body_entered" from="jump/Tutorial_Trigger" to="jump" method="_on_tutorial_trigger_body_entered"]
-[connection signal="body_entered" from="double_jump/Tutorial_Trigger" to="double_jump" method="_on_tutorial_trigger_body_entered"]
-[connection signal="body_entered" from="attack/Tutorial_Trigger" to="attack" method="_on_tutorial_trigger_body_entered"]
-[connection signal="body_entered" from="combo_attack/Tutorial_Trigger" to="combo_attack" method="_on_tutorial_trigger_body_entered"]
+[node name="enemy_troll_1" parent="." instance=ExtResource("15_ou0oy")]
+position = Vector2(468, 198)
 
 [editable path="Cam_Root"]

@@ -1,0 +1,234 @@
+[gd_scene load_steps=22 format=3 uid="uid://1hqvs8htbom0"]
+
+[ext_resource type="Script" uid="uid://busq221y5gy6j" path="res://Main/Scenes/Enemies/1/enemy_troll_1.gd" id="1_1rmbk"]
+[ext_resource type="Script" uid="uid://couw105c3bde4" path="res://addons/godot_state_charts/state_chart.gd" id="1_onpf3"]
+[ext_resource type="Script" uid="uid://d35mic0p54i65" path="res://Scenes/Stats/Stats.gd" id="2_2ln0i"]
+[ext_resource type="Script" uid="uid://jk2jm1g6q853" path="res://addons/godot_state_charts/compound_state.gd" id="2_j2piq"]
+[ext_resource type="Script" uid="uid://cytafq8i1y8qm" path="res://addons/godot_state_charts/atomic_state.gd" id="3_1rmbk"]
+[ext_resource type="Script" uid="uid://ba0i3u40ltfdw" path="res://Scripts/Stats_Resource.gd" id="3_t3pbw"]
+[ext_resource type="PackedScene" uid="uid://dg6wi0x66ov55" path="res://Scenes/HitBox_and_HurtBox/HitBox/hit_box.tscn" id="4_t3pbw"]
+[ext_resource type="Script" uid="uid://cf1nsco3w0mf6" path="res://addons/godot_state_charts/transition.gd" id="5_7ggcx"]
+[ext_resource type="PackedScene" uid="uid://bs4p61rtgmos4" path="res://Scenes/HitBox_and_HurtBox/HurtBox/Hurt_Box.tscn" id="5_ahriw"]
+[ext_resource type="Script" uid="uid://b3v6i0na5siu5" path="res://Main/Scenes/Enemies/1/States/state_manager.gd" id="9_fk0de"]
+[ext_resource type="Script" uid="uid://0ugfst0wqg7l" path="res://Main/Scenes/Enemies/1/States/Substates/petrol.gd" id="10_f1d2f"]
+[ext_resource type="Script" uid="uid://2bbw88m100x8" path="res://Main/Scenes/Enemies/1/States/Substates/chase.gd" id="11_7ggcx"]
+[ext_resource type="Script" uid="uid://bpi1yor3lsepm" path="res://Main/Scenes/Enemies/1/States/Substates/attack.gd" id="12_v76b3"]
+[ext_resource type="Script" uid="uid://v781qpm43ufu" path="res://Main/Scenes/Enemies/1/States/Substates/hurt.gd" id="13_wnvo6"]
+[ext_resource type="Script" uid="uid://d4fepd7ifiggm" path="res://Main/Scenes/Enemies/1/States/Substates/death.gd" id="14_ijau7"]
+[ext_resource type="PackedScene" uid="uid://bcwkugn6v3oy7" path="res://addons/godot_state_charts/utilities/state_chart_debugger.tscn" id="16_v76b3"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_272we"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j2piq"]
+size = Vector2(10, 20)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1rmbk"]
+size = Vector2(8, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ahriw"]
+size = Vector2(8, 16)
+
+[sub_resource type="Resource" id="Resource_j2piq"]
+script = ExtResource("3_t3pbw")
+max_health = 100.0
+defense = 20.0
+max_energy = 30.0
+damage = 40.0
+base_damage = 10.0
+crit_chance = 0.2
+crit_damage = 3.0
+metadata/_custom_type_script = "uid://ba0i3u40ltfdw"
+
+[node name="enemy_troll_1" type="CharacterBody2D" node_paths=PackedStringArray("stats", "body", "sight")]
+script = ExtResource("1_1rmbk")
+stats = NodePath("Stats")
+body = NodePath("body")
+sight = NodePath("body/RayCast2D")
+
+[node name="body" type="MeshInstance2D" parent="."]
+position = Vector2(-3.75, 0)
+scale = Vector2(8.5, 16)
+mesh = SubResource("BoxMesh_272we")
+
+[node name="RayCast2D" type="RayCast2D" parent="body"]
+position = Vector2(1, 0)
+scale = Vector2(0.11764706, 0.0625)
+target_position = Vector2(0, 14.625)
+
+[node name="Hit_Box" parent="body" node_paths=PackedStringArray("main_body") instance=ExtResource("4_t3pbw")]
+position = Vector2(0.44117647, 0)
+scale = Vector2(0.11764706, 0.0625)
+main_body = NodePath("../..")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="body/Hit_Box"]
+position = Vector2(-16, 0)
+shape = SubResource("RectangleShape2D_j2piq")
+debug_color = Color(0.99754125, 0, 0.17366716, 0.41960785)
+
+[node name="HurtBox" parent="body" instance=ExtResource("5_ahriw")]
+position = Vector2(0.44117647, 0)
+scale = Vector2(0.11764706, 0.0625)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="body/HurtBox"]
+position = Vector2(-4, 0)
+shape = SubResource("RectangleShape2D_1rmbk")
+debug_color = Color(0, 0.64433235, 0.28904206, 0.41960785)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(-4, 0)
+shape = SubResource("RectangleShape2D_ahriw")
+
+[node name="StateChart" type="Node" parent="."]
+script = ExtResource("1_onpf3")
+metadata/_custom_type_script = "uid://couw105c3bde4"
+
+[node name="root" type="Node" parent="StateChart"]
+script = ExtResource("2_j2piq")
+initial_state = NodePath("patrol")
+
+[node name="patrol" type="Node" parent="StateChart/root"]
+script = ExtResource("3_1rmbk")
+
+[node name="chase" type="Node" parent="StateChart/root/patrol"]
+script = ExtResource("5_7ggcx")
+to = NodePath("../../chase")
+event = &"chase"
+delay_in_seconds = "0.0"
+
+[node name="attack" type="Node" parent="StateChart/root/patrol"]
+script = ExtResource("5_7ggcx")
+to = NodePath("../../attack")
+event = &"attack"
+delay_in_seconds = "0.0"
+
+[node name="hurt" type="Node" parent="StateChart/root/patrol"]
+script = ExtResource("5_7ggcx")
+to = NodePath("../../hurt")
+event = &"hurt"
+delay_in_seconds = "0.0"
+
+[node name="death" type="Node" parent="StateChart/root/patrol"]
+script = ExtResource("5_7ggcx")
+to = NodePath("../../death")
+event = &"death"
+delay_in_seconds = "0.0"
+
+[node name="chase" type="Node" parent="StateChart/root"]
+script = ExtResource("3_1rmbk")
+
+[node name="patrol" type="Node" parent="StateChart/root/chase"]
+script = ExtResource("5_7ggcx")
+to = NodePath("../../patrol")
+event = &"patrol"
+delay_in_seconds = "0.0"
+
+[node name="attack" type="Node" parent="StateChart/root/chase"]
+script = ExtResource("5_7ggcx")
+to = NodePath("../../attack")
+event = &"attack"
+delay_in_seconds = "0.0"
+
+[node name="hurt" type="Node" parent="StateChart/root/chase"]
+script = ExtResource("5_7ggcx")
+to = NodePath("../../hurt")
+event = &"hurt"
+delay_in_seconds = "0.0"
+
+[node name="death" type="Node" parent="StateChart/root/chase"]
+script = ExtResource("5_7ggcx")
+to = NodePath("../../death")
+event = &"death"
+delay_in_seconds = "0.0"
+
+[node name="attack" type="Node" parent="StateChart/root"]
+script = ExtResource("3_1rmbk")
+
+[node name="patrol" type="Node" parent="StateChart/root/attack"]
+script = ExtResource("5_7ggcx")
+to = NodePath("../../patrol")
+event = &"patrol"
+delay_in_seconds = "0.0"
+
+[node name="chase" type="Node" parent="StateChart/root/attack"]
+script = ExtResource("5_7ggcx")
+to = NodePath("../../chase")
+event = &"chase"
+delay_in_seconds = "0.0"
+
+[node name="hurt" type="Node" parent="StateChart/root/attack"]
+script = ExtResource("5_7ggcx")
+to = NodePath("../../hurt")
+event = &"hurt"
+delay_in_seconds = "0.0"
+
+[node name="death" type="Node" parent="StateChart/root/attack"]
+script = ExtResource("5_7ggcx")
+to = NodePath("../../death")
+event = &"death"
+delay_in_seconds = "0.0"
+
+[node name="hurt" type="Node" parent="StateChart/root"]
+script = ExtResource("3_1rmbk")
+
+[node name="patrol" type="Node" parent="StateChart/root/hurt"]
+script = ExtResource("5_7ggcx")
+to = NodePath("../../patrol")
+event = &"patrol"
+delay_in_seconds = "0.0"
+
+[node name="chase" type="Node" parent="StateChart/root/hurt"]
+script = ExtResource("5_7ggcx")
+to = NodePath("../../chase")
+event = &"chase"
+delay_in_seconds = "0.0"
+
+[node name="death" type="Node" parent="StateChart/root/hurt"]
+script = ExtResource("5_7ggcx")
+to = NodePath("../../death")
+event = &"death"
+delay_in_seconds = "0.0"
+
+[node name="death" type="Node" parent="StateChart/root"]
+script = ExtResource("3_1rmbk")
+
+[node name="Stats" type="Node" parent="."]
+script = ExtResource("2_2ln0i")
+stats = SubResource("Resource_j2piq")
+min_damage = 1.0
+metadata/_custom_type_script = "uid://d35mic0p54i65"
+
+[node name="State_Manager" type="Node" parent="." node_paths=PackedStringArray("parent", "state_chart")]
+script = ExtResource("9_fk0de")
+parent = NodePath("..")
+state_chart = NodePath("../StateChart")
+
+[node name="Petrol" type="Node" parent="State_Manager"]
+script = ExtResource("10_f1d2f")
+
+[node name="Chase" type="Node" parent="State_Manager"]
+script = ExtResource("11_7ggcx")
+
+[node name="Attack" type="Node" parent="State_Manager"]
+script = ExtResource("12_v76b3")
+
+[node name="Hurt" type="Node" parent="State_Manager"]
+script = ExtResource("13_wnvo6")
+
+[node name="Death" type="Node" parent="State_Manager"]
+script = ExtResource("14_ijau7")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+visible = false
+
+[node name="StateChartDebugger" parent="CanvasLayer" instance=ExtResource("16_v76b3")]
+offset_left = 552.0
+offset_top = 24.0
+offset_right = 552.0
+offset_bottom = 24.0
+initial_node_to_watch = NodePath("../../StateChart")
+
+[connection signal="state_entered" from="StateChart/root/patrol" to="State_Manager/Petrol" method="_on_patrol_state_entered"]
+[connection signal="state_physics_processing" from="StateChart/root/patrol" to="State_Manager/Petrol" method="_on_patrol_state_physics_processing"]
+[connection signal="state_entered" from="StateChart/root/chase" to="State_Manager/Chase" method="_on_chase_state_entered"]
+[connection signal="state_physics_processing" from="StateChart/root/chase" to="State_Manager/Chase" method="_on_chase_state_physics_processing"]
+[connection signal="state_entered" from="StateChart/root/attack" to="State_Manager/Attack" method="_on_attack_state_entered"]
