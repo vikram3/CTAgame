@@ -12,18 +12,23 @@ extends CharacterBody2D
 @export var body:MeshInstance2D
 @export var sight: RayCast2D
 
+@onready var state_manager: Node = $State_Manager
+
 
 func _physics_process(delta: float) -> void:
+	state_manager._transition()
+	_apply_gravity(delta)
 	move_and_slide()
-	_gravity(delta)
 
-func _gravity(delta):
+func _apply_gravity(delta: float) -> void:
 	if is_on_floor():
 		velocity.y = 0
 	else:
 		velocity.y += gravity * delta
 
 func get_direction() -> Vector2:
+	if !Global.player:
+		return Vector2.ZERO
 	var direction = Global.player.global_position - self.global_position
 	var dir = direction.normalized()
 	return dir
