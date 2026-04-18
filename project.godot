@@ -45,7 +45,7 @@ movie_writer/movie_file="C:/Users/singh/Videos/video.avi"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/godot_state_charts/plugin.cfg")
+enabled=PackedStringArray("res://addons/AS2P/plugin.cfg", "res://addons/godot_state_charts/plugin.cfg")
 
 [global_group]
 
