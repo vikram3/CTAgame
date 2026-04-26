@@ -1,27 +1,27 @@
+# health_bar.gd  –  attach to HealthBar (ProgressBar, child of CanvasLayer)
 extends ProgressBar
 
-@export var timer:Timer
-@export var damage_bar:ProgressBar
+@export var timer: Timer              # delay timer before damage bar catches up
+@export var damage_bar: ProgressBar  # the "lag" bar behind the main bar
 
-var health:float = 0
+var health: float = 0.0
 
+func _set_health(new_health: Variant) -> void:
+	var prev = health
+	health   = min(float(new_health), max_value)
+	value    = health
 
-func _set_health(new_health):
-	var prev_health = health
-	health = min(max_value, new_health)
-	value = health
-	
-	if health < prev_health:
-		timer.start()
+	if health < prev:
+		timer.start()        # damage bar will follow after delay
 	else:
-		damage_bar.value = health
+		damage_bar.value = health   # heal instantly
 
-func _init_health(_health):
-	health = _health
-	max_value = health
-	value = health
-	damage_bar.max_value = health
-	damage_bar.value = health
+func _init_health(max_hp: float) -> void:
+	health         = max_hp
+	max_value      = max_hp
+	value          = max_hp
+	damage_bar.max_value = max_hp
+	damage_bar.value     = max_hp
 
-func _on_timer_timeout():
+func _on_timer_timeout() -> void:
 	damage_bar.value = health

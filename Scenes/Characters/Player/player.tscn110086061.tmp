@@ -1,4 +1,4 @@
-[gd_scene load_steps=328 format=3 uid="uid://b8u54nwif8s4d"]
+[gd_scene load_steps=332 format=3 uid="uid://b8u54nwif8s4d"]
 
 [ext_resource type="Script" uid="uid://cahofonudbvxs" path="res://Scenes/Characters/Player/player.gd" id="1_cscr0"]
 [ext_resource type="Texture2D" uid="uid://ds3fli4b3yh6s" path="res://Main/Assets/Video game/Refrence/Assets/Player/sprite/vagabond-idle.png" id="1_fu1fx"]
@@ -167,7 +167,6 @@
 [ext_resource type="Texture2D" uid="uid://bd8tdwaa8g05m" path="res://Assets/Player/CT/hurt/Layer 8.png" id="60_2ef6q"]
 [ext_resource type="Script" uid="uid://bbd15cytnsg5x" path="res://Scenes/Characters/Player/dash.gd" id="76_q0b8q"]
 [ext_resource type="Script" uid="uid://4n412msqm87n" path="res://Scenes/Characters/Player/ground_attack.gd" id="77_ggfjd"]
-[ext_resource type="Script" uid="uid://dv1cl11gmjoxa" path="res://Scenes/HitBox_and_HurtBox/HitBox/hit_box.gd" id="142_idobf"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2vr1d"]
 radius = 3.95
@@ -1714,7 +1713,7 @@ tracks/0/path = NodePath("CT:frame")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 0.96666664),
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [0, 1, 2, 3, 4, 5]
@@ -1730,20 +1729,6 @@ tracks/1/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 1,
 "values": ["Block"]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("../State_Transition_Manager/Block")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(1.2),
-"transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"enable_parry_window"
-}]
 }
 
 [sub_resource type="Animation" id="Animation_gajdb"]
@@ -1773,19 +1758,32 @@ tracks/1/keys = {
 "update": 1,
 "values": ["Counter"]
 }
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("../State_Transition_Manager/Counter")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(1.3666667),
+
+[sub_resource type="Animation" id="Animation_btar6"]
+length = 1.2
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CT:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [0, 1, 2, 3, 4, 5]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CT:animation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
-"values": [{
-"args": [],
-"method": &"_reset"
-}]
+"update": 1,
+"values": ["Dead"]
 }
 
 [sub_resource type="Animation" id="Animation_lwp4n"]
@@ -2006,33 +2004,6 @@ tracks/1/keys = {
 "values": ["Run_Main"]
 }
 
-[sub_resource type="Animation" id="Animation_btar6"]
-length = 1.2
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("CT:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.2, 0.4, 0.6, 0.8, 1),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("CT:animation")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": ["Dead"]
-}
-
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_iewvj"]
 _data = {
 &"Air_attack_1": SubResource("Animation_2dmuv"),
@@ -2044,7 +2015,7 @@ _data = {
 &"Attack_3": SubResource("Animation_3y42k"),
 &"Block": SubResource("Animation_hg4mp"),
 &"Counter": SubResource("Animation_gajdb"),
-&"Death": SubResource("Animation_btar6"),
+&"Dead": SubResource("Animation_btar6"),
 &"Double_jump_main": SubResource("Animation_lwp4n"),
 &"Fall_Main": SubResource("Animation_bhx55"),
 &"Ground_dash": SubResource("Animation_xnbwa"),
@@ -2074,7 +2045,23 @@ gravity = Vector3(0, 0, 0)
 color_ramp = SubResource("GradientTexture1D_61squ")
 alpha_curve = SubResource("CurveTexture_nafmd")
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_idobf"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_46w32"]
+size = Vector2(58, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_eiaiy"]
+size = Vector2(41, 32)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_nafmd"]
+size = Vector2(57, 12)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cflke"]
+size = Vector2(67, 16)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_4yec0"]
+size = Vector2(29, 34)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_oql2n"]
+size = Vector2(49, 51)
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_me3gr"]
 size = Vector2(6, 18)
@@ -2084,9 +2071,11 @@ size = Vector2(7.885, 18)
 
 [sub_resource type="Resource" id="Resource_2iqoh"]
 script = ExtResource("33_me3gr")
+max_health = 100.0
+defense = 20.0
 max_energy = 100.0
 damage = 1.1
-defense = 20.0
+base_damage = 15.0
 crit_chance = 0.4
 crit_damage = 1.1
 metadata/_custom_type_script = "uid://ba0i3u40ltfdw"
@@ -3274,8 +3263,7 @@ shape = SubResource("CapsuleShape2D_2vr1d")
 [node name="CT" type="AnimatedSprite2D" parent="Body"]
 scale = Vector2(0.1, 0.1)
 sprite_frames = SubResource("SpriteFrames_rb60l")
-animation = &"Block"
-frame = 1
+animation = &"Air_attack_1"
 
 [node name="impact_effect" type="AnimatedSprite2D" parent="Body"]
 z_index = 1
@@ -3310,54 +3298,49 @@ randomness = 0.2
 process_material = SubResource("ParticleProcessMaterial_46w32")
 
 [node name="Hit_Box" parent="Body" groups=["player_hitbox"] instance=ExtResource("13_nafmd")]
+visible = false
 position = Vector2(1, -3)
+collision_layer = 4
+collision_mask = 16
 
-[node name="Attack_1_2" type="Area2D" parent="Body/Hit_Box" groups=["player_hitbox"]]
+[node name="Attack_1_2" type="CollisionShape2D" parent="Body/Hit_Box" groups=["player_hitbox"]]
 position = Vector2(19, 2)
-script = ExtResource("142_idobf")
+shape = SubResource("RectangleShape2D_46w32")
+disabled = true
+debug_color = Color(0.9822014, 0, 0.3684829, 0.41960785)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Body/Hit_Box/Attack_1_2"]
-shape = SubResource("RectangleShape2D_idobf")
-
-[node name="Attack_3" type="Area2D" parent="Body/Hit_Box" groups=["player_hitbox"]]
+[node name="Attack_3" type="CollisionShape2D" parent="Body/Hit_Box" groups=["player_hitbox"]]
 position = Vector2(23.5, -5)
-script = ExtResource("142_idobf")
+shape = SubResource("RectangleShape2D_eiaiy")
+disabled = true
+debug_color = Color(0.9822014, 0, 0.3684829, 0.41960785)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Body/Hit_Box/Attack_3"]
-shape = SubResource("RectangleShape2D_idobf")
-
-[node name="Air_Attack_1" type="Area2D" parent="Body/Hit_Box" groups=["player_hitbox"]]
+[node name="Air_Attack_1" type="CollisionShape2D" parent="Body/Hit_Box" groups=["player_hitbox"]]
 position = Vector2(14.5, 0)
-script = ExtResource("142_idobf")
+shape = SubResource("RectangleShape2D_nafmd")
+disabled = true
+debug_color = Color(0.94990975, 0.22640273, 1.92523e-07, 0.41960785)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Body/Hit_Box/Air_Attack_1"]
-shape = SubResource("RectangleShape2D_idobf")
-
-[node name="Air_Attack_2" type="Area2D" parent="Body/Hit_Box" groups=["player_hitbox"]]
+[node name="Air_Attack_2" type="CollisionShape2D" parent="Body/Hit_Box" groups=["player_hitbox"]]
 position = Vector2(6.5, -5)
-script = ExtResource("142_idobf")
+shape = SubResource("RectangleShape2D_cflke")
+disabled = true
+debug_color = Color(0.94990975, 0.22640273, 1.92523e-07, 0.41960785)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Body/Hit_Box/Air_Attack_2"]
-shape = SubResource("RectangleShape2D_idobf")
-
-[node name="Air_Attack_3" type="Area2D" parent="Body/Hit_Box" groups=["player_hitbox"]]
+[node name="Air_Attack_3" type="CollisionShape2D" parent="Body/Hit_Box" groups=["player_hitbox"]]
 position = Vector2(19.5, -7)
-script = ExtResource("142_idobf")
+shape = SubResource("RectangleShape2D_4yec0")
+disabled = true
+debug_color = Color(0.94990975, 0.22640273, 1.92523e-07, 0.41960785)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Body/Hit_Box/Air_Attack_3"]
-shape = SubResource("RectangleShape2D_idobf")
-
-[node name="Counter_Attack" type="Area2D" parent="Body/Hit_Box" groups=["player_hitbox"]]
+[node name="Counter_Attack" type="CollisionShape2D" parent="Body/Hit_Box" groups=["player_hitbox"]]
 position = Vector2(22.5, -14.5)
-script = ExtResource("142_idobf")
+shape = SubResource("RectangleShape2D_oql2n")
+disabled = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Body/Hit_Box/Counter_Attack"]
-shape = SubResource("RectangleShape2D_idobf")
-
-[node name="HurtBox" parent="Body" node_paths=PackedStringArray("stats") groups=["player_hurtbox"] instance=ExtResource("14_cflke")]
+[node name="HurtBox" parent="Body" groups=["player_hitbox"] instance=ExtResource("14_cflke")]
 collision_layer = 0
 collision_mask = 8
-stats = NodePath("../../Player_Stats")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Body/HurtBox"]
 shape = SubResource("RectangleShape2D_me3gr")
@@ -3368,6 +3351,7 @@ collision_layer = 0
 collision_mask = 8
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Body/check_hit"]
+visible = false
 shape = SubResource("RectangleShape2D_gs6v2")
 disabled = true
 
@@ -3535,7 +3519,7 @@ script = ExtResource("5_cscr0")
 [node name="next" type="Node" parent="StateChart/root/Ground_state/Attacks/Combo_1"]
 script = ExtResource("6_plevq")
 to = NodePath("../../Combo_2")
-event = &"attack"
+event = &"next"
 delay_in_seconds = "0.0"
 
 [node name="Combo_2" type="Node" parent="StateChart/root/Ground_state/Attacks"]
@@ -3544,7 +3528,7 @@ script = ExtResource("5_cscr0")
 [node name="next" type="Node" parent="StateChart/root/Ground_state/Attacks/Combo_2"]
 script = ExtResource("6_plevq")
 to = NodePath("../../Combo_3")
-event = &"attack"
+event = &"next"
 delay_in_seconds = "0.0"
 
 [node name="Combo_3" type="Node" parent="StateChart/root/Ground_state/Attacks"]
@@ -3553,7 +3537,7 @@ script = ExtResource("5_cscr0")
 [node name="next" type="Node" parent="StateChart/root/Ground_state/Attacks/Combo_3"]
 script = ExtResource("6_plevq")
 to = NodePath("../../Combo_1")
-event = &"idle"
+event = &"next"
 delay_in_seconds = "0.0"
 
 [node name="to_idle" type="Node" parent="StateChart/root/Ground_state/Attacks"]
@@ -3681,7 +3665,7 @@ script = ExtResource("5_cscr0")
 [node name="next" type="Node" parent="StateChart/root/Air_State/Air_Attacks/Combo_1"]
 script = ExtResource("6_plevq")
 to = NodePath("../../Combo_2")
-event = &"attack"
+event = &"next"
 delay_in_seconds = "0.0"
 
 [node name="Combo_2" type="Node" parent="StateChart/root/Air_State/Air_Attacks"]
@@ -3690,18 +3674,11 @@ script = ExtResource("5_cscr0")
 [node name="next" type="Node" parent="StateChart/root/Air_State/Air_Attacks/Combo_2"]
 script = ExtResource("6_plevq")
 to = NodePath("../../Combo_3")
-event = &"attack"
+event = &"next"
 delay_in_seconds = "0.0"
 
 [node name="Combo_3" type="Node" parent="StateChart/root/Air_State/Air_Attacks"]
 script = ExtResource("5_cscr0")
-
-[node name="Transition" type="Node" parent="StateChart/root/Air_State/Air_Attacks/Combo_3"]
-script = ExtResource("6_plevq")
-to = NodePath("../../../Fall")
-event = &"idle"
-delay_in_seconds = "0.0"
-metadata/_custom_type_script = "uid://cf1nsco3w0mf6"
 
 [node name="double_jump" type="Node" parent="StateChart/root/Air_State/Air_Attacks"]
 script = ExtResource("6_plevq")
@@ -3828,8 +3805,9 @@ script = ExtResource("22_23420")
 [node name="Air_Dash" type="Node" parent="State_Transition_Manager"]
 script = ExtResource("25_roksr")
 
-[node name="Hurt" type="Node" parent="State_Transition_Manager"]
+[node name="Hurt" type="Node" parent="State_Transition_Manager" node_paths=PackedStringArray("hurt_box")]
 script = ExtResource("29_46w32")
+hurt_box = NodePath("../../Body/HurtBox")
 
 [node name="Dead" type="Node" parent="State_Transition_Manager"]
 script = ExtResource("30_eiaiy")
@@ -3837,7 +3815,7 @@ script = ExtResource("30_eiaiy")
 [node name="ground_attack" type="Node" parent="State_Transition_Manager"]
 script = ExtResource("77_ggfjd")
 
-[node name="Player_Stats" parent="." groups=["player_stats"] instance=ExtResource("32_4yec0")]
+[node name="Player_Stats" parent="." instance=ExtResource("32_4yec0")]
 stats = SubResource("Resource_2iqoh")
 min_damage = 2.0
 
@@ -3862,7 +3840,7 @@ one_shot = true
 
 [node name="Counter_Timer" type="Timer" parent="."]
 process_callback = 0
-wait_time = 0.5
+wait_time = 0.3
 one_shot = true
 
 [node name="AnimationPlayer2" type="AnimationPlayer" parent="."]
@@ -3886,22 +3864,20 @@ libraries = {
 [connection signal="state_exited" from="StateChart/root/Ground_state/Ground_Dash" to="State_Transition_Manager/Ground_Dash" method="_on_dash_state_exited"]
 [connection signal="state_physics_processing" from="StateChart/root/Ground_state/Ground_Dash" to="State_Transition_Manager/Ground_Dash" method="_on_dash_state_physics_processing"]
 [connection signal="state_entered" from="StateChart/root/Ground_state/Block" to="State_Transition_Manager/Block" method="_on_block_state_entered"]
-[connection signal="state_exited" from="StateChart/root/Ground_state/Block" to="State_Transition_Manager/Block" method="_on_block_state_exited"]
 [connection signal="state_physics_processing" from="StateChart/root/Ground_state/Block" to="State_Transition_Manager/Block" method="_on_block_state_physics_processing"]
 [connection signal="state_entered" from="StateChart/root/Ground_state/Parry" to="State_Transition_Manager/Parry" method="_on_parry_state_entered"]
 [connection signal="state_exited" from="StateChart/root/Ground_state/Parry" to="State_Transition_Manager/Parry" method="_on_parry_state_exited"]
 [connection signal="state_physics_processing" from="StateChart/root/Ground_state/Parry" to="State_Transition_Manager/Parry" method="_on_parry_state_physics_processing"]
 [connection signal="state_entered" from="StateChart/root/Ground_state/Counter" to="State_Transition_Manager/Counter" method="_on_counter_state_entered"]
-[connection signal="state_exited" from="StateChart/root/Ground_state/Counter" to="State_Transition_Manager/Counter" method="_on_counter_state_exited"]
 [connection signal="state_entered" from="StateChart/root/Ground_state/Attacks/Combo_1" to="State_Transition_Manager/Attacks" method="_on_combo_1_state_entered"]
 [connection signal="state_exited" from="StateChart/root/Ground_state/Attacks/Combo_1" to="State_Transition_Manager/Attacks" method="_on_combo_state_exited"]
 [connection signal="state_physics_processing" from="StateChart/root/Ground_state/Attacks/Combo_1" to="State_Transition_Manager/Attacks" method="_on_combo_state_physics_processing"]
 [connection signal="state_entered" from="StateChart/root/Ground_state/Attacks/Combo_2" to="State_Transition_Manager/Attacks" method="_on_combo_2_state_entered"]
-[connection signal="state_exited" from="StateChart/root/Ground_state/Attacks/Combo_2" to="State_Transition_Manager/Attacks" method="_on_combo_2_state_exited"]
-[connection signal="state_physics_processing" from="StateChart/root/Ground_state/Attacks/Combo_2" to="State_Transition_Manager/Attacks" method="_on_combo_2_state_physics_processing"]
+[connection signal="state_exited" from="StateChart/root/Ground_state/Attacks/Combo_2" to="State_Transition_Manager/Attacks" method="_on_combo_state_exited"]
+[connection signal="state_physics_processing" from="StateChart/root/Ground_state/Attacks/Combo_2" to="State_Transition_Manager/Attacks" method="_on_combo_state_physics_processing"]
 [connection signal="state_entered" from="StateChart/root/Ground_state/Attacks/Combo_3" to="State_Transition_Manager/Attacks" method="_on_combo_3_state_entered"]
-[connection signal="state_exited" from="StateChart/root/Ground_state/Attacks/Combo_3" to="State_Transition_Manager/Attacks" method="_on_combo_3_state_exited"]
-[connection signal="state_physics_processing" from="StateChart/root/Ground_state/Attacks/Combo_3" to="State_Transition_Manager/Attacks" method="_on_combo_3_state_physics_processing"]
+[connection signal="state_exited" from="StateChart/root/Ground_state/Attacks/Combo_3" to="State_Transition_Manager/Attacks" method="_on_combo_state_exited"]
+[connection signal="state_physics_processing" from="StateChart/root/Ground_state/Attacks/Combo_3" to="State_Transition_Manager/Attacks" method="_on_combo_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/root/Air_State" to="Jump_and_Gravity_Manager" method="_on_air_state_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/root/Air_State" to="State_Transition_Manager" method="_on_air_state_state_physics_processing"]
 [connection signal="state_entered" from="StateChart/root/Air_State/Jump" to="State_Transition_Manager/Jump" method="_on_jump_state_entered"]
@@ -3911,15 +3887,15 @@ libraries = {
 [connection signal="state_entered" from="StateChart/root/Air_State/Fall" to="State_Transition_Manager/Fall" method="_on_fall_state_entered"]
 [connection signal="state_exited" from="StateChart/root/Air_State/Fall" to="State_Transition_Manager/Fall" method="_on_fall_state_exited"]
 [connection signal="state_physics_processing" from="StateChart/root/Air_State/Fall" to="State_Transition_Manager/Fall" method="_on_fall_state_physics_processing"]
-[connection signal="state_entered" from="StateChart/root/Air_State/Air_Attacks/Combo_1" to="State_Transition_Manager/Air_Attacks" method="_on_combo_1_state_entered"]
-[connection signal="state_exited" from="StateChart/root/Air_State/Air_Attacks/Combo_1" to="State_Transition_Manager/Air_Attacks" method="_on_combo_1_state_exited"]
-[connection signal="state_physics_processing" from="StateChart/root/Air_State/Air_Attacks/Combo_1" to="State_Transition_Manager/Air_Attacks" method="_on_combo_1_state_physics_processing"]
+[connection signal="state_entered" from="StateChart/root/Air_State/Air_Attacks/Combo_1" to="State_Transition_Manager/Attacks" method="_on_combo_1_state_entered"]
+[connection signal="state_exited" from="StateChart/root/Air_State/Air_Attacks/Combo_1" to="State_Transition_Manager/Air_Attacks" method="_on_combo_state_exited"]
+[connection signal="state_physics_processing" from="StateChart/root/Air_State/Air_Attacks/Combo_1" to="State_Transition_Manager/Air_Attacks" method="_on_combo_state_physics_processing"]
 [connection signal="state_entered" from="StateChart/root/Air_State/Air_Attacks/Combo_2" to="State_Transition_Manager/Air_Attacks" method="_on_combo_2_state_entered"]
-[connection signal="state_exited" from="StateChart/root/Air_State/Air_Attacks/Combo_2" to="State_Transition_Manager/Air_Attacks" method="_on_combo_2_state_exited"]
-[connection signal="state_physics_processing" from="StateChart/root/Air_State/Air_Attacks/Combo_2" to="State_Transition_Manager/Air_Attacks" method="_on_combo_2_state_physics_processing"]
+[connection signal="state_exited" from="StateChart/root/Air_State/Air_Attacks/Combo_2" to="State_Transition_Manager/Air_Attacks" method="_on_combo_state_exited"]
+[connection signal="state_physics_processing" from="StateChart/root/Air_State/Air_Attacks/Combo_2" to="State_Transition_Manager/Air_Attacks" method="_on_combo_state_physics_processing"]
 [connection signal="state_entered" from="StateChart/root/Air_State/Air_Attacks/Combo_3" to="State_Transition_Manager/Air_Attacks" method="_on_combo_3_state_entered"]
-[connection signal="state_exited" from="StateChart/root/Air_State/Air_Attacks/Combo_3" to="State_Transition_Manager/Air_Attacks" method="_on_combo_3_state_exited"]
-[connection signal="state_physics_processing" from="StateChart/root/Air_State/Air_Attacks/Combo_3" to="State_Transition_Manager/Air_Attacks" method="_on_combo_3_state_physics_processing"]
+[connection signal="state_exited" from="StateChart/root/Air_State/Air_Attacks/Combo_3" to="State_Transition_Manager/Air_Attacks" method="_on_combo_state_exited"]
+[connection signal="state_physics_processing" from="StateChart/root/Air_State/Air_Attacks/Combo_3" to="State_Transition_Manager/Air_Attacks" method="_on_combo_state_physics_processing"]
 [connection signal="state_entered" from="StateChart/root/Air_State/Air_Dash" to="State_Transition_Manager/Air_Dash" method="_on_dash_state_entered"]
 [connection signal="state_exited" from="StateChart/root/Air_State/Air_Dash" to="State_Transition_Manager/Air_Dash" method="_on_dash_state_exited"]
 [connection signal="state_physics_processing" from="StateChart/root/Air_State/Air_Dash" to="State_Transition_Manager/Air_Dash" method="_on_dash_state_physics_processing"]
@@ -3934,5 +3910,3 @@ libraries = {
 [connection signal="animation_finished" from="AnimationPlayer2" to="State_Transition_Manager/Idle" method="_on_animation_player_animation_finished"]
 [connection signal="animation_finished" from="AnimationPlayer2" to="State_Transition_Manager/Ground_Dash" method="_on_animation_player_animation_finished"]
 [connection signal="animation_finished" from="AnimationPlayer2" to="State_Transition_Manager/Air_Dash" method="_on_animation_player_animation_finished"]
-
-[editable path="CanvasLayer/HealthBar"]

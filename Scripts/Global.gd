@@ -1,10 +1,12 @@
+# global.gd (autoload)
 extends Node
 
-var player:CharacterBody2D
-var boss:CharacterBody2D
-var cam:Camera2D
+#var boss:CharacterBody2D
+var player: CharacterBody2D
+var cam: Node   # assigned by camera node in _ready
 
-func _freeze(timeScale,duration):
-	Engine.time_scale = timeScale
-	await get_tree().create_timer(duration * timeScale).timeout
+# Hit-stop / freeze frames
+func _freeze(duration: float, time_scale: float) -> void:
+	Engine.time_scale = time_scale
+	await get_tree().create_timer(duration * time_scale).timeout
 	Engine.time_scale = 1.0

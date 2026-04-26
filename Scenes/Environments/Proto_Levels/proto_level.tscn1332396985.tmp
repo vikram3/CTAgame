@@ -83,9 +83,6 @@ move_limit = 150.0
 position = Vector2(64, 135)
 scale = Vector2(1.2, 1.2)
 
-[node name="CT" parent="Player/Body" index="0"]
-animation = &"Air_attack_1"
-
 [node name="Cam_Root" parent="." instance=ExtResource("4_xb7bf")]
 position = Vector2(64, 136)
 
@@ -290,6 +287,5 @@ region_rect = Rect2(2019, 2763, 565, 639)
 [connection signal="level_completed" from="TransitionArea" to="Player" method="_on_transition_area_level_completed"]
 
 [editable path="Player"]
-[editable path="Player/CanvasLayer/HealthBar"]
 [editable path="Cam_Root"]
 [editable path="TransitionArea"]

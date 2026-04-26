@@ -290,6 +290,5 @@ region_rect = Rect2(2019, 2763, 565, 639)
 [connection signal="level_completed" from="TransitionArea" to="Player" method="_on_transition_area_level_completed"]
 
 [editable path="Player"]
-[editable path="Player/CanvasLayer/HealthBar"]
 [editable path="Cam_Root"]
 [editable path="TransitionArea"]

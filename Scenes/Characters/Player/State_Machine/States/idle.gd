@@ -1,24 +1,35 @@
+# ═══════════════════════════════════════════════════════════════════
+# idle.gd  –  attach to State_Transition_Manager/Idle  (or your SM child node)
+# ═══════════════════════════════════════════════════════════════════
+# idle.gd
 extends Node
 
-@export var de_accel:float = 80.0
+@export var de_accel: float = 80.0
 
-var actve:bool = false
+var _player: CharacterBody2D
+var _sm: Node
+var _active: bool = false
 
-func _on_idle_state_entered():
-	actve = true
-	#if get_parent().anim.current_animation == "Run_End" :
-		#return
-	get_parent().anim.play("Idle_Main", -1, 1)
+func _get_player() -> CharacterBody2D:
+	if _player == null: _player = get_parent().get_parent()
+	return _player
 
-func _on_idle_state_physics_processing(delta):
-	get_parent().parent.velocity.x = lerp(get_parent().parent.velocity.x,0.0, de_accel * delta)
+func _get_sm() -> Node:
+	if _sm == null: _sm = get_parent()
+	return _sm
+
+func _on_idle_state_entered() -> void:
+	_active = true
+	_get_sm().anim.play("Idle_Main")
+
+func _on_idle_state_physics_processing(delta: float) -> void:
+	_get_player().velocity.x = lerp(_get_player().velocity.x, 0.0, de_accel * delta)
 
 func _on_idle_state_exited() -> void:
-	actve = false
+	_active = false
 
+# Called when AnimationPlayer finishes any animation – we only care about Run_End
 func _on_animation_player_animation_finished(anim_name: StringName) -> void:
-	if !actve:
-		return
-	
+	if not _active: return
 	if anim_name == "Run_End":
-		get_parent().anim.play("Idle", -1, 0.5)
+		_get_sm().anim.play("Idle_Main", -1, 0.5)
