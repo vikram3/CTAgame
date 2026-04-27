@@ -28,3 +28,7 @@ func _on_dead_state_physics_processing(_delta: float) -> void:
 
 func _on_dead_state_exited() -> void:
 	pass  # Respawn / scene change handles cleanup
+
+
+func _on_player_stats_health_depleated() -> void:
+	pass # Replace with function body.

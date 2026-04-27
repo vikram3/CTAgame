@@ -22,3 +22,7 @@ func _on_double_jump_state_physics_processing(_delta: float) -> void:
 
 func _on_double_jump_state_exited() -> void:
 	pass
+
+
+func _on_player_double_jump() -> void:
+	pass # Replace with function body.

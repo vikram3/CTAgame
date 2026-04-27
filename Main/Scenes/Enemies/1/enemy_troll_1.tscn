@@ -229,11 +229,9 @@ height = 16.0
 
 [sub_resource type="Resource" id="Resource_j2piq"]
 script = ExtResource("3_t3pbw")
-max_health = 100.0
-defense = 20.0
 max_energy = 30.0
 damage = 40.0
-base_damage = 10.0
+defense = 20.0
 crit_chance = 0.2
 crit_damage = 3.0
 metadata/_custom_type_script = "uid://ba0i3u40ltfdw"
@@ -408,17 +406,16 @@ position = Vector2(2.1176472, 0.3125)
 scale = Vector2(0.11764706, 0.0625)
 target_position = Vector2(0, 14.625)
 
-[node name="Hit_Box" parent="body" node_paths=PackedStringArray("main_body") instance=ExtResource("4_t3pbw")]
+[node name="Hit_Box" parent="body" instance=ExtResource("4_t3pbw")]
 position = Vector2(0.44117647, 0)
 scale = Vector2(0.11764706, 0.0625)
-main_body = NodePath("../..")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="body/Hit_Box"]
 position = Vector2(6.25, -2)
 shape = SubResource("RectangleShape2D_j2piq")
 debug_color = Color(0.99754125, 0, 0.17366716, 0.41960785)
 
-[node name="HurtBox" parent="body" instance=ExtResource("5_ahriw")]
+[node name="HurtBox" parent="body" groups=["enemy_hitbox"] instance=ExtResource("5_ahriw")]
 position = Vector2(0.44117647, 0)
 scale = Vector2(0.11764706, 0.0625)
 

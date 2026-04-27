@@ -150,3 +150,7 @@ func _on_combo_3_state_exited() -> void:
 
 func _on_combo_3_state_physics_processing(delta: float) -> void:
 	_check_combo_input()
+
+
+func _on_player_combo_attack() -> void:
+	pass # Replace with function body.
