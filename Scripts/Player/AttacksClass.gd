@@ -1,7 +1,7 @@
 # attacks.gd  –  BASE CLASS. Do NOT attach directly. Extend with ground_attacks.gd / air_attacks.gd
 # Place this file at res://Scripts/Player/attacks.gd (or wherever your scripts folder is)
 extends Node
-class_name Attacks
+class_name AttacksClass
 
 # How many seconds into the animation hitboxes become active / deactivate
 @export var hitbox_enable_frame: float  = 0.15

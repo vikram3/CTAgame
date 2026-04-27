@@ -1,7 +1,7 @@
 # ground_attacks.gd  –  attach to State_Transition_Manager/Attacks  (or Ground_Attack node)
 # Extends the base Attacks class. Handles the 3-hit ground combo.
 # StateChart events needed: attack → combo_1 → combo_2 → combo_3 → (idle/run)
-extends Attacks
+extends AttacksClass
 
 # ── Combo 1 ───────────────────────────────────────────────────────
 func _on_combo_1_state_entered() -> void:

@@ -1,6 +1,6 @@
 # air_attacks.gd  –  attach to State_Transition_Manager/Air_Attacks
 # Extends the base Attacks class. Handles 3-hit air combo.
-extends Attacks
+extends AttacksClass
 
 # While attacking in the air, clamp fall speed so the player hangs briefly.
 const AIR_ATTACK_MAX_FALL: float = 40.0
