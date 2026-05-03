@@ -504,7 +504,6 @@ func _process_load_queue():
 			push_error("Failed to load image: " + path)
 			_process_load_queue()
 			return
-		await get_tree().process_frame
 
 	var texture = ResourceLoader.load_threaded_get(path)
 

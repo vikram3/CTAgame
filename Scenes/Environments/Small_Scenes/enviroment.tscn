@@ -1,7 +1,7 @@
 [gd_scene load_steps=19 format=4 uid="uid://bl4oixmag5a5i"]
 
-[ext_resource type="Texture2D" uid="uid://b2difvxlufgdm" path="res://Assets/Environment/World_2/PixelPlatformerSet1v.1.1/main_lev_build.png" id="1_pcgui"]
-[ext_resource type="Texture2D" uid="uid://7scvkyu5gymx" path="res://Assets/Environment/World_2/PixelPlatformerSet1v.1.1/other_and_decorative.png" id="2_yr2e4"]
+[ext_resource type="Texture2D" uid="uid://b2difvxlufgdm" path="res://Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/main_lev_build.png" id="1_pcgui"]
+[ext_resource type="Texture2D" uid="uid://7scvkyu5gymx" path="res://Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/other_and_decorative.png" id="2_yr2e4"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qlb56"]
 texture = ExtResource("1_pcgui")

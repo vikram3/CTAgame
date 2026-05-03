@@ -2,8 +2,9 @@
 
 [ext_resource type="Script" uid="uid://dyxm64u45ceua" path="res://Scenes/Scene_Manager/stages/stage_data.gd" id="1_m8xuh"]
 [ext_resource type="PackedScene" uid="uid://rg6eyl8kgtdj" path="res://Scenes/Scene_Manager/trigger_area/transition_area.tscn" id="3_8todv"]
-[ext_resource type="Texture2D" uid="uid://b2difvxlufgdm" path="res://Assets/Environment/World_2/PixelPlatformerSet1v.1.1/main_lev_build.png" id="6_6tuuv"]
-[ext_resource type="Texture2D" uid="uid://7scvkyu5gymx" path="res://Assets/Environment/World_2/PixelPlatformerSet1v.1.1/other_and_decorative.png" id="7_dc6gc"]
+[ext_resource type="Texture2D" uid="uid://b2difvxlufgdm" path="res://Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/main_lev_build.png" id="6_6tuuv"]
+[ext_resource type="Texture2D" uid="uid://7scvkyu5gymx" path="res://Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/other_and_decorative.png" id="7_dc6gc"]
+
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qlb56"]
 texture = ExtResource("6_6tuuv")

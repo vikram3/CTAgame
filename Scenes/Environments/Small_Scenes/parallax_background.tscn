@@ -1,10 +1,11 @@
 [gd_scene load_steps=6 format=3 uid="uid://iya18mo1xk2b"]
 
-[ext_resource type="Texture2D" uid="uid://cecj43ubg8inl" path="res://Assets/Environment/World_2/PixelPlatformerSet1v.1.1/Background/01 background.png" id="1_nw43g"]
-[ext_resource type="Texture2D" uid="uid://bw0jjjsq32gsd" path="res://Assets/Environment/World_2/PixelPlatformerSet1v.1.1/Background/02 background.png" id="2_swcw3"]
-[ext_resource type="Texture2D" uid="uid://2v5tseh8qhrf" path="res://Assets/Environment/World_2/PixelPlatformerSet1v.1.1/Background/03 background B.png" id="3_fa6lk"]
-[ext_resource type="Texture2D" uid="uid://caolhs33usqsq" path="res://Assets/Environment/World_2/PixelPlatformerSet1v.1.1/Background/04 background.png" id="4_kwu7d"]
-[ext_resource type="Texture2D" uid="uid://fcd32qq8jtxp" path="res://Assets/Environment/World_2/PixelPlatformerSet1v.1.1/Background/05 background.png" id="5_gojpy"]
+[ext_resource type="Texture2D" uid="uid://cecj43ubg8inl" path="res://Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/Background/01 background.png" id="1_nw43g"]
+[ext_resource type="Texture2D" uid="uid://bw0jjjsq32gsd" path="res://Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/Background/02 background.png" id="2_swcw3"]
+[ext_resource type="Texture2D" uid="uid://2v5tseh8qhrf" path="res://Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/Background/03 background B.png" id="3_fa6lk"]
+[ext_resource type="Texture2D" uid="uid://caolhs33usqsq" path="res://Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/Background/04 background.png" id="4_kwu7d"]
+[ext_resource type="Texture2D" uid="uid://fcd32qq8jtxp" path="res://Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/Background/05 background.png" id="5_gojpy"]
+
 
 [node name="ParallaxBackground" type="Node2D"]
 z_index = -10

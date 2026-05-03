@@ -1,8 +1,9 @@
 [gd_scene load_steps=8 format=4 uid="uid://bq36566u8yqrx"]
 
 [ext_resource type="Script" uid="uid://beprix2fiwloh" path="res://Scenes/Traps/Trap_1/trap_1.gd" id="1_5yqsj"]
-[ext_resource type="Texture2D" uid="uid://7scvkyu5gymx" path="res://Assets/Environment/World_2/PixelPlatformerSet1v.1.1/other_and_decorative.png" id="1_js2g3"]
-[ext_resource type="Texture2D" uid="uid://b2difvxlufgdm" path="res://Assets/Environment/World_2/PixelPlatformerSet1v.1.1/main_lev_build.png" id="2_5yqsj"]
+[ext_resource type="Texture2D" uid="uid://7scvkyu5gymx" path="res://Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/other_and_decorative.png" id="1_js2g3"]
+[ext_resource type="Texture2D" uid="uid://b2difvxlufgdm" path="res://Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/main_lev_build.png" id="2_5yqsj"]
+
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_qamu7"]
 texture = ExtResource("1_js2g3")
