@@ -11,13 +11,13 @@ const PROTO_LEVEL = "res://Scenes/Environments/Proto_Levels/proto_level.tscn"
 # ── PAGE COUNTS (real asset counts) ──────────────────────────────────────────
 const CHAPTER_PAGE_COUNTS = {
 	1: 85,
-	2: 34,
-	3: 22,
-	4: 18,
-	5: 24,
-	6: 26,
-	7: 18,
-	8: 26,
+	2: 156,
+	3: 120,
+	4: 100,
+	5: 125,
+	6: 150,
+	7: 107,
+	8: 127,
 }
 
 # ── CHAPTER UNLOCK COSTS ──────────────────────────────────────────────────────
@@ -90,17 +90,17 @@ static func get_chapter(num: int) -> Array:
 
 # ── IMAGE PATH RESOLVER ───────────────────────────────────────────────────────
 static func get_page_path(chapter: int, page: int) -> String:
-	var page_str = str(page).pad_zeros(2)
+	var page_str = str(page -1).pad_zeros(2)
 	var base = ""
 	match chapter:
 		1: base = "res://Assets/webtoon/ch1/" + page_str
-		2: base = "res://Assets/webtoon/ch2/ch2_" + page_str
-		3: base = "res://Assets/webtoon/ch3/ch3_" + page_str
-		4: base = "res://Assets/webtoon/ch4/ch4_" + page_str
-		5: base = "res://Assets/webtoon/ch5/ch5_" + page_str
-		6: base = "res://Assets/webtoon/ch6/ch6_" + page_str
-		7: base = "res://Assets/webtoon/ch7/ch7_" + page_str
-		8: base = "res://Assets/webtoon/ch8/ch8_" + page_str
+		2: base = "res://Assets/webtoon/ch2/" + page_str
+		3: base = "res://Assets/webtoon/ch3/" + page_str
+		4: base = "res://Assets/webtoon/ch4/" + page_str
+		5: base = "res://Assets/webtoon/ch5/" + page_str
+		6: base = "res://Assets/webtoon/ch6/" + page_str
+		7: base = "res://Assets/webtoon/ch7/" + page_str
+		8: base = "res://Assets/webtoon/ch8/" + page_str
 		_:
 			push_error("ChapterData: No path pattern for chapter %d" % chapter)
 			return ""
@@ -154,7 +154,7 @@ static func get_playable_definitions(chapter: int) -> Array:
 				#             25–35 coins along safe routes
 				# Win       : Collect 20 coins OR reach maze exit
 				# Difficulty: Very low — onboarding / movement tutorial
-				"before_page":  4,
+				"before_page":  24,
 				"text":         "Time to grab those coins before anyone notices...",
 				"game_index":   0,
 				"coins_reward": 30,

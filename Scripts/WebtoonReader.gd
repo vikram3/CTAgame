@@ -67,6 +67,20 @@ const TAP_MAX_DURATION       = 0.25   # seconds
 #  READY
 # ════════════════════════════════════════════
 func _ready():
+	
+	if DisplayServer.is_touchscreen_available():
+		BASE_PANEL_WIDTH = get_viewport().get_visible_rect().size.x
+	else:
+		BASE_PANEL_WIDTH = get_viewport().get_visible_rect().size.x
+		_zoom = 0.5  # ← PC starts at 50%
+
+	var saved_zoom = GameData.get_chapter_zoom(current_chapter)
+	if saved_zoom > 0.0:
+		_zoom = saved_zoom
+	_refresh_zoom_ui()
+
+	build_chapter()
+
 	BASE_PANEL_WIDTH = get_viewport().get_visible_rect().size.x
 
 	current_chapter = GameData.data.current_chapter
@@ -98,7 +112,7 @@ func _wait_for_load_complete():
 		await get_tree().process_frame
 	for _i in 3:
 		await get_tree().process_frame
-	panel_container.queue_sort()
+	await get_tree().process_frame  # ← was queue_sort()
 	await get_tree().process_frame
 
 
@@ -161,6 +175,14 @@ func _setup_scroll_indicator():
 #  PROCESS
 # ════════════════════════════════════════════
 func _process(delta: float):
+	
+	_save_timer += delta
+	if _save_timer >= AUTO_SAVE_INTERVAL:
+		_save_timer = 0.0
+		GameData.save_chapter_progress(current_chapter, scroll_container.scroll_vertical)
+		GameData.save_chapter_zoom(current_chapter, _zoom)  # ← add this
+	# inside _process(delta):
+	_check_overlay_visibility()
 	if _resize_pending:
 		_resize_timer -= delta
 		if _resize_timer <= 0.0:
@@ -180,6 +202,25 @@ func _process(delta: float):
 		if _ui_hide_timer <= 0.0:
 			_fade_ui(false)
 
+
+func _check_overlay_visibility():
+	var vp_top    = scroll_container.scroll_vertical
+	var vp_bottom = vp_top + scroll_container.size.y
+
+	for slot in panel_container.get_children():
+		if not slot.name.begins_with("Slot_"):
+			continue
+		var trigger = slot.get_node_or_null("Playable_" + str(int(slot.name.split("_")[1]) + 1))
+		if trigger == null:
+			continue
+		if not trigger.get_meta("auto_trigger_armed", false):
+			continue
+
+		# Global Y of the overlay strip
+		var trigger_y = trigger.global_position.y
+		if trigger_y < vp_bottom and (trigger_y + trigger.size.y) > vp_top:
+			trigger.set_meta("auto_trigger_armed", false)
+			trigger.show_prompt()   # add this method to PlayableTriggerPanel if needed
 
 # ════════════════════════════════════════════
 #  INPUT — keyboard, mouse-wheel zoom, touch
@@ -390,16 +431,29 @@ func _panel_width() -> float:
 func _resize_all_panels():
 	var pw = _panel_width()
 	for child in panel_container.get_children():
-		if child is TextureRect:
+		if child.name.begins_with("Slot_"):
+			for sub in child.get_children():
+				if sub is TextureRect and sub.texture != null:
+					var aspect = float(sub.texture.get_height()) / float(sub.texture.get_width())
+					var h = pw * aspect
+					sub.custom_minimum_size = Vector2(pw, h)
+					sub.size                = Vector2(pw, h)
+					child.custom_minimum_size = Vector2(pw, h)
+					child.size                = Vector2(pw, h)
+				elif sub.name.begins_with("Playable_"):
+					sub.offset_top    = -220.0
+					sub.offset_bottom = 0.0
+					if sub.has_method("set_width"):
+						sub.set_width(pw)
+		elif child is TextureRect:
 			if child.texture != null:
 				var aspect = float(child.texture.get_height()) / float(child.texture.get_width())
 				child.custom_minimum_size = Vector2(pw, pw * aspect)
-				child.size               = child.custom_minimum_size
-				child.stretch_mode       = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
-				child.expand_mode        = TextureRect.EXPAND_IGNORE_SIZE
 			else:
 				child.custom_minimum_size = Vector2(pw, pw * 1.45)
 		else:
+			if child.has_method("set_width"):
+				child.set_width(pw)
 			child.custom_minimum_size.x = pw
 	panel_container.queue_sort()
 
@@ -437,14 +491,69 @@ func build_chapter():
 	for child in panel_container.get_children():
 		child.queue_free()
 
-	for i in chapter_panels.size():
+	var i = 0
+	while i < chapter_panels.size():
 		var entry = chapter_panels[i]
-		match entry.type:
-			ChapterData.PanelType.STATIC:
-				_add_static_panel(entry, i)
-			ChapterData.PanelType.PLAYABLE:
-				_add_playable_trigger_panel(entry, i)
 
+		if entry.type == ChapterData.PanelType.STATIC:
+			var next_entry = chapter_panels[i + 1] if i + 1 < chapter_panels.size() else null
+			if next_entry != null and next_entry.type == ChapterData.PanelType.PLAYABLE:
+				_add_panel_with_overlay(entry, i, next_entry, i + 1)
+				i += 2
+			else:
+				_add_static_panel(entry, i)
+				i += 1
+		else:
+			_add_playable_trigger_panel(entry, i)
+			i += 1
+
+func _add_panel_with_overlay(
+		static_entry: ChapterData.PanelEntry, static_index: int,
+		play_entry:   ChapterData.PanelEntry, play_index:   int):
+
+	var pw = _panel_width()
+
+	# Control wrapper — VBoxContainer treats this as one slot
+	var wrapper = Control.new()
+	wrapper.name                  = "Slot_" + str(static_index)
+	wrapper.custom_minimum_size   = Vector2(pw, pw * 1.45)
+	wrapper.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	panel_container.add_child(wrapper)
+
+# Static image — same sizing as _add_static_panel
+	var rect = TextureRect.new()
+	rect.name                  = "Panel_" + str(static_index)
+	rect.stretch_mode          = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+	rect.expand_mode           = TextureRect.EXPAND_IGNORE_SIZE
+	rect.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	rect.custom_minimum_size   = Vector2(pw, pw * 1.45)  # placeholder until texture loads
+	rect.set_meta("image_path", static_entry.image_path)
+	wrapper.add_child(rect)
+
+	if static_entry.image_path != "" and ResourceLoader.exists(static_entry.image_path):
+		_load_queue.append({"rect": rect, "path": static_entry.image_path, "wrapper": wrapper})
+		if not _is_loading:
+			_process_load_queue()
+	else:
+		push_error("Image not found: " + static_entry.image_path)
+
+	# Playable trigger — anchored to bottom of wrapper
+	var already_done = GameData.is_game_completed(current_chapter, play_entry.game_index)
+	var trigger = preload("res://Scenes/PlayableTriggerPanel.tscn").instantiate()
+	trigger.name          = "Playable_" + str(play_index)
+	trigger.anchor_left   = 0.0
+	trigger.anchor_right  = 1.0
+	trigger.anchor_top    = 1.0
+	trigger.anchor_bottom = 1.0
+	trigger.offset_top    = -220.0   # matches PlayableTriggerPanel height
+	trigger.offset_bottom = 0.0
+	wrapper.add_child(trigger)
+	trigger.setup(play_entry.transition_text, pw)
+
+	if already_done:
+		trigger.set_play_again_mode()
+
+	trigger.play_pressed.connect(_on_play_pressed.bind(play_entry, play_index))
 
 func _add_static_panel(entry: ChapterData.PanelEntry, index: int):
 	var pw   = _panel_width()
@@ -512,19 +621,30 @@ func _process_load_queue():
 
 	_process_load_queue()
 
-
 func _apply_texture(rect: TextureRect, texture: Texture2D):
 	if texture == null or not is_instance_valid(rect):
 		return
 	var pw     = _panel_width()
 	var aspect = float(texture.get_height()) / float(texture.get_width())
+	var h      = pw * aspect
+
 	rect.texture               = texture
 	rect.stretch_mode          = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
 	rect.expand_mode           = TextureRect.EXPAND_IGNORE_SIZE
-	rect.size                  = Vector2(pw, pw * aspect)
-	rect.custom_minimum_size   = rect.size
+	rect.size                  = Vector2(pw, h)
+	rect.custom_minimum_size   = Vector2(pw, h)
 	rect.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 
+	var parent = rect.get_parent()
+	if parent != null and parent.name.begins_with("Slot_"):
+		# Wrapper must exactly match the image size
+		parent.custom_minimum_size = Vector2(pw, h)
+		parent.size                = Vector2(pw, h)
+		# Trigger sits at the bottom of the image, 220px tall
+		for child in parent.get_children():
+			if child.name.begins_with("Playable_"):
+				child.offset_top    = -220.0
+				child.offset_bottom = 0.0
 
 # ════════════════════════════════════════════
 #  SMOOTH SCROLL
@@ -582,10 +702,15 @@ func advance_past_playable():
 	if first_time_game:
 		AchievementManager.on_segment_completed(current_chapter, game_index, time_taken)
 
-	for child in panel_container.get_children():
-		if child.name == "Playable_" + str(panel_index):
-			if child.has_method("set_play_again_mode"):
-				child.set_play_again_mode()
+# Replace the child search loop with:
+	for slot in panel_container.get_children():
+		var node: Node = null
+		if slot.name.begins_with("Slot_"):
+			node = slot.get_node_or_null("Playable_" + str(panel_index))
+		elif slot.name == "Playable_" + str(panel_index):
+			node = slot
+		if node != null and node.has_method("set_play_again_mode"):
+			node.set_play_again_mode()
 			break
 
 	if GameData.check_chapter_complete(current_chapter, total_games):
@@ -662,6 +787,7 @@ func _show_banner(msg: String, font_size: int, hold_sec: float):
 
 func save_progress():
 	GameData.save_chapter_progress(current_chapter, scroll_container.scroll_vertical)
+	GameData.save_chapter_zoom(current_chapter, _zoom)  # ← add this
 
 func _on_home_pressed():
 	save_progress(); SceneManager.go_to_title()

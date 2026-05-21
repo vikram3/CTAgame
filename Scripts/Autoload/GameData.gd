@@ -52,6 +52,13 @@ func save_data():
 	file.store_string(JSON.stringify(data))
 	file.close()
 
+func save_chapter_zoom(chapter: int, zoom: float):
+	data["zoom_ch_" + str(chapter)] = zoom
+	save_data()
+
+func get_chapter_zoom(chapter: int) -> float:
+	return data.get("zoom_ch_" + str(chapter), 0.0)  # 0.0 = no saved zoom
+
 func load_data():
 	if not FileAccess.file_exists(SAVE_PATH):
 		save_data()
