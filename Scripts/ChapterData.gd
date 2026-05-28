@@ -154,7 +154,7 @@ static func get_playable_definitions(chapter: int) -> Array:
 				#             25–35 coins along safe routes
 				# Win       : Collect 20 coins OR reach maze exit
 				# Difficulty: Very low — onboarding / movement tutorial
-				"before_page":  24,
+				"before_page":  15,
 				"text":         "Time to grab those coins before anyone notices...",
 				"game_index":   0,
 				"coins_reward": 30,
@@ -168,7 +168,7 @@ static func get_playable_definitions(chapter: int) -> Array:
 				#             elevated platforms, 60-second timer pressure
 				# Win       : Reach glowing chest marker OR survive 60 seconds
 				# Difficulty: Medium spike — urgency and required combat
-				"before_page":  12,
+				"before_page":  48,
 				"text":         "Those coins are MINE — gotta beat him there!",
 				"game_index":   1,
 				"coins_reward": 30,
@@ -194,13 +194,13 @@ static func get_playable_definitions(chapter: int) -> Array:
 				#             on land, 40 coins scattered, despawn after 8 sec
 				# Win       : Collect 30 coins, avoid 5 collision bursts
 				# Difficulty: Low-medium — controlled chaos, no direct combat
-				"before_page":  6,
-				"text":         "New players flooding in... better grab what I can before it gets crazy!",
-				"game_index":   0,
-				"coins_reward": 35,
-				"scene":        PROTO_LEVEL, # TODO: replace with shadow avatar arena scene
-			},
-			{
+				#"before_page":  6,
+				#"text":         "New players flooding in... better grab what I can before it gets crazy!",
+				#"game_index":   0,
+				#"coins_reward": 35,
+				#"scene":        PROTO_LEVEL, # TODO: replace with shadow avatar arena scene
+			#},
+			#{
 				# Type      : Pure survival — dodge Big Boss sword slashes + shockwaves
 				# Character : CT
 				# NPCs      : Big Boss (non-killable) — horizontal slash + ground slam,
@@ -208,9 +208,9 @@ static func get_playable_definitions(chapter: int) -> Array:
 				# Level     : Circular arena, 90-second survival timer
 				# Win       : Survive full duration — no coins (pure tension)
 				# Difficulty: Medium — dodge timing and pattern recognition
-				"before_page":  10,
+				"before_page":  24,
 				"text":         "Big Boss is coming — MOVE!",
-				"game_index":   1,
+				"game_index":   0,
 				"coins_reward": 35,
 				"scene":        PROTO_LEVEL, # TODO: replace with circular arena scene
 			},
@@ -222,7 +222,7 @@ static func get_playable_definitions(chapter: int) -> Array:
 				# Level     : Side corridor — stop skulls reaching the main arena
 				# Win       : Clear all 3 waves
 				# Difficulty: Medium — wave management, increasing enemy pressure
-				"before_page":  23,
+				"before_page":  95,
 				"text":         "She's holding her own... but Big Boss has one more trick!",
 				"game_index":   2,
 				"coins_reward": 35,
@@ -249,7 +249,7 @@ static func get_playable_definitions(chapter: int) -> Array:
 				# Mechanic  : Hit near edge → forced fall, scripted segment end
 				# Win       : Survive 60 seconds OR get knocked off cliff (scripted)
 				# Difficulty: Medium — spatial awareness, Horn charge timing
-				"before_page":  9,
+				"before_page":  61,
 				"text":         "Better snap out of it... something doesn't feel right.",
 				"game_index":   0,
 				"coins_reward": 35,
@@ -262,7 +262,7 @@ static func get_playable_definitions(chapter: int) -> Array:
 				# Level     : Open forest — hidden coin clusters, 50 total coins
 				# Win       : Collect 35 coins
 				# Difficulty: Very low — relaxed, matches CT & Felix bonding tone
-				"before_page":  17,
+				"before_page":  120,
 				"text":         "Alright Flex, lead the way — but watch out for what's in these woods!",
 				"game_index":   1,
 				"coins_reward": 35,
@@ -283,19 +283,19 @@ static func get_playable_definitions(chapter: int) -> Array:
 		#   Page  18     Credits + bonus Horn gag
 		# ══════════════════════════════════════════════════════════════════════
 		4: return [
-			{
-				# Type      : Auto-scrolling chase (left-to-right) + obstacle dodging
-				# Character : CT  |  Felix (runs alongside)
-				# NPCs      : Projectile enemies, Horn in background
-				# Level     : Auto-scroll forest — tree trunks, falling logs, restart if caught
-				# Win       : Reach end of auto-scroll without being caught
-				# Difficulty: Medium — reaction timing, varied obstacles
-				"before_page":  7,
-				"text":         "Horn is somewhere in these woods... keep moving!",
-				"game_index":   0,
-				"coins_reward": 40,
-				"scene":        PROTO_LEVEL, # TODO: replace with auto-scroll forest scene
-			},
+			#{
+				## Type      : Auto-scrolling chase (left-to-right) + obstacle dodging
+				## Character : CT  |  Felix (runs alongside)
+				## NPCs      : Projectile enemies, Horn in background
+				## Level     : Auto-scroll forest — tree trunks, falling logs, restart if caught
+				## Win       : Reach end of auto-scroll without being caught
+				## Difficulty: Medium — reaction timing, varied obstacles
+				#"before_page":  7,
+				#"text":         "Horn is somewhere in these woods... keep moving!",
+				#"game_index":   0,
+				#"coins_reward": 40,
+				#"scene":        PROTO_LEVEL, # TODO: replace with auto-scroll forest scene
+			#},
 			{
 				# Type      : Enemy combat + puzzle (apply type-weakness system)
 				# Character : CT  |  Felix (combat advisor)
@@ -304,9 +304,9 @@ static func get_playable_definitions(chapter: int) -> Array:
 				#             Barreldugo / Projectile type (close-range weakness)
 				# Win       : Defeat all 3 enemy types
 				# Difficulty: Medium — must exploit type weaknesses
-				"before_page":  10,
+				"before_page":  34,
 				"text":         "A Barreldugo! Flex says get close — let's try it!",
-				"game_index":   1,
+				"game_index":   0,
 				"coins_reward": 40,
 				"scene":        PROTO_LEVEL, # TODO: replace with type-weakness combat scene
 			},
