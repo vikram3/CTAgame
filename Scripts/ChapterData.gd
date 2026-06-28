@@ -343,7 +343,7 @@ static func get_playable_definitions(chapter: int) -> Array:
 				# NPCs      : Flying ship creatures — 2 waves, light projectile hazards
 				# Win       : Collect 25 coins + clear 2 enemy waves
 				# Difficulty: Low-medium — energy booster before Chapter 6
-				"before_page":  24,
+				"before_page":  117,
 				"text":         "Alex accepted the duel... somebody's gotta warm up for him!",
 				"game_index":   1,
 				"coins_reward": 40,
