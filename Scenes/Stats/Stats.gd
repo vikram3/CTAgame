@@ -14,8 +14,9 @@ var current_energy: float
 
 
 func _ready() -> void:
-	current_health = stats.max_health
-	current_energy = stats.max_energy
+	if stats:
+		current_health = stats.max_health
+		current_energy = stats.max_energy
 
 
 # =================================
@@ -23,14 +24,11 @@ func _ready() -> void:
 # =================================
 func _damage_given() -> int:
 	var damage = stats.damage
-
 	# critical hit check
 	if randf() <= stats.crit_chance:
 		damage *= stats.crit_damage
-
 	# minimum damage clamp
 	damage = max(damage, min_damage)
-
 	return damage
 
 
@@ -40,10 +38,8 @@ func _damage_given() -> int:
 func _damage_deduction(damage: int) -> void:
 	var final_damage = damage - stats.defense
 	final_damage = max(final_damage, min_damage)
-
 	current_health -= final_damage
 	emit_signal("health_updated", current_health)
-
 	if current_health <= 0:
 		current_health = 0
 		emit_signal("health_depleated")
@@ -52,25 +48,26 @@ func _damage_deduction(damage: int) -> void:
 # =================================
 # ENERGY MANAGEMENT
 # =================================
-
 func _energy_consumption(ammount) -> bool:
 	if current_energy < ammount:
 		return false
-	
+
 	_energy_deduction(ammount)
 	return true
+
 
 func _energy_deduction(value: float) -> void:
 	current_energy -= value
 	emit_signal("energy_updated", current_energy)
-
 	if current_energy <= 0:
 		current_energy = 0
 		emit_signal("energy_depleated")
 
+
 func _energy_refill(value: float) -> void:
 	current_energy = min(current_energy + value, stats.max_energy)
 	emit_signal("energy_updated", current_energy)
+
 
 # =================================
 # HEALTH MANAGEMENT

@@ -15,7 +15,6 @@ func _on_body_entered(body: Node2D) -> void:
 	if not (body is Player):
 		return
 	var player := body as Player
-	if player.is_dead or player.is_invulnerable or not player.hurt_box:
+	if player.is_dead or player.is_invulnerable:
 		return
-	player.hurt_box.apply_damage(damage)
-	player._start_invulnerability()
+	player.take_level_damage(damage, global_position)

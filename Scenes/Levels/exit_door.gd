@@ -2,6 +2,7 @@ extends Area2D
 class_name ExitDoor
 
 signal exit_reached
+signal missing_coins(needed: int)
 
 @export var required_coins: int = 18
 
@@ -17,5 +18,4 @@ func _on_body_entered(body: Node2D) -> void:
 	if CollectedItems.coins_amount >= required_coins:
 		exit_reached.emit()
 	else:
-		# not enough coins yet - hook this up to a HUD toast/message if wanted
-		print("Need %d more coins" % (required_coins - CollectedItems.coins_amount))
+		missing_coins.emit(required_coins - CollectedItems.coins_amount)

@@ -1,4 +1,4 @@
-[gd_scene load_steps=14 format=4 uid="uid://cgiikjxpsph3r"]
+[gd_scene load_steps=18 format=4 uid="uid://cgiikjxpsph3r"]
 
 [ext_resource type="Script" uid="uid://c43jx5hft6ixw" path="res://Scenes/Levels/lev_1.gd" id="1_vgi1v"]
 [ext_resource type="PackedScene" uid="uid://cv5y5kai8g7g4" path="res://Scenes/Levels/td_player.tscn" id="2_5rucc"]
@@ -11,6 +11,8 @@
 [ext_resource type="PackedScene" uid="uid://bq36566u8yqrx" path="res://Scenes/Traps/Trap_1/trap_1.tscn" id="9_d685u"]
 [ext_resource type="PackedScene" uid="uid://bthojiue67ein" path="res://Scenes/Traps/Trap_2/spike.tscn" id="10_jkqg5"]
 [ext_resource type="Script" uid="uid://3eot3xp0sdod" path="res://Scenes/Levels/top_down_damage_area.gd" id="11_damage"]
+[ext_resource type="Script" uid="uid://2n5muptwr3cc" path="res://Scenes/Levels/prop.gd" id="12_xr623"]
+[ext_resource type="Texture2D" uid="uid://dh8bati1qcart" path="res://Assets/TopDown/DryGrassProp.png" id="13_iv0in"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_d685u"]
 radius = 96.0
@@ -18,17 +20,24 @@ radius = 96.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_trap"]
 size = Vector2(130, 100)
 
-[node name="Lev1" type="Node2D" node_paths=PackedStringArray("player", "exit_door", "hud", "game_over_panel", "win_panel")]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_xr623"]
+size = Vector2(442, 386)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_iv0in"]
+size = Vector2(414, 366)
+
+[node name="Lev1" type="Node2D" node_paths=PackedStringArray("player", "exit_door", "hud", "game_over_panel", "win_panel", "tile_map")]
 script = ExtResource("1_vgi1v")
 player = NodePath("TDPlayer")
 exit_door = NodePath("ExitDoor")
 hud = NodePath("CanvasLayer/HUD")
 game_over_panel = NodePath("CanvasLayer/GameOverPanel")
 win_panel = NodePath("CanvasLayer/WinPanel")
+tile_map = NodePath("TileMap")
 
 [node name="TDPlayer" parent="." groups=["player"] instance=ExtResource("2_5rucc")]
 y_sort_enabled = false
-position = Vector2(206, -273)
+position = Vector2(1398, 204)
 collision_layer = 2
 speed = 500.0
 
@@ -75,23 +84,16 @@ tile_map_data = PackedByteArray("AAD2//X/AAAJABIAAAAAAO3/AABcACoAABALAO3/AABcACo
 tile_set = ExtResource("2_ua4c3")
 rendering_quadrant_size = 64
 
-[node name="Layer0" type="TileMapLayer" parent="TileMap"]
+[node name="Layer6" type="TileMapLayer" parent="TileMap"]
 use_parent_material = true
 tile_set = ExtResource("2_ua4c3")
 rendering_quadrant_size = 64
-
-[node name="Backdrop" type="ColorRect" parent="."]
-offset_left = -512.0
-offset_top = -512.0
-offset_right = 5120.0
-offset_bottom = 4200.0
-color = Color(0.53333336, 0.42352942, 0.3254902, 0.28235295)
 
 [node name="SkullPatrol1" parent="." instance=ExtResource("3_xfajc")]
 z_index = 2
 z_as_relative = false
 y_sort_enabled = true
-position = Vector2(1076, 594)
+position = Vector2(50, -255)
 patrol_speed = 75.0
 chase_speed = 135.0
 gravity = 0.0
@@ -104,7 +106,7 @@ catch_distance = 86.0
 z_index = 1
 z_as_relative = false
 y_sort_enabled = true
-position = Vector2(1187, 876)
+position = Vector2(1440, -216)
 patrol_speed = 200.0
 chase_speed = 125.0
 gravity = 0.0
@@ -120,7 +122,6 @@ chase_speed = 130.0
 top_down_mode = true
 top_down_patrol_a = Vector2(3230, 1680)
 top_down_patrol_b = Vector2(3230, 2350)
-restart_level_on_catch = true
 catch_distance = 86.0
 
 [node name="SkullPatrol4" parent="." instance=ExtResource("3_xfajc")]
@@ -130,7 +131,6 @@ chase_speed = 120.0
 top_down_mode = true
 top_down_patrol_a = Vector2(3360, 2820)
 top_down_patrol_b = Vector2(4060, 2820)
-restart_level_on_catch = true
 catch_distance = 86.0
 
 [node name="ExitDoor" type="Area2D" parent="."]
@@ -138,7 +138,7 @@ position = Vector2(1282, 441)
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("6_ua4c3")
-required_coins = 0
+required_coins = 20
 
 [node name="Props1" type="Sprite2D" parent="ExitDoor"]
 texture = ExtResource("6_svtlv")
@@ -415,20 +415,43 @@ offset_right = 348.0
 offset_bottom = 178.0
 text = "Menu"
 
+[node name="Prop" type="StaticBody2D" parent="."]
+z_index = 6
+z_as_relative = false
+y_sort_enabled = true
+position = Vector2(885, -405)
+script = ExtResource("12_xr623")
+sprite_texture = ExtResource("13_iv0in")
+
+[node name="Sprite2D" type="Sprite2D" parent="Prop"]
+z_index = 3
+position = Vector2(0, 28)
+texture = ExtResource("13_iv0in")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Prop"]
+shape = SubResource("RectangleShape2D_xr623")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Prop"]
+collision_mask = 3
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Prop/HideZone"]
+shape = SubResource("RectangleShape2D_iv0in")
+
 [node name="TopDownLevel" type="Node2D" parent="."]
 position = Vector2(7079, 650)
-
-[node name="BushVerticle" type="Sprite2D" parent="TopDownLevel"]
-position = Vector2(-896, 616)
-texture = ExtResource("6_svtlv")
-region_enabled = true
-region_rect = Rect2(275, 197, 132, 289)
 
 [node name="BushHorizontal" type="Sprite2D" parent="TopDownLevel"]
 position = Vector2(-510, 678)
 texture = ExtResource("6_svtlv")
 region_enabled = true
 region_rect = Rect2(501, 196, 403, 186)
+
+[node name="BushVerticle" type="Sprite2D" parent="TopDownLevel"]
+position = Vector2(-896, 616)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(275, 197, 132, 289)
 
 [node name="Ground" type="Sprite2D" parent="TopDownLevel"]
 position = Vector2(13, 585)

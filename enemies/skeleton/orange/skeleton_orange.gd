@@ -35,22 +35,27 @@ var current_states:states = states.IDLE
 @export var top_down_mode: bool = false
 @export var top_down_patrol_a: Vector2
 @export var top_down_patrol_b: Vector2
-@export var restart_level_on_catch: bool = false
+@export var top_down_patrol_points: Array[Vector2] = []
 @export var catch_distance: float = 78.0
+@export var contact_damage: int = 25
 
 var direction : int = 1
 var _top_down_target: Vector2
+var _top_down_target_index: int = 0
 var _player: Player
-var _caught: bool = false
+var _attack_cooldown: float = 0.0
 
 
 func _ready() -> void:
 	if top_down_mode:
-		_top_down_target = top_down_patrol_b
-		if top_down_patrol_a == Vector2.ZERO and top_down_patrol_b == Vector2.ZERO:
+		if top_down_patrol_points.is_empty():
+			top_down_patrol_points = [top_down_patrol_a, top_down_patrol_b]
+		if top_down_patrol_points.size() < 2:
 			top_down_patrol_a = global_position
 			top_down_patrol_b = global_position + Vector2(260, 0)
-			_top_down_target = top_down_patrol_b
+			top_down_patrol_points = [top_down_patrol_a, top_down_patrol_b]
+		_top_down_target_index = 1
+		_top_down_target = top_down_patrol_points[_top_down_target_index]
 		if anim:
 			anim.play("walk")
 
@@ -77,28 +82,29 @@ func _gravity():
 
 
 func _top_down_physics(delta: float) -> void:
-	if _caught:
-		velocity = Vector2.ZERO
-		move_and_slide()
-		return
+	_attack_cooldown = maxf(_attack_cooldown - delta, 0.0)
 
 	if not is_instance_valid(_player):
 		_player = get_tree().get_first_node_in_group("player") as Player
 
 	var desired_velocity := Vector2.ZERO
-	var chasing := player_in_range and is_instance_valid(_player)
+	var player_hidden := is_instance_valid(_player) and _player.is_hidden
+	var chasing := player_in_range and is_instance_valid(_player) and not player_hidden
+	if player_hidden:
+		player_in_range = false
 
 	if chasing:
 		var to_player := _player.global_position - global_position
 		if to_player.length() <= catch_distance:
-			_catch_player()
+			_hit_player()
 			return
 		desired_velocity = to_player.normalized() * chase_speed
 	else:
 		var to_target := _top_down_target - global_position
 		if to_target.length() <= max(patrol_speed * delta, 6.0):
 			global_position = _top_down_target
-			_top_down_target = top_down_patrol_a if _top_down_target == top_down_patrol_b else top_down_patrol_b
+			_top_down_target_index = (_top_down_target_index + 1) % top_down_patrol_points.size()
+			_top_down_target = top_down_patrol_points[_top_down_target_index]
 			to_target = _top_down_target - global_position
 		if to_target.length() > 0.0:
 			desired_velocity = to_target.normalized() * patrol_speed
@@ -113,15 +119,14 @@ func _top_down_physics(delta: float) -> void:
 		anim.play("walk" if velocity.length() > 1.0 else "idle")
 
 
-func _catch_player() -> void:
-	if _caught:
+func _hit_player() -> void:
+	if _attack_cooldown > 0.0 or not is_instance_valid(_player):
 		return
-	_caught = true
+	_attack_cooldown = 1.0
 	velocity = Vector2.ZERO
 	if anim:
 		anim.play("attack")
-	if restart_level_on_catch:
-		get_tree().call_deferred("reload_current_scene")
+	_player.take_level_damage(contact_damage, global_position)
 
 func match_state():
 	match current_states:
@@ -178,8 +183,8 @@ func choose_state():
 
 func _on_player_detector_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):
-		player_in_range = true
 		_player = body as Player
+		player_in_range = not _player.is_hidden
 
 func _on_player_detector_body_exited(body: Node2D) -> void:
 	if body.is_in_group("player"):
@@ -190,7 +195,8 @@ func _on_attack_range_body_entered(body: Node2D) -> void:
 		player_in_attack_range = true
 		if top_down_mode:
 			_player = body as Player
-			_catch_player()
+			if not _player.is_hidden:
+				_hit_player()
 
 func _on_attack_range_body_exited(body: Node2D) -> void:
 	if body.is_in_group("player"):

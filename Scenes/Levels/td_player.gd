@@ -6,12 +6,15 @@ class_name Player
 # =====================================================
 signal died
 signal damaged(current_health: float)
+signal hidden_state_changed(is_hidden: bool)
 
 # =====================================================
 # EXPORTS
 # =====================================================
 @export var speed: float = 120.0
-@export var invulnerable_time: float = 0.6
+@export var invulnerable_time: float = 1.0
+@export var knockback_strength: float = 220.0
+@export var knockback_time: float = 0.16
 
 @export var stats: Stats
 @export var anim: AnimationPlayer        # AnimationPlayer node
@@ -27,6 +30,9 @@ enum Facing { DOWN, UP, LEFT, RIGHT }
 var facing: Facing = Facing.DOWN
 var is_dead: bool = false
 var is_invulnerable: bool = false
+var is_hidden: bool = false
+var _knockback_velocity: Vector2 = Vector2.ZERO
+var _knockback_timer: float = 0.0
 
 var _invuln_timer: Timer
 
@@ -52,6 +58,12 @@ func _ready() -> void:
 func _physics_process(_delta: float) -> void:
 	if is_dead:
 		velocity = Vector2.ZERO
+		move_and_slide()
+		return
+
+	if _knockback_timer > 0.0:
+		_knockback_timer -= _delta
+		velocity = _knockback_velocity
 		move_and_slide()
 		return
 
@@ -125,6 +137,25 @@ func _start_invulnerability() -> void:
 		tween.tween_property(sprite, "modulate:a", 0.3, 0.1)
 		tween.tween_property(sprite, "modulate:a", 1.0, 0.1)
 		tween.set_loops(int(invulnerable_time / 0.2))
+
+
+func take_level_damage(damage: int, source_position: Vector2) -> void:
+	if is_dead or is_invulnerable or not hurt_box:
+		return
+	hurt_box.apply_damage(damage)
+	var away := global_position - source_position
+	_knockback_velocity = away.normalized() * knockback_strength if away.length() > 0.0 else Vector2.DOWN * knockback_strength
+	_knockback_timer = knockback_time
+	_start_invulnerability()
+
+
+func set_hidden_state(value: bool) -> void:
+	if is_hidden == value:
+		return
+	is_hidden = value
+	hidden_state_changed.emit(is_hidden)
+	if sprite:
+		sprite.modulate = Color(0.62, 0.85, 0.62, 0.78) if is_hidden else Color.WHITE
 
 
 func _on_health_updated(current_health: float) -> void:
