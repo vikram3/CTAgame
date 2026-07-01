@@ -11,6 +11,14 @@ enum states{
 	DIE
 }
 
+# Top-down enemy sub-state (separate from the platformer `states` above,
+# since top-down mode drives its own tiny state machine in _top_down_physics)
+enum TopDownState{
+	PATROL,
+	CHASE,
+	SEARCH
+}
+
 var player_in_range:bool = false
 var player_in_attack_range :bool = false
 var is_hurt:bool = false
@@ -39,11 +47,24 @@ var current_states:states = states.IDLE
 @export var catch_distance: float = 78.0
 @export var contact_damage: int = 25
 
+## How long (seconds) the enemy stands still "looking around" after losing the player.
+@export var search_duration: float = 1.6
+## How often (seconds) it flips its look direction while searching (left/right/left...).
+@export var search_look_interval: float = 0.4
+## How many look-flips before giving up and going back to patrol. Leave 0 to just use search_duration.
+@export var search_look_count: int = 3
+
 var direction : int = 1
 var _top_down_target: Vector2
 var _top_down_target_index: int = 0
 var _player: Player
 var _attack_cooldown: float = 0.0
+
+var _top_down_state: TopDownState = TopDownState.PATROL
+var _search_timer: float = 0.0
+var _search_look_timer: float = 0.0
+var _search_looks_done: int = 0
+var _last_known_player_pos: Vector2
 
 
 func _ready() -> void:
@@ -87,36 +108,97 @@ func _top_down_physics(delta: float) -> void:
 	if not is_instance_valid(_player):
 		_player = get_tree().get_first_node_in_group("player") as Player
 
-	var desired_velocity := Vector2.ZERO
 	var player_hidden := is_instance_valid(_player) and _player.is_hidden
-	var chasing := player_in_range and is_instance_valid(_player) and not player_hidden
+	var can_see_player := player_in_range and is_instance_valid(_player) and not player_hidden
 	if player_hidden:
 		player_in_range = false
 
-	if chasing:
-		var to_player := _player.global_position - global_position
-		if to_player.length() <= catch_distance:
-			_hit_player()
-			return
-		desired_velocity = to_player.normalized() * chase_speed
-	else:
-		var to_target := _top_down_target - global_position
-		if to_target.length() <= max(patrol_speed * delta, 6.0):
-			global_position = _top_down_target
-			_top_down_target_index = (_top_down_target_index + 1) % top_down_patrol_points.size()
-			_top_down_target = top_down_patrol_points[_top_down_target_index]
-			to_target = _top_down_target - global_position
-		if to_target.length() > 0.0:
-			desired_velocity = to_target.normalized() * patrol_speed
+	# Player reappeared / came back into range at any point -> always resume chase.
+	if can_see_player and _top_down_state != TopDownState.CHASE:
+		_top_down_state = TopDownState.CHASE
 
-	velocity = desired_velocity
+	# Just lost the player while chasing -> start searching instead of snapping to patrol.
+	if not can_see_player and _top_down_state == TopDownState.CHASE:
+		_start_searching()
+
+	match _top_down_state:
+		TopDownState.CHASE:
+			_process_chase(can_see_player)
+		TopDownState.SEARCH:
+			_process_search(delta)
+		TopDownState.PATROL:
+			_process_patrol(delta)
+
+
+func _process_chase(can_see_player: bool) -> void:
+	if not can_see_player:
+		return
+	var to_player := _player.global_position - global_position
+	_last_known_player_pos = _player.global_position
+	if to_player.length() <= catch_distance:
+		_hit_player()
+		return
+	velocity = to_player.normalized() * chase_speed
+	move_and_slide()
+	_face_towards(velocity)
+	if anim:
+		anim.play("walk")
+
+
+func _start_searching() -> void:
+	_top_down_state = TopDownState.SEARCH
+	_search_timer = search_duration
+	_search_look_timer = search_look_interval
+	_search_looks_done = 0
+	velocity = Vector2.ZERO
+	# First glance towards wherever the player was last headed.
+	_face_towards(_last_known_player_pos - global_position)
+
+
+func _process_search(delta: float) -> void:
+	velocity = Vector2.ZERO
 	move_and_slide()
 
-	if absf(velocity.x) > 1.0 and body:
-		body.scale.x = 1 if velocity.x > 0.0 else -1
+	if anim:
+		anim.play("idle")
+
+	_search_timer -= delta
+	_search_look_timer -= delta
+
+	if _search_look_timer <= 0.0:
+		_search_look_timer = search_look_interval
+		# Flip which way it's "looking" — alternates left/right like it's scanning.
+		if body:
+			body.scale.x = -body.scale.x if body.scale.x != 0 else 1
+		_search_looks_done += 1
+
+	var done_looking := search_look_count > 0 and _search_looks_done >= search_look_count
+	if _search_timer <= 0.0 or done_looking:
+		_top_down_state = TopDownState.PATROL
+
+
+func _process_patrol(delta: float) -> void:
+	var to_target := _top_down_target - global_position
+	if to_target.length() <= max(patrol_speed * delta, 6.0):
+		global_position = _top_down_target
+		_top_down_target_index = (_top_down_target_index + 1) % top_down_patrol_points.size()
+		_top_down_target = top_down_patrol_points[_top_down_target_index]
+		to_target = _top_down_target - global_position
+
+	velocity = Vector2.ZERO
+	if to_target.length() > 0.0:
+		velocity = to_target.normalized() * patrol_speed
+
+	move_and_slide()
+	_face_towards(velocity)
 
 	if anim:
 		anim.play("walk" if velocity.length() > 1.0 else "idle")
+
+
+func _face_towards(dir: Vector2) -> void:
+	if body and absf(dir.x) > 1.0:
+		body.scale.x = 1 if dir.x > 0.0 else -1
 
 
 func _hit_player() -> void:

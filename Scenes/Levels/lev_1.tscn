@@ -1,4 +1,4 @@
-[gd_scene load_steps=18 format=4 uid="uid://cgiikjxpsph3r"]
+[gd_scene load_steps=19 format=4 uid="uid://cgiikjxpsph3r"]
 
 [ext_resource type="Script" uid="uid://c43jx5hft6ixw" path="res://Scenes/Levels/lev_1.gd" id="1_vgi1v"]
 [ext_resource type="PackedScene" uid="uid://cv5y5kai8g7g4" path="res://Scenes/Levels/td_player.tscn" id="2_5rucc"]
@@ -13,6 +13,7 @@
 [ext_resource type="Script" uid="uid://3eot3xp0sdod" path="res://Scenes/Levels/top_down_damage_area.gd" id="11_damage"]
 [ext_resource type="Script" uid="uid://2n5muptwr3cc" path="res://Scenes/Levels/prop.gd" id="12_xr623"]
 [ext_resource type="Texture2D" uid="uid://dh8bati1qcart" path="res://Assets/TopDown/DryGrassProp.png" id="13_iv0in"]
+[ext_resource type="Script" uid="uid://d3hdthjommp1f" path="res://Scenes/Levels/HidingSpot.gd" id="14_ch4il"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_d685u"]
 radius = 96.0
@@ -20,11 +21,11 @@ radius = 96.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_trap"]
 size = Vector2(130, 100)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_xr623"]
-size = Vector2(442, 386)
-
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_iv0in"]
-size = Vector2(414, 366)
+size = Vector2(566, 492)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ch4il"]
+size = Vector2(450, 402)
 
 [node name="Lev1" type="Node2D" node_paths=PackedStringArray("player", "exit_door", "hud", "game_over_panel", "win_panel", "tile_map")]
 script = ExtResource("1_vgi1v")
@@ -429,14 +430,15 @@ position = Vector2(0, 28)
 texture = ExtResource("13_iv0in")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Prop"]
-shape = SubResource("RectangleShape2D_xr623")
+shape = SubResource("RectangleShape2D_iv0in")
 disabled = true
 
 [node name="HideZone" type="Area2D" parent="Prop"]
 collision_mask = 3
+script = ExtResource("14_ch4il")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Prop/HideZone"]
-shape = SubResource("RectangleShape2D_iv0in")
+shape = SubResource("RectangleShape2D_ch4il")
 
 [node name="TopDownLevel" type="Node2D" parent="."]
 position = Vector2(7079, 650)
