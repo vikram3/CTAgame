@@ -364,3 +364,7 @@ func _on_health_depleated() -> void:
 	if anim:
 		anim.stop()
 	died.emit()
+	
+func _draw() -> void:
+	if OS.is_debug_build():
+		draw_line(Vector2(-8, 0), Vector2(8, 0), Color.CYAN, 1.5)

@@ -196,9 +196,9 @@ _data = {
 &"walk_up": SubResource("Animation_6djil")
 }
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_n80bf"]
-radius = 46.0
-height = 134.0
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_cxu2i"]
+radius = 38.0
+height = 110.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_cxu2i"]
 radius = 124.7758
@@ -211,6 +211,7 @@ metadata/_custom_type_script = "uid://ba0i3u40ltfdw"
 z_index = 2
 z_as_relative = false
 y_sort_enabled = true
+position = Vector2(0, -157)
 script = ExtResource("1_cxu2i")
 stats = NodePath("Stats")
 anim = NodePath("AnimationPlayer")
@@ -231,8 +232,9 @@ libraries = {
 }
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 96)
-shape = SubResource("CapsuleShape2D_n80bf")
+position = Vector2(0, 120)
+rotation = -1.5707964
+shape = SubResource("CapsuleShape2D_cxu2i")
 
 [node name="HurtBox" type="Area2D" parent="."]
 script = ExtResource("3_6djil")
