@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=4 uid="uid://cgiikjxpsph3r"]
+[gd_scene load_steps=32 format=4 uid="uid://cgiikjxpsph3r"]
 
 [ext_resource type="Script" uid="uid://c43jx5hft6ixw" path="res://Scenes/Levels/lev_1.gd" id="1_vgi1v"]
 [ext_resource type="PackedScene" uid="uid://cv5y5kai8g7g4" path="res://Scenes/Levels/td_player.tscn" id="2_5rucc"]
@@ -11,9 +11,9 @@
 [ext_resource type="PackedScene" uid="uid://dcpgodgyy0ael" path="res://Scenes/Collectables/Coin/coin.tscn" id="7_svtlv"]
 [ext_resource type="PackedScene" uid="uid://bq36566u8yqrx" path="res://Scenes/Traps/Trap_1/trap_1.tscn" id="9_d685u"]
 [ext_resource type="PackedScene" uid="uid://bthojiue67ein" path="res://Scenes/Traps/Trap_2/spike.tscn" id="10_jkqg5"]
+[ext_resource type="Texture2D" uid="uid://cp47ji1jjkf1" path="res://Assets/TopDown/Spear.png" id="10_rn0ox"]
 [ext_resource type="Script" uid="uid://3eot3xp0sdod" path="res://Scenes/Levels/top_down_damage_area.gd" id="11_damage"]
 [ext_resource type="Script" uid="uid://2n5muptwr3cc" path="res://Scenes/Levels/prop.gd" id="12_xr623"]
-[ext_resource type="Texture2D" uid="uid://dh8bati1qcart" path="res://Assets/TopDown/DryGrassProp.png" id="13_iv0in"]
 [ext_resource type="Script" uid="uid://d3hdthjommp1f" path="res://Scenes/Levels/HidingSpot.gd" id="14_ch4il"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_d685u"]
@@ -22,13 +22,49 @@ radius = 96.0
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_trap"]
 size = Vector2(130, 100)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ch4il"]
-size = Vector2(90, 90)
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rn0ox"]
+size = Vector2(470, 446)
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_h3cjv"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8saxd"]
+size = Vector2(346, 272)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_blykl"]
+size = Vector2(380, 440)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ywgju"]
 size = Vector2(150, 128)
 
-[node name="Lev1" type="Node2D" node_paths=PackedStringArray("player", "exit_door", "hud", "game_over_panel", "win_panel", "tile_map")]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mc5hv"]
+size = Vector2(300, 338)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_w260u"]
+size = Vector2(150, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ooe6n"]
+size = Vector2(348, 392)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_8i43y"]
+size = Vector2(150, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_3nu6e"]
+size = Vector2(238, 252)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1mt84"]
+size = Vector2(150, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_j2b7d"]
+size = Vector2(494, 474)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_t1rpt"]
+size = Vector2(150, 128)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cwfw8"]
+size = Vector2(282, 432)
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_cy5b0"]
+size = Vector2(150, 128)
+
+[node name="Lev1" type="Node2D" node_paths=PackedStringArray("player", "exit_door", "hud", "game_over_panel", "win_panel", "tile_map", "player_start", "exit_position")]
 script = ExtResource("1_vgi1v")
 player = NodePath("Sortables/TDPlayer")
 exit_door = NodePath("Sortables/Props/ExitDoor")
@@ -36,6 +72,8 @@ hud = NodePath("CanvasLayer/HUD")
 game_over_panel = NodePath("CanvasLayer/GameOverPanel")
 win_panel = NodePath("CanvasLayer/WinPanel")
 tile_map = NodePath("Sortables/MazeWalls/TileMap")
+player_start = NodePath("Start")
+exit_position = NodePath("End")
 
 [node name="Ground" type="Node2D" parent="."]
 z_index = -100
@@ -43,13 +81,14 @@ z_index = -100
 [node name="Layer5" type="TileMapLayer" parent="Ground"]
 z_index = -100
 use_parent_material = true
-tile_map_data = PackedByteArray("AAD2//X/AAAJABIAAAAAAO3/AABcACoAABALAO3/AABcACoAABAWAO3/AABcACoAABAhAO3/AABcACoAABAsAO3/AABcACoAABA3AO3/AABcACoAABBCAO3/AABcACoAABBNAO3/AABcACoAABBYAO3/AABcACoAABBjAO3/AABcACoAABBuAO3/AABcACoAABB5AO3/AABcACoAABCEAO3/AABcACoAABCPAO3/AABcACoAABCaAO3/AABcACoAABD1/4AAAABcACoAABAAAIAAAABcACoAABALAIAAAABcACoAABAWAIAAAABcACoAABAhAIAAAABcACoAABAsAIAAAABcACoAABA3AIAAAABcACoAABBCAIAAAABcACoAABBNAIAAAABcACoAABBYAIAAAABcACoAABBjAIAAAABcACoAABBuAIAAAABcACoAABB5AIAAAABcACoAABCEAIAAAABcACoAABCPAIAAAABcACoAABCaAIAAAABcACoAABCeAHoAAAAIAAYAAACeAHIAAAAIAAYAAACeAGoAAAAIAAYAAACeAGIAAAAIAAYAAACeAFoAAAAIAAYAAACeAFIAAAAIAAYAAACeAEoAAAAIAAYAAACeAEIAAAAIAAYAAACeADoAAAAIAAYAAACeADIAAAAIAAYAAACeACoAAAAIAAYAAACeACIAAAAIAAYAAACeABoAAAAIAAYAAACeABIAAAAIAAYAAACeAAoAAAAIAAYAAACeAAIAAAAIAAYAAACeAPr/AAAIAAYAAACeAPL/AAAIAAYAAAD1//T/AAAKABMAAAAAAPT/AAAKABMAAAALAPT/AAAKABMAAAAWAPT/AAAKABMAAAAhAPT/AAAKABMAAAAsAPT/AAAKABMAAAA3APT/AAAKABMAAABCAPT/AAAKABMAABBNAPT/AAAKABMAABBYAPT/AAAKABMAAABjAPT/AAAKABMAABBuAPT/AAAKABMAABB5APT/AAAKABMAABD1//3/AAAKABMAAAAAAP3/AAAKABMAAAALAP3/AAAKABMAAAAWAP3/AAAKABMAAAAhAP3/AAAKABMAAAAsAP3/AAAKABMAAAA3AP3/AAAKABMAAABCAP3/AAAKABMAAABNAP3/AAAKABMAAABYAP3/AAAKABMAAABjAP3/AAAKABMAAABuAP3/AAAKABMAAAB5AP3/AAAKABMAAACEAP3/AAAKABMAAACEAPT/AAAKABMAAACPAP3/AAAKABMAAACPAPT/AAAKABMAAACaAPT/AAAKABMAAACaAP3/AAAKABMAAAD1/wYAAAAKABMAAAD1/w8AAAAKABMAAAD2/wcAAAAJABIAAAAAAAYAAAAKABMAAAAAAA8AAAAKABMAAAALAAYAAAAKABMAAAALAA8AAAAKABMAAAAWAAYAAAAKABMAAAAWAA8AAAAKABMAAAAhAAYAAAAKABMAAAAhAA8AAAAKABMAAAAsAAYAAAAKABMAAAAsAA8AAAAKABMAAAA3AAYAAAAKABMAAAA3AA8AAAAKABMAAABCAAYAAAAKABMAABBCAA8AAAAKABMAAABNAAYAAAAKABMAABBNAA8AAAAKABMAAABYAAYAAAAKABMAAABYAA8AAAAKABMAAABjAAYAAAAKABMAABBjAA8AAAAKABMAAABuAAYAAAAKABMAABBuAA8AAAAKABMAAAB5AAYAAAAKABMAABB5AA8AAAAKABMAAACEAAYAAAAKABMAAACEAA8AAAAKABMAAACPAAYAAAAKABMAAACPAA8AAAAKABMAAACaAAYAAAAKABMAAACaAA8AAAAKABMAAAD1/xgAAAAKABMAAAD1/yEAAAAKABMAAAD2/xkAAAAJABIAAAAAABgAAAAKABMAAAAAACEAAAAKABMAAAALABgAAAAKABMAAAALACEAAAAKABMAAAAWABgAAAAKABMAAAAWACEAAAAKABMAAAAhABgAAAAKABMAAAAhACEAAAAKABMAAAAsABgAAAAKABMAAAAsACEAAAAKABMAAAA3ABgAAAAKABMAAAA3ACEAAAAKABMAAABCABgAAAAKABMAABBCACEAAAAKABMAAABNABgAAAAKABMAABBNACEAAAAKABMAAABYABgAAAAKABMAAABYACEAAAAKABMAAABjABgAAAAKABMAABBjACEAAAAKABMAAABuABgAAAAKABMAABBuACEAAAAKABMAAAB5ABgAAAAKABMAABB5ACEAAAAKABMAAACEABgAAAAKABMAAACEACEAAAAKABMAAACPABgAAAAKABMAAACPACEAAAAKABMAAACaABgAAAAKABMAAACaACEAAAAKABMAAAD1/yoAAAAKABMAAAD1/zMAAAAKABMAAAD2/ysAAAAJABIAAAAAACoAAAAKABMAAAAAADMAAAAKABMAAAALACoAAAAKABMAAAALADMAAAAKABMAAAAWACoAAAAKABMAAAAWADMAAAAKABMAAAAhACoAAAAKABMAAAAhADMAAAAKABMAAAAsACoAAAAKABMAAAAsADMAAAAKABMAAAA3ACoAAAAKABMAAAA3ADMAAAAKABMAAABCACoAAAAKABMAABBCADMAAAAKABMAAABNACoAAAAKABMAABBNADMAAAAKABMAAABYACoAAAAKABMAAABYADMAAAAKABMAAABjACoAAAAKABMAABBjADMAAAAKABMAAABuACoAAAAKABMAABBuADMAAAAKABMAAAB5ACoAAAAKABMAABB5ADMAAAAKABMAAACEACoAAAAKABMAAACEADMAAAAKABMAAACPACoAAAAKABMAAACPADMAAAAKABMAAACaACoAAAAKABMAAACaADMAAAAKABMAAAD1/zwAAAAKABMAAAD1/0UAAAAKABMAAAD2/z0AAAAJABIAAAAAADwAAAAKABMAAAAAAEUAAAAKABMAAAALADwAAAAKABMAAAALAEUAAAAKABMAAAAWADwAAAAKABMAAAAWAEUAAAAKABMAAAAhADwAAAAKABMAAAAhAEUAAAAKABMAAAAsADwAAAAKABMAAAAsAEUAAAAKABMAAAA3ADwAAAAKABMAAAA3AEUAAAAKABMAAABCADwAAAAKABMAABBCAEUAAAAKABMAAABNADwAAAAKABMAABBNAEUAAAAKABMAAABYADwAAAAKABMAAABYAEUAAAAKABMAAABjADwAAAAKABMAABBjAEUAAAAKABMAAABuADwAAAAKABMAABBuAEUAAAAKABMAAAB5ADwAAAAKABMAABB5AEUAAAAKABMAAACEADwAAAAKABMAAACEAEUAAAAKABMAAACPADwAAAAKABMAAACPAEUAAAAKABMAAACaADwAAAAKABMAAACaAEUAAAAKABMAAAD1/04AAAAKABMAAAD1/1cAAAAKABMAAAD2/08AAAAJABIAAAAAAE4AAAAKABMAAAAAAFcAAAAKABMAAAALAE4AAAAKABMAAAALAFcAAAAKABMAAAAWAE4AAAAKABMAAAAWAFcAAAAKABMAAAAhAE4AAAAKABMAAAAhAFcAAAAKABMAAAAsAE4AAAAKABMAAAAsAFcAAAAKABMAAAA3AE4AAAAKABMAAAA3AFcAAAAKABMAAABCAE4AAAAKABMAABBCAFcAAAAKABMAAABNAE4AAAAKABMAABBNAFcAAAAKABMAAABYAE4AAAAKABMAAABYAFcAAAAKABMAAABjAE4AAAAKABMAABBjAFcAAAAKABMAAABuAE4AAAAKABMAABBuAFcAAAAKABMAAAB5AE4AAAAKABMAABB5AFcAAAAKABMAAACEAE4AAAAKABMAAACEAFcAAAAKABMAAACPAE4AAAAKABMAAACPAFcAAAAKABMAAACaAE4AAAAKABMAAACaAFcAAAAKABMAAAD1/2AAAAAKABMAAAD1/2kAAAAKABMAAAD2/2EAAAAJABIAAAAAAGAAAAAKABMAAAAAAGkAAAAKABMAAAALAGAAAAAKABMAAAALAGkAAAAKABMAAAAWAGAAAAAKABMAAAAWAGkAAAAKABMAAAAhAGAAAAAKABMAAAAhAGkAAAAKABMAAAAsAGAAAAAKABMAAAAsAGkAAAAKABMAAAA3AGAAAAAKABMAAAA3AGkAAAAKABMAAABCAGAAAAAKABMAABBCAGkAAAAKABMAAABNAGAAAAAKABMAABBNAGkAAAAKABMAAABYAGAAAAAKABMAAABYAGkAAAAKABMAAABjAGAAAAAKABMAABBjAGkAAAAKABMAAABuAGAAAAAKABMAABBuAGkAAAAKABMAAAB5AGAAAAAKABMAABB5AGkAAAAKABMAAACEAGAAAAAKABMAAACEAGkAAAAKABMAAACPAGAAAAAKABMAAACPAGkAAAAKABMAAACaAGAAAAAKABMAAACaAGkAAAAKABMAAAD1/3IAAAAKABMAAAD1/3sAAAAKABMAAAD2/3MAAAAJABIAAAAAAHIAAAAKABMAAAAAAHsAAAAKABMAAAALAHIAAAAKABMAAAALAHsAAAAKABMAAAAWAHIAAAAKABMAAAAWAHsAAAAKABMAAAAhAHIAAAAKABMAAAAhAHsAAAAKABMAAAAsAHIAAAAKABMAAAAsAHsAAAAKABMAAAA3AHIAAAAKABMAAAA3AHsAAAAKABMAAABCAHIAAAAKABMAABBCAHsAAAAKABMAAABNAHIAAAAKABMAABBNAHsAAAAKABMAAABYAHIAAAAKABMAAABYAHsAAAAKABMAAABjAHIAAAAKABMAABBjAHsAAAAKABMAAABuAHIAAAAKABMAABBuAHsAAAAKABMAAAB5AHIAAAAKABMAABB5AHsAAAAKABMAAACEAHIAAAAKABMAAACEAHsAAAAKABMAAACPAHIAAAAKABMAAACPAHsAAAAKABMAAACaAHIAAAAKABMAAACaAHsAAAAKABMAAAA=")
+tile_map_data = PackedByteArray("AAADAAcAAQAAAAAAAAAqAAcAAQAAAAAAAABRAAcAAQAAAAAAAAB4AAcAAQAAAAAAAACfAAcAAQAAAAAAAADc/wcAAQAAAAAAAADc/y4AAQAAAAAAAAADAC4AAQAAAAAAAAAqAC4AAQAAAAAAAABRAC4AAQAAAAAAAAB4AC4AAQAAAAAAAACfAC4AAQAAAAAAAADc/1UAAQAAAAAAAAADAFUAAQAAAAAAAAAqAFUAAQAAAAAAAABRAFUAAQAAAAAAAAB4AFUAAQAAAAAAAACfAFUAAQAAAAAAAADc/3wAAQAAAAAAAAADAHwAAQAAAAAAAAAqAHwAAQAAAAAAAABRAHwAAQAAAAAAAAB4AHwAAQAAAAAAAACfAHwAAQAAAAAAAADc/+D/AQAAAAAAAAADAOD/AQAAAAAAAAAqAOD/AQAAAAAAAABRAOD/AQAAAAAAAAB4AOD/AQAAAAAAAACfAOD/AQAAAAAAAAA=")
 tile_set = ExtResource("2_ua4c3")
 rendering_quadrant_size = 64
 
 [node name="Layer6" type="TileMapLayer" parent="Ground"]
 z_index = -100
 use_parent_material = true
+tile_map_data = PackedByteArray("AADi/9P/AABeAB0AAACFAM//AABeAB0AAAAsAOP/AABeAB0AAAClAOj/AABeAB0AAACaANP/AABeAB0AAAB6AOT/AABeAB0AAAASANb/AABeAB0AAADr/+j/AABeAB0AAADn/xgAAABeAB0AAADU/zsAAABeAB0AAADL/+D/AABeAB0AAADc/xUAAABeAB0AAADd//3/AABeAB0AAADn////AABeAB0AAADm/z4AAABeAB0AAADT/2QAAABeAB0AAADe/3YAAABeAB0AAADn/2IAAABeAB0AAADp/3sAAABeAB0AAAD9/4IAAABeAB0AAAArAIgAAABeAB0AAABKAHsAAABeAB0AAABnAIUAAABeAB0AAACBAIcAAABeAB0AAACfAH4AAABeAB0AAACtAGAAAABeAB0AAACqACkAAABeAB0AAACqAAUAAABeAB0AAADq/yQAAAA7AAMAAADp/zQAAAA7AAMAAADr/0kAAAA7AAMAAADs/1sAAAA7AAMAAADr/20AAAA7AAMAAADz/4EAAAA7AAMAAABzAIEAAAA7AAMAAACVAIQAAAA7AAMAAACmAHAAAAA7AAMAAACmAEgAAAA7AAMAAACkADEAAAA7AAMAAACpABsAAAA7AAMAAACsAPj/AAA7AAMAAACYAOn/AAA7AAMAAACkANv/AAA7AAMAAACOAN3/AAA7AAMAAACOAN7/AAA7AAMAAACEAOn/AAA7AAMAAABjAN//AAA7AAMAAABiAOv/AAA7AAMAAABxAOv/AAA7AAMAAABCAOv/AAA7AAMAAABOAOn/AAA7AAMAAAAZAOb/AAA7AAMAAAAAAOr/AAA7AAMAAAD0/97/AAA7AAMAAADn//P/AAA7AAMAAADc/+3/AAA7AAMAAADh/9//AAA7AAMAAADT/xgAAAA7AAMAAADe/yYAAAA7AAMAAADh/wgAAAA7AAMAAADe/0sAAAA7AAMAAADj/1QAAAA7AAMAAADf/2UAAAA7AAMAAAASAIgAAAA7AAMAAAAcAH4AAAA7AAMAAAA5AIQAAAA7AAMAAABKAIYAAAA7AAMAAABUAIMAAAA7AAMAAABcAH4AAAA7AAMAAAANAHwAAAA7AAMAAAA=")
 tile_set = ExtResource("2_ua4c3")
 rendering_quadrant_size = 64
 
@@ -86,7 +125,7 @@ format = 2
 y_sort_enabled = true
 
 [node name="ExitDoor" type="Area2D" parent="Sortables/Props"]
-position = Vector2(1282, 441)
+position = Vector2(4899, 2203)
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("6_ua4c3")
@@ -102,108 +141,156 @@ position = Vector2(0, 44)
 shape = SubResource("CircleShape2D_d685u")
 
 [node name="Coin" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(785, -371)
+position = Vector2(2672, 21)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin2" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(1009, -375)
+position = Vector2(2896, 17)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin3" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(1224, -378)
+position = Vector2(3111, 14)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin4" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(1453, -383)
+position = Vector2(3340, 9)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin5" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(3137, 1181)
+position = Vector2(2441, 19)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin6" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(1510, 940)
+position = Vector2(1221, 1939)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin7" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(1710, 940)
+position = Vector2(1421, 1939)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin8" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(1910, 940)
+position = Vector2(1621, 1939)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin9" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(2290, 1320)
+position = Vector2(2999, 670)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin10" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(2490, 1320)
+position = Vector2(3199, 670)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin11" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(2690, 1320)
+position = Vector2(3399, 670)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin12" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(2890, 1320)
+position = Vector2(3599, 670)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin13" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(3090, 1320)
+position = Vector2(3799, 670)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin14" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(3290, 1520)
+position = Vector2(2328, 1957)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin15" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(3290, 1720)
+position = Vector2(2328, 2157)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin16" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(3290, 1920)
+position = Vector2(2328, 2357)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin17" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(3290, 2120)
+position = Vector2(2328, 2557)
+scale = Vector2(6.425, 6.425)
+
+[node name="Coin26" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
+position = Vector2(4860, 923)
+scale = Vector2(6.425, 6.425)
+
+[node name="Coin27" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
+position = Vector2(4860, 1123)
+scale = Vector2(6.425, 6.425)
+
+[node name="Coin28" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
+position = Vector2(4860, 1323)
+scale = Vector2(6.425, 6.425)
+
+[node name="Coin29" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
+position = Vector2(4860, 1523)
+scale = Vector2(6.425, 6.425)
+
+[node name="Coin30" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
+position = Vector2(-122, 2396)
+scale = Vector2(6.425, 6.425)
+
+[node name="Coin31" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
+position = Vector2(-122, 2596)
+scale = Vector2(6.425, 6.425)
+
+[node name="Coin32" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
+position = Vector2(-122, 2796)
+scale = Vector2(6.425, 6.425)
+
+[node name="Coin33" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
+position = Vector2(-122, 2996)
+scale = Vector2(6.425, 6.425)
+
+[node name="Coin34" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
+position = Vector2(3850, 1549)
+scale = Vector2(6.425, 6.425)
+
+[node name="Coin35" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
+position = Vector2(3850, 1749)
+scale = Vector2(6.425, 6.425)
+
+[node name="Coin36" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
+position = Vector2(3850, 1949)
+scale = Vector2(6.425, 6.425)
+
+[node name="Coin37" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
+position = Vector2(3850, 2149)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin18" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(3490, 2350)
+position = Vector2(397, 3608)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin19" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(3690, 2350)
+position = Vector2(597, 3608)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin20" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(3890, 2350)
+position = Vector2(797, 3608)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin21" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(3460, 3020)
+position = Vector2(4038, 3012)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin22" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(3660, 3020)
+position = Vector2(4238, 3012)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin23" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(3860, 3020)
+position = Vector2(4438, 3012)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin24" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(4020, 3220)
+position = Vector2(380, 1180)
 scale = Vector2(6.425, 6.425)
 
 [node name="Coin25" parent="Sortables/Props" instance=ExtResource("7_svtlv")]
-position = Vector2(2118, -403)
+position = Vector2(644, 1188)
 scale = Vector2(6.425, 6.425)
 
 [node name="Trap_1" parent="Sortables/Props" instance=ExtResource("9_d685u")]
 process_mode = 4
-position = Vector2(2538, -212)
+position = Vector2(1931, -113)
 
 [node name="Trap1Damage" type="Area2D" parent="Sortables/Props"]
 position = Vector2(1081, 215)
@@ -215,12 +302,16 @@ damage = 14
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Trap1Damage"]
 shape = SubResource("RectangleShape2D_trap")
 
+[node name="Spear" type="Sprite2D" parent="Sortables/Props/Trap1Damage"]
+position = Vector2(0, -59)
+texture = ExtResource("10_rn0ox")
+
 [node name="Spike" parent="Sortables/Props" instance=ExtResource("10_jkqg5")]
 process_mode = 4
 position = Vector2(1315, 1111)
 
 [node name="SpikeDamage" type="Area2D" parent="Sortables/Props"]
-position = Vector2(1536, 310)
+position = Vector2(1536, 307)
 collision_layer = 0
 collision_mask = 2
 script = ExtResource("11_damage")
@@ -229,17 +320,22 @@ damage = 12
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/SpikeDamage"]
 shape = SubResource("RectangleShape2D_trap")
 
+[node name="Spear" type="Sprite2D" parent="Sortables/Props/SpikeDamage"]
+position = Vector2(0, -58)
+texture = ExtResource("10_rn0ox")
+
 [node name="Prop" type="StaticBody2D" parent="Sortables/Props"]
-position = Vector2(885, -405)
+position = Vector2(-173, 445)
 script = ExtResource("12_xr623")
-sprite_texture = ExtResource("13_iv0in")
 
 [node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop"]
 position = Vector2(0, 28)
-texture = ExtResource("13_iv0in")
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(2167, 92, 419, 344)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop"]
-shape = SubResource("RectangleShape2D_ch4il")
+shape = SubResource("RectangleShape2D_rn0ox")
 disabled = true
 
 [node name="HideZone" type="Area2D" parent="Sortables/Props/Prop"]
@@ -247,7 +343,381 @@ collision_mask = 3
 script = ExtResource("14_ch4il")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop/HideZone"]
-shape = SubResource("RectangleShape2D_h3cjv")
+shape = SubResource("RectangleShape2D_8saxd")
+
+[node name="Prop8" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(4854, -187)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop8"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(2167, 92, 419, 344)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop8"]
+shape = SubResource("RectangleShape2D_rn0ox")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop8"]
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop8/HideZone"]
+shape = SubResource("RectangleShape2D_8saxd")
+
+[node name="Prop9" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(4402, 1636)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop9"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(2167, 92, 419, 344)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop9"]
+shape = SubResource("RectangleShape2D_rn0ox")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop9"]
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop9/HideZone"]
+shape = SubResource("RectangleShape2D_8saxd")
+
+[node name="Prop10" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(4402, 1636)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop10"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(2167, 92, 419, 344)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop10"]
+shape = SubResource("RectangleShape2D_rn0ox")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop10"]
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop10/HideZone"]
+shape = SubResource("RectangleShape2D_8saxd")
+
+[node name="Prop2" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(2061, 672)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop2"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(2073, 538, 307.95972, 418)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop2"]
+position = Vector2(-46, 30)
+shape = SubResource("RectangleShape2D_blykl")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop2"]
+position = Vector2(-46, 102)
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop2/HideZone"]
+shape = SubResource("RectangleShape2D_ywgju")
+
+[node name="Prop14" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(-245, 3100)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop14"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(2073, 538, 307.95972, 418)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop14"]
+position = Vector2(-46, 30)
+shape = SubResource("RectangleShape2D_blykl")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop14"]
+position = Vector2(-46, 102)
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop14/HideZone"]
+shape = SubResource("RectangleShape2D_ywgju")
+
+[node name="Prop11" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(3323, 983)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop11"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(2073, 538, 307.95972, 418)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop11"]
+position = Vector2(-46, 30)
+shape = SubResource("RectangleShape2D_blykl")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop11"]
+position = Vector2(-46, 102)
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop11/HideZone"]
+shape = SubResource("RectangleShape2D_ywgju")
+
+[node name="Prop3" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(3461, -147)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop3"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1744, 824, 189, 690)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop3"]
+position = Vector2(-3, 233)
+shape = SubResource("RectangleShape2D_mc5hv")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop3"]
+position = Vector2(-3, 233)
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop3/HideZone"]
+shape = SubResource("RectangleShape2D_w260u")
+
+[node name="Prop4" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(756, 1528)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop4"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1744, 824, 189, 690)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop4"]
+position = Vector2(3, 254)
+shape = SubResource("RectangleShape2D_ooe6n")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop4"]
+position = Vector2(3, 254)
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop4/HideZone"]
+shape = SubResource("RectangleShape2D_8i43y")
+
+[node name="Prop17" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(72, 1528)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop17"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1744, 824, 189, 690)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop17"]
+position = Vector2(3, 254)
+shape = SubResource("RectangleShape2D_ooe6n")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop17"]
+position = Vector2(3, 254)
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop17/HideZone"]
+shape = SubResource("RectangleShape2D_8i43y")
+
+[node name="Prop12" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(3329, 3378)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop12"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1744, 824, 189, 690)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop12"]
+position = Vector2(3, 254)
+shape = SubResource("RectangleShape2D_ooe6n")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop12"]
+position = Vector2(3, 254)
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop12/HideZone"]
+shape = SubResource("RectangleShape2D_8i43y")
+
+[node name="Prop13" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(2041, 3391)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop13"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+flip_h = true
+region_enabled = true
+region_rect = Rect2(1744, 824, 189, 690)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop13"]
+position = Vector2(3, 254)
+shape = SubResource("RectangleShape2D_ooe6n")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop13"]
+position = Vector2(3, 254)
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop13/HideZone"]
+shape = SubResource("RectangleShape2D_8i43y")
+
+[node name="Prop5" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(1761, 1685)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop5"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1601, 189, 145, 184)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop5"]
+shape = SubResource("RectangleShape2D_3nu6e")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop5"]
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop5/HideZone"]
+shape = SubResource("RectangleShape2D_1mt84")
+
+[node name="Prop6" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(1684, 2347)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop6"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(2167, 92, 419, 344)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop6"]
+shape = SubResource("RectangleShape2D_j2b7d")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop6"]
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop6/HideZone"]
+shape = SubResource("RectangleShape2D_t1rpt")
+
+[node name="Prop15" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(-240, 941)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop15"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(2167, 92, 419, 344)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop15"]
+shape = SubResource("RectangleShape2D_j2b7d")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop15"]
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop15/HideZone"]
+shape = SubResource("RectangleShape2D_t1rpt")
+
+[node name="Prop16" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(2932, 2167)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop16"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(2167, 92, 419, 344)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop16"]
+shape = SubResource("RectangleShape2D_j2b7d")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop16"]
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop16/HideZone"]
+shape = SubResource("RectangleShape2D_t1rpt")
+
+[node name="Prop7" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(2171, 1745)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop7"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(2702, 357, 347, 297)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop7"]
+shape = SubResource("RectangleShape2D_cwfw8")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop7"]
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop7/HideZone"]
+shape = SubResource("RectangleShape2D_cy5b0")
+
+[node name="Prop18" type="StaticBody2D" parent="Sortables/Props"]
+position = Vector2(440, 2427)
+script = ExtResource("12_xr623")
+
+[node name="Sprite2D" type="Sprite2D" parent="Sortables/Props/Prop18"]
+position = Vector2(0, 28)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(2702, 357, 347, 297)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop18"]
+shape = SubResource("RectangleShape2D_cwfw8")
+disabled = true
+
+[node name="HideZone" type="Area2D" parent="Sortables/Props/Prop18"]
+collision_mask = 3
+script = ExtResource("14_ch4il")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Prop18/HideZone"]
+shape = SubResource("RectangleShape2D_cy5b0")
 
 [node name="TopDownLevel" type="Node2D" parent="Sortables/Props"]
 y_sort_enabled = true
@@ -368,42 +838,91 @@ region_rect = Rect2(1337, 540, 193, 352)
 y_sort_enabled = true
 
 [node name="SkullPatrol1" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
-position = Vector2(50, -255)
-patrol_speed = 75.0
-chase_speed = 135.0
+position = Vector2(2772, -188)
+patrol_speed = 300.0
+chase_speed = 400.0
 gravity = 0.0
 top_down_mode = true
-top_down_patrol_a = Vector2(2360, 760)
-top_down_patrol_b = Vector2(3020, 760)
-catch_distance = 86.0
+patrol_distance = 1000.0
+catch_distance = 500.0
 
 [node name="SkullPatrol2" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
-position = Vector2(1440, -216)
-patrol_speed = 200.0
-chase_speed = 125.0
+position = Vector2(780, 552)
+patrol_speed = 300.0
+chase_speed = 400.0
 gravity = 0.0
 top_down_mode = true
-top_down_patrol_a = Vector2(1980, 1320)
-top_down_patrol_b = Vector2(2660, 1320)
-catch_distance = 86.0
+patrol_distance = 1000.0
+catch_distance = 500.0
 
 [node name="SkullPatrol3" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
-position = Vector2(3230, 1680)
-patrol_speed = 70.0
-chase_speed = 130.0
+position = Vector2(2245, 1266)
+patrol_speed = 300.0
+chase_speed = 400.0
 top_down_mode = true
-top_down_patrol_a = Vector2(3230, 1680)
-top_down_patrol_b = Vector2(3230, 2350)
-catch_distance = 86.0
+patrol_distance = 1000.0
+catch_distance = 500.0
 
 [node name="SkullPatrol4" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
-position = Vector2(3660, 2820)
-patrol_speed = 65.0
-chase_speed = 120.0
+position = Vector2(-106, 1926)
+patrol_speed = 300.0
+chase_speed = 400.0
 top_down_mode = true
-top_down_patrol_a = Vector2(3360, 2820)
-top_down_patrol_b = Vector2(4060, 2820)
-catch_distance = 86.0
+patrol_axis = "Vertical"
+patrol_distance = 1000.0
+catch_distance = 500.0
+
+[node name="SkullPatrol5" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
+position = Vector2(1421, 3000)
+patrol_speed = 300.0
+chase_speed = 400.0
+top_down_mode = true
+patrol_axis = "Vertical"
+patrol_distance = 1000.0
+catch_distance = 500.0
+
+[node name="SkullPatrol6" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
+position = Vector2(535, 2005)
+patrol_speed = 300.0
+chase_speed = 400.0
+top_down_mode = true
+patrol_distance = 1000.0
+catch_distance = 500.0
+
+[node name="SkullPatrol7" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
+position = Vector2(3047, 1503)
+patrol_speed = 300.0
+chase_speed = 400.0
+top_down_mode = true
+patrol_axis = "Vertical"
+patrol_distance = 1000.0
+catch_distance = 500.0
+
+[node name="SkullPatrol8" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
+position = Vector2(4308, 814)
+patrol_speed = 300.0
+chase_speed = 400.0
+top_down_mode = true
+patrol_axis = "Vertical"
+patrol_distance = 1000.0
+catch_distance = 500.0
+
+[node name="SkullPatrol9" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
+position = Vector2(2778, 3256)
+patrol_speed = 300.0
+chase_speed = 400.0
+top_down_mode = true
+patrol_distance = 1000.0
+catch_distance = 500.0
+
+[node name="SkullPatrol10" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
+position = Vector2(3874, -34)
+patrol_speed = 300.0
+chase_speed = 400.0
+top_down_mode = true
+patrol_axis = "Vertical"
+patrol_distance = 1000.0
+catch_distance = 500.0
 
 [node name="TDPlayer" parent="Sortables" groups=["player"] instance=ExtResource("2_5rucc")]
 z_index = 0
@@ -416,11 +935,15 @@ z_index = 0
 y_sort_enabled = false
 
 [node name="Camera2D" type="Camera2D" parent="Sortables/TDPlayer"]
+limit_left = -1599
+limit_top = -1469
+limit_right = 5605
+limit_bottom = 4485
 
 [node name="Layer1" type="TileMapLayer" parent="Sortables"]
 y_sort_enabled = true
 use_parent_material = true
-tile_map_data = PackedByteArray("AADx/3sAAAAIAAYAAADx/3MAAAAIAAYAAADx/2sAAAAIAAYAAADx/2MAAAAIAAYAAADx/1sAAAAIAAYAAADx/1MAAAAIAAYAAADx/0sAAAAIAAYAAADx/0MAAAAIAAYAAADx/zsAAAAIAAYAAADx/zMAAAAIAAYAAADx/ysAAAAIAAYAAADx/yMAAAAIAAYAAADx/xsAAAAIAAYAAADx/xMAAAAIAAYAAADx/wsAAAAIAAYAAADx/wMAAAAIAAYAAADx//v/AAAIAAYAAAA=")
+tile_map_data = PackedByteArray("AADx/3MAAAAIAAYAAADx/2sAAAAIAAYAAADx/2MAAAAIAAYAAADx/1sAAAAIAAYAAADx/1MAAAAIAAYAAADx/0sAAAAIAAYAAADx/0MAAAAIAAYAAADx/zsAAAAIAAYAAADx/zMAAAAIAAYAAADx/ysAAAAIAAYAAADx/yMAAAAIAAYAAADx/xsAAAAIAAYAAADx/xMAAAAIAAYAAADx/wsAAAAIAAYAAADx/wMAAAAIAAYAAADx//v/AAAIAAYAAAD2/3cAAAAPAAYAABABAHcAAAAPAAYAABAMAHcAAAAPAAYAABAXAHcAAAAPAAYAABAiAHcAAAAPAAYAABAtAHcAAAAPAAYAABA4AHcAAAAPAAYAABBDAHcAAAAPAAYAABBOAHcAAAAPAAYAABBZAHcAAAAPAAYAABBkAHcAAAAPAAYAABBvAHcAAAAPAAYAABB6AHcAAAAPAAYAABCFAHcAAAAPAAYAABCQAHcAAAAPAAYAABCbAHcAAAAPAAYAABCfAHIAAAAIAAYAAACfAGsAAAAIAAYAAACfAGQAAAAIAAYAAACfAF0AAAAIAAYAAACfAFYAAAAIAAYAAACfAE8AAAAIAAYAAACfAEgAAAAIAAYAAACfAEEAAAAIAAYAAACfADoAAAAIAAYAAACfADMAAAAIAAYAAACfACwAAAAIAAYAAACfACUAAAAIAAYAAACfAB4AAAAIAAYAAACfABcAAAAIAAYAAACfABAAAAAIAAYAAACfAAkAAAAIAAYAAACfAAIAAAAIAAYAAACfAPv/AAAIAAYAAACbAPb/AAAPAAYAABCQAPb/AAAPAAYAABCFAPb/AAAPAAYAABB6APb/AAAPAAYAABBvAPb/AAAPAAYAABBkAPb/AAAPAAYAABBZAPb/AAAPAAYAABBOAPb/AAAPAAYAABBDAPb/AAAPAAYAABA4APb/AAAPAAYAABAtAPb/AAAPAAYAABAiAPb/AAAPAAYAABAXAPb/AAAPAAYAABAMAPb/AAAPAAYAABABAPb/AAAPAAYAABA=")
 tile_set = ExtResource("2_ua4c3")
 rendering_quadrant_size = 64
 
@@ -435,7 +958,7 @@ rendering_quadrant_size = 64
 z_as_relative = false
 y_sort_enabled = true
 use_parent_material = true
-tile_map_data = PackedByteArray("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")
+tile_map_data = PackedByteArray("AAD2/xkAAAAPAAYAABABABkAAAAPAAYAABD3/wkAAAAPAAYAAAACAAkAAAAPAAYAAAAOAAkAAAAPAAYAAAAZAAkAAAAPAAYAAAA0APv/AAAIAAYAAAA0AAIAAAAIAAYAAAA0AAkAAAAIAAYAAABLAAkAAAAPAAYAABBWAAkAAAAPAAYAABBhAAkAAAAPAAYAABBsAAkAAAAPAAYAABBwAAQAAAAIAAYAAABwAP3/AAAIAAYAAABFAAsAAAAIAAYAAABFABIAAAAIAAYAAABFABkAAAAIAAYAAABBAB0AAAAPAAYAABA2AB0AAAAPAAYAABArAB0AAAAPAAYAABAgAB0AAAAPAAYAABAcACIAAAAIAAYAAAAcACkAAAAIAAYAAAAcADAAAAAIAAYAAAAcADcAAAAIAAYAAAAYAC0AAAAPAAYAABANAC0AAAAPAAYAABAGAC8AAAAIAAYAAAAGADYAAAAIAAYAAAAGADwAAAAIAAYAAAAGAEIAAAAIAAYAAAAGAEkAAAAIAAYAAAAGAFAAAAAIAAYAAAALAFUAAAAPAAYAABAWAFUAAAAPAAYAABAhAFUAAAAPAAYAABD2/2kAAAAPAAYAABABAGkAAAAPAAYAABAMAGkAAAAPAAYAABAXAGkAAAAPAAYAABAiAGkAAAAPAAYAABA6AHIAAAAIAAYAAAA6AGsAAAAIAAYAAAA6AGQAAAAIAAYAAAA6AF0AAAAIAAYAAAA6AFYAAAAIAAYAAAA6AE8AAAAIAAYAAAA6AEgAAAAIAAYAAAA6AEEAAAAIAAYAAAA6ADoAAAAIAAYAAAA6ADMAAAAIAAYAAAA2AEYAAAAPAAYAABArAEYAAAAPAAYAABAgAEYAAAAPAAYAABA0ADEAAAAPAAYAABBCADEAAAAPAAYAABBNADEAAAAPAAYAABBaAB0AAAAPAAYAABBlAB0AAAAPAAYAABBwAB0AAAAPAAYAABB7AB0AAAAPAAYAABBVADMAAAAIAAYAAABVADoAAAAIAAYAAABVAEEAAAAIAAYAAABVAEgAAAAIAAYAAABVAE8AAAAIAAYAAABVAFYAAAAIAAYAAABtACIAAAAIAAYAAABtACkAAAAIAAYAAABtADAAAAAIAAYAAABtADcAAAAIAAYAAABtAD4AAAAIAAYAAABtAHIAAAAIAAYAAABtAGsAAAAIAAYAAABtAGQAAAAIAAYAAABtAF0AAAAIAAYAAABtAFYAAAAIAAYAAAByAFQAAAAPAAYAABB9AFQAAAAPAAYAABCBAE8AAAAIAAYAAACBAEgAAAAIAAYAAACBAEEAAAAIAAYAAACBADoAAAAIAAYAAACBADMAAAAIAAYAAACJADEAAAAPAAYAAACNACsAAAAIAAYAAACNACQAAAAIAAYAAACNAB0AAAAIAAYAAAB/ABoAAAAIAAYAAAB/ABMAAAAIAAYAAAB/AAwAAAAIAAYAAACNABYAAAAIAAYAAACNAA8AAAAIAAYAAACNAAgAAAAIAAYAAACZAD8AAAAPAAYAAACRAEEAAAAIAAYAAACRAEgAAAAIAAYAAACRAE8AAAAIAAYAAACRAFYAAAAIAAYAAACRAF4AAAAIAAYAAACRAGUAAAAIAAYAAACKAGYAAAAPAAYAAAB+AGYAAAAPAAYAAAA=")
 tile_set = ExtResource("2_ua4c3")
 rendering_quadrant_size = 64
 
@@ -468,24 +991,29 @@ offset_bottom = 106.0
 grow_horizontal = 0
 
 [node name="ProgressBar" type="ProgressBar" parent="CanvasLayer/HUD"]
+modulate = Color(0.52156866, 1, 0.19607843, 1)
 layout_mode = 1
-anchors_preset = 5
-anchor_left = 0.5
-anchor_right = 0.5
-offset_left = -145.0
-offset_right = 145.0
-offset_bottom = 27.0
-grow_horizontal = 2
+offset_left = 61.999996
+offset_top = 37.000004
+offset_right = 352.0
+offset_bottom = 64.000015
+scale = Vector2(3.225, 3.225)
+theme_override_colors/font_color = Color(0.30297032, 0.39887872, 0.08898588, 1)
+theme_override_colors/font_outline_color = Color(0, 0.8901961, 0, 1)
+theme_override_constants/outline_size = 0
 value = 100.0
+show_percentage = false
 
 [node name="Label" type="Label" parent="CanvasLayer/HUD"]
 layout_mode = 1
 anchors_preset = 1
 anchor_left = 1.0
 anchor_right = 1.0
-offset_left = -146.0
-offset_bottom = 24.0
+offset_left = -274.0
+offset_right = -26.0
+offset_bottom = 91.0
 grow_horizontal = 0
+theme_override_font_sizes/font_size = 66
 text = "Coins: 0"
 
 [node name="StatusLabel" type="Label" parent="CanvasLayer/HUD"]
@@ -495,11 +1023,13 @@ anchor_left = 0.5
 anchor_top = 1.0
 anchor_right = 0.5
 anchor_bottom = 1.0
-offset_left = -205.5
-offset_top = -23.0
-offset_right = 205.5
+offset_left = -205.0
+offset_top = -111.0
+offset_right = 206.0
+offset_bottom = -88.0
 grow_horizontal = 2
 grow_vertical = 0
+theme_override_font_sizes/font_size = 41
 text = "Collect the coins, avoid the traps, then reach the exit."
 
 [node name="GameOverPanel" type="Panel" parent="CanvasLayer"]
@@ -542,6 +1072,16 @@ offset_right = 328.0
 offset_bottom = 170.0
 text = "Menu"
 
+[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+color = Color(0, 0.1764706, 0.42352942, 0.25882354)
+
 [node name="WinPanel" type="Panel" parent="CanvasLayer"]
 process_mode = 3
 visible = false
@@ -581,6 +1121,12 @@ offset_top = 136.0
 offset_right = 348.0
 offset_bottom = 178.0
 text = "Menu"
+
+[node name="Start" type="Marker2D" parent="."]
+position = Vector2(-129, 14)
+
+[node name="End" type="Marker2D" parent="."]
+position = Vector2(4891, 2250)
 
 [connection signal="pressed" from="CanvasLayer/GameOverPanel/RetryButton" to="." method="restart_level"]
 [connection signal="pressed" from="CanvasLayer/GameOverPanel/MenuButton" to="." method="quit_to_menu"]

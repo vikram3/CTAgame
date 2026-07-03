@@ -4,7 +4,6 @@ class_name HidingSpot
 ## The prop's visual node (its Sprite2D/Node2D root) — the player's z_index gets
 ## set just below this so they visually disappear behind it, not just tint green.
 @export var occluder: Node2D
-
 ## Optional exact spot the player dashes to when first entering hiding — usually a
 ## Marker2D placed slightly behind the prop's visual center. If left empty, this
 ## Area2D's own position is used.
@@ -27,13 +26,16 @@ func _on_body_entered(body: Node2D) -> void:
 	if not body.is_in_group("player"):
 		return
 	_player = body as Player
-	_player.hide_at(self)
+	# Just marks this spot as available — actually hiding happens when the
+	# player presses the hide key (see Player.gd's hide_action).
+	_player.set_nearby_hide_spot(self)
 
 
 func _on_body_exited(body: Node2D) -> void:
 	if not body.is_in_group("player") or body != _player:
 		return
-	# Player is free to walk around while hidden, so this fires the normal way
-	# they become visible again — no button, no hold, just walking out of cover.
-	_player.unhide_from(self)
+	# Walking out of the zone only clears availability now. If the player is
+	# currently hidden, they stay hidden until they press the hide key —
+	# no more auto-unhide just from walking out.
+	_player.clear_nearby_hide_spot(self)
 	_player = null

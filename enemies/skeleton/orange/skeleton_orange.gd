@@ -16,7 +16,8 @@ enum states{
 enum TopDownState{
 	PATROL,
 	CHASE,
-	SEARCH
+	SEARCH,
+	RETURN
 }
 
 var player_in_range:bool = false
@@ -41,11 +42,21 @@ var current_states:states = states.IDLE
 @export var gravity:float = 980.0
 
 @export var top_down_mode: bool = false
-@export var top_down_patrol_a: Vector2
-@export var top_down_patrol_b: Vector2
-@export var top_down_patrol_points: Array[Vector2] = []
+
+@export_group("Top Down Patrol")
+## Turn patrolling on/off.
+@export var patrol_enabled: bool = true
+## Patrol back and forth Horizontally (left/right) or Vertically (up/down).
+@export_enum("Horizontal", "Vertical") var patrol_axis: String = "Horizontal"
+## Total distance (px) walked along the chosen axis, centered on spawn point.
+@export var patrol_distance: float = 200.0
+
+@export_group("Top Down Combat")
 @export var catch_distance: float = 78.0
 @export var contact_damage: int = 25
+## Collision layers that block line-of-sight to the player (your wall/tile layers).
+## Chasing is cancelled if a wall on this mask is between the enemy and the player.
+@export_flags_2d_physics var vision_wall_mask: int = 1
 
 ## How long (seconds) the enemy stands still "looking around" after losing the player.
 @export var search_duration: float = 1.6
@@ -55,8 +66,6 @@ var current_states:states = states.IDLE
 @export var search_look_count: int = 3
 
 var direction : int = 1
-var _top_down_target: Vector2
-var _top_down_target_index: int = 0
 var _player: Player
 var _attack_cooldown: float = 0.0
 
@@ -66,19 +75,18 @@ var _search_look_timer: float = 0.0
 var _search_looks_done: int = 0
 var _last_known_player_pos: Vector2
 
+# Spawn point patrol is centered around, captured once in _ready().
+var _spawn_position: Vector2
+# +1 or -1: which way along the patrol axis the enemy is currently walking.
+var _patrol_dir: int = 1
+
 
 func _ready() -> void:
 	if top_down_mode:
-		if top_down_patrol_points.is_empty():
-			top_down_patrol_points = [top_down_patrol_a, top_down_patrol_b]
-		if top_down_patrol_points.size() < 2:
-			top_down_patrol_a = global_position
-			top_down_patrol_b = global_position + Vector2(260, 0)
-			top_down_patrol_points = [top_down_patrol_a, top_down_patrol_b]
-		_top_down_target_index = 1
-		_top_down_target = top_down_patrol_points[_top_down_target_index]
+		_spawn_position = global_position
 		if anim:
 			anim.play("walk")
+
 
 func _physics_process(delta: float) -> void:
 	if top_down_mode:
@@ -109,15 +117,22 @@ func _top_down_physics(delta: float) -> void:
 		_player = get_tree().get_first_node_in_group("player") as Player
 
 	var player_hidden := is_instance_valid(_player) and _player.is_hidden
-	var can_see_player := player_in_range and is_instance_valid(_player) and not player_hidden
 	if player_hidden:
 		player_in_range = false
+
+	var can_see_player: bool
+	if _top_down_state == TopDownState.CHASE:
+		# Already chasing: only stop if the player is actually hidden.
+		can_see_player = is_instance_valid(_player) and not player_hidden
+	else:
+		# Not chasing yet: need range + line of sight to start.
+		can_see_player = player_in_range and is_instance_valid(_player) and not player_hidden and _has_line_of_sight()
 
 	# Player reappeared / came back into range at any point -> always resume chase.
 	if can_see_player and _top_down_state != TopDownState.CHASE:
 		_top_down_state = TopDownState.CHASE
 
-	# Just lost the player while chasing -> start searching instead of snapping to patrol.
+	# Just lost the player (i.e. they hid) while chasing -> start searching.
 	if not can_see_player and _top_down_state == TopDownState.CHASE:
 		_start_searching()
 
@@ -126,8 +141,24 @@ func _top_down_physics(delta: float) -> void:
 			_process_chase(can_see_player)
 		TopDownState.SEARCH:
 			_process_search(delta)
+		TopDownState.RETURN:
+			_process_return(delta)
 		TopDownState.PATROL:
 			_process_patrol(delta)
+
+## Casts a ray from this enemy to the player. Returns false (no line of sight)
+## if anything on vision_wall_mask (walls/tiles) is in the way, so the enemy
+## won't blindly chase/attack straight through a wall.
+func _has_line_of_sight() -> bool:
+	if not is_instance_valid(_player):
+		return false
+	var space_state := get_world_2d().direct_space_state
+	var query := PhysicsRayQueryParameters2D.create(
+		global_position, _player.global_position, vision_wall_mask
+	)
+	query.exclude = [self]
+	var result := space_state.intersect_ray(query)
+	return result.is_empty()
 
 
 func _process_chase(can_see_player: bool) -> void:
@@ -174,22 +205,56 @@ func _process_search(delta: float) -> void:
 
 	var done_looking := search_look_count > 0 and _search_looks_done >= search_look_count
 	if _search_timer <= 0.0 or done_looking:
+		_top_down_state = TopDownState.RETURN
+
+
+## After giving up the search, walk back to the very first spawn position
+## before resuming patrol. Prevents the enemy from getting stuck patrolling
+## from some random spot it ended up at after chasing the player.
+func _process_return(delta: float) -> void:
+	var to_spawn := _spawn_position - global_position
+
+	if to_spawn.length() <= max(patrol_speed * delta, 6.0):
+		global_position = _spawn_position
+		velocity = Vector2.ZERO
+		move_and_slide()
+		_patrol_dir = 1
 		_top_down_state = TopDownState.PATROL
+		return
+
+	velocity = to_spawn.normalized() * patrol_speed
+	move_and_slide()
+	_face_towards(velocity)
+
+	if anim:
+		anim.play("walk")
 
 
 func _process_patrol(delta: float) -> void:
-	var to_target := _top_down_target - global_position
-	if to_target.length() <= max(patrol_speed * delta, 6.0):
-		global_position = _top_down_target
-		_top_down_target_index = (_top_down_target_index + 1) % top_down_patrol_points.size()
-		_top_down_target = top_down_patrol_points[_top_down_target_index]
-		to_target = _top_down_target - global_position
+	if not patrol_enabled:
+		velocity = Vector2.ZERO
+		move_and_slide()
+		if anim:
+			anim.play("idle")
+		return
 
-	velocity = Vector2.ZERO
-	if to_target.length() > 0.0:
-		velocity = to_target.normalized() * patrol_speed
+	var axis_vec := Vector2.RIGHT if patrol_axis == "Horizontal" else Vector2.DOWN
 
+	velocity = axis_vec * patrol_speed * _patrol_dir
 	move_and_slide()
+
+	# Hit a wall tile -> turn back immediately.
+	if get_slide_collision_count() > 0:
+		_patrol_dir *= -1
+
+	# How far we've walked along the patrol axis from spawn -> flip direction
+	# once we hit the edge of patrol_distance.
+	var offset := (global_position - _spawn_position).dot(axis_vec)
+	if offset >= patrol_distance * 0.5:
+		_patrol_dir = -1
+	elif offset <= -patrol_distance * 0.5:
+		_patrol_dir = 1
+
 	_face_towards(velocity)
 
 	if anim:

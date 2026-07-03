@@ -1,6 +1,7 @@
-[gd_resource type="TileSet" load_steps=3 format=3 uid="uid://ch3p0jvfgkns0"]
+[gd_resource type="TileSet" load_steps=5 format=3 uid="uid://ch3p0jvfgkns0"]
 
 [ext_resource type="Texture2D" uid="uid://y833bycojj61" path="res://Assets/TopDown/props 1.png" id="1_o1qjm"]
+[ext_resource type="Texture2D" uid="uid://bnri4jd562sgb" path="res://Assets/TopDown/GoundTile.png" id="2_erd61"]
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_ua4c3"]
 texture = ExtResource("1_o1qjm")
@@ -66,25 +67,32 @@ texture_region_size = Vector2i(32, 32)
 94:29/0/z_index = 2
 94:29/0/y_sort_origin = 315
 94:29/0/physics_layer_0/polygon_0/points = PackedVector2Array(-85.39304, 97.3417, -68.82424, 76.312065, -43.652412, 75.037544, -30.588554, 75.674805, -17.843323, 66.11588, 14.975647, 69.302185, 32.81897, 70.57671, 49.70639, 75.037544, 64.044785, 89.0573, 70.73602, 101.483894, 58.309433, 111.04282, 13.701126, 119.64585, -27.402245, 115.503654, -54.485863, 109.44967, -72.64781, 107.219246)
-15:6/size_in_atlas = Vector2i(14, 6)
-15:6/0 = 0
-15:6/0/physics_layer_0/polygon_0/points = PackedVector2Array(-194.65881, 87.08421, -199.43991, 15.367798, 187.14566, 5.122589, 165.97226, 82.303116)
 10:19/size_in_atlas = Vector2i(11, 9)
 10:19/0 = 0
 10:19/0/z_index = -1
 25:16/size_in_atlas = Vector2i(6, 18)
 25:16/0 = 0
 25:16/0/z_index = -1
+8:6/size_in_atlas = Vector2i(5, 10)
+8:6/0 = 0
+8:6/0/physics_layer_0/polygon_0/points = PackedVector2Array(-38.842987, 127.68596, -48.760315, -64.87602, 66.11569, -68.18181, 52.0661, 131.81819)
 92:42/size_in_atlas = Vector2i(13, 7)
 92:42/0 = 0
 92:42/0/z_index = 9
 92:42/0/y_sort_origin = 67
 92:42/0/physics_layer_0/polygon_0/points = PackedVector2Array(-198, 15.5, 196, 3.5, 170, 95.5, -195, 94.5)
-8:6/size_in_atlas = Vector2i(5, 10)
-8:6/0 = 0
-8:6/0/physics_layer_0/polygon_0/points = PackedVector2Array(-38.842987, 127.68596, -48.760315, -64.87602, 66.11569, -68.18181, 52.0661, 131.81819)
+15:6/size_in_atlas = Vector2i(14, 6)
+15:6/0 = 0
+15:6/0/physics_layer_0/polygon_0/points = PackedVector2Array(-194.65881, 87.08421, -199.43991, 15.367798, 187.14566, 5.122589, 165.97226, 82.303116)
+
+[sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_8t27b"]
+texture = ExtResource("2_erd61")
+texture_region_size = Vector2i(32, 32)
+0:0/size_in_atlas = Vector2i(39, 39)
+0:0/0 = 0
 
 [resource]
 tile_size = Vector2i(32, 32)
 physics_layer_0/collision_layer = 1
 sources/0 = SubResource("TileSetAtlasSource_ua4c3")
+sources/1 = SubResource("TileSetAtlasSource_8t27b")
