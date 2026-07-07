@@ -1,4 +1,4 @@
-[gd_scene load_steps=58 format=3 uid="uid://byjk18f2ujvhk"]
+[gd_scene load_steps=60 format=3 uid="uid://byjk18f2ujvhk"]
 
 [ext_resource type="PackedScene" uid="uid://dg6wi0x66ov55" path="res://Scenes/HitBox_and_HurtBox/HitBox/hit_box.tscn" id="1_2krmh"]
 [ext_resource type="Script" uid="uid://diigtsqlbjov3" path="res://enemies/skeleton/orange/skeleton_orange.gd" id="1_psj33"]
@@ -42,7 +42,9 @@
 [ext_resource type="Texture2D" uid="uid://ckngdjcvl1lsj" path="res://Assets/skeleton/orange/walk/8.png" id="36_7agl3"]
 [ext_resource type="Texture2D" uid="uid://bwn4ljbymnuly" path="res://Assets/skeleton/orange/walk/9.png" id="37_i1cby"]
 [ext_resource type="Texture2D" uid="uid://cp556joahj08a" path="res://Assets/skeleton/orange/walk/10.png" id="38_nou0y"]
+[ext_resource type="Texture2D" uid="uid://bi46x4oj8sf8t" path="res://Assets/TopDown/light_beam_PNG29.png" id="42_nvja4"]
 [ext_resource type="Script" uid="uid://ba0i3u40ltfdw" path="res://Scripts/Stats_Resource.gd" id="43_aukii"]
+[ext_resource type="Script" uid="uid://b6f48w5ow40o7" path="res://Scenes/Levels/point_light_2d.gd" id="44_npwex"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_pf0v8"]
 animations = [{
@@ -443,6 +445,7 @@ shape = SubResource("RectangleShape2D_yfomu")
 disabled = true
 
 [node name="HurtBox" parent="body" instance=ExtResource("2_p15w3")]
+visible = false
 collision_layer = 0
 collision_mask = 4
 
@@ -459,21 +462,34 @@ collision_mask = 2
 shape = SubResource("CircleShape2D_psj33")
 
 [node name="attack_range" type="Area2D" parent="body"]
+visible = false
 collision_layer = 0
 collision_mask = 2
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="body/attack_range"]
+visible = false
 shape = SubResource("CircleShape2D_yfomu")
 
 [node name="wall_detector" type="RayCast2D" parent="body"]
+visible = false
 position = Vector2(56, -48)
 target_position = Vector2(100, 0)
 hit_from_inside = true
 
 [node name="floor_detector" type="RayCast2D" parent="body"]
+visible = false
 position = Vector2(56, 96)
 
+[node name="PointLight2D" type="PointLight2D" parent="body" groups=["guard_lights"]]
+position = Vector2(231, 50)
+rotation = -3.1415927
+texture = ExtResource("42_nvja4")
+texture_scale = 0.2
+script = ExtResource("44_npwex")
+flicker_amount = 0.05
+
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+visible = false
 position = Vector2(0, 16)
 shape = SubResource("RectangleShape2D_aukii")
 

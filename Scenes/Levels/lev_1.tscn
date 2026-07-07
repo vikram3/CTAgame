@@ -1,4 +1,4 @@
-[gd_scene load_steps=32 format=4 uid="uid://cgiikjxpsph3r"]
+[gd_scene load_steps=36 format=4 uid="uid://cgiikjxpsph3r"]
 
 [ext_resource type="Script" uid="uid://c43jx5hft6ixw" path="res://Scenes/Levels/lev_1.gd" id="1_vgi1v"]
 [ext_resource type="PackedScene" uid="uid://cv5y5kai8g7g4" path="res://Scenes/Levels/td_player.tscn" id="2_5rucc"]
@@ -15,6 +15,7 @@
 [ext_resource type="Script" uid="uid://3eot3xp0sdod" path="res://Scenes/Levels/top_down_damage_area.gd" id="11_damage"]
 [ext_resource type="Script" uid="uid://2n5muptwr3cc" path="res://Scenes/Levels/prop.gd" id="12_xr623"]
 [ext_resource type="Script" uid="uid://d3hdthjommp1f" path="res://Scenes/Levels/HidingSpot.gd" id="14_ch4il"]
+[ext_resource type="Script" uid="uid://b6f48w5ow40o7" path="res://Scenes/Levels/point_light_2d.gd" id="16_rn0ox"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_d685u"]
 radius = 96.0
@@ -64,7 +65,24 @@ size = Vector2(282, 432)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cy5b0"]
 size = Vector2(150, 128)
 
-[node name="Lev1" type="Node2D" node_paths=PackedStringArray("player", "exit_door", "hud", "game_over_panel", "win_panel", "tile_map", "player_start", "exit_position")]
+[sub_resource type="Gradient" id="Gradient_rn0ox"]
+offsets = PackedFloat32Array(0.2, 0.6, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1.0566169, 1.0566169, 0.74671537, 1, 1, 1, 1, 0)
+metadata/_snap_enabled = true
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_8saxd"]
+gradient = SubResource("Gradient_rn0ox")
+fill = 1
+fill_from = Vector2(0.5, 0.42)
+fill_to = Vector2(0.74786323, 0.25641027)
+
+[sub_resource type="Environment" id="Environment_8saxd"]
+background_mode = 3
+glow_enabled = true
+glow_bloom = 0.1
+adjustment_saturation = 1.5
+
+[node name="Lev1" type="Node2D" node_paths=PackedStringArray("player", "exit_door", "hud", "game_over_panel", "win_panel", "tile_map", "player_start", "exit_position", "canvas_modulate", "world_environment", "exit_light")]
 script = ExtResource("1_vgi1v")
 player = NodePath("Sortables/TDPlayer")
 exit_door = NodePath("Sortables/Props/ExitDoor")
@@ -74,6 +92,10 @@ win_panel = NodePath("CanvasLayer/WinPanel")
 tile_map = NodePath("Sortables/MazeWalls/TileMap")
 player_start = NodePath("Start")
 exit_position = NodePath("End")
+use_camera_limits = true
+canvas_modulate = NodePath("CanvasModulate")
+world_environment = NodePath("CanvasModulate/WorldEnvironment")
+exit_light = NodePath("End/Exitlight")
 
 [node name="Ground" type="Node2D" parent="."]
 z_index = -100
@@ -838,91 +860,91 @@ region_rect = Rect2(1337, 540, 193, 352)
 y_sort_enabled = true
 
 [node name="SkullPatrol1" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
-position = Vector2(2772, -188)
+position = Vector2(2772, -19)
 patrol_speed = 300.0
 chase_speed = 400.0
 gravity = 0.0
 top_down_mode = true
 patrol_distance = 1000.0
-catch_distance = 500.0
+chase_distance = 500.0
 
 [node name="SkullPatrol2" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
-position = Vector2(780, 552)
+position = Vector2(780, 721)
 patrol_speed = 300.0
 chase_speed = 400.0
 gravity = 0.0
 top_down_mode = true
 patrol_distance = 1000.0
-catch_distance = 500.0
+chase_distance = 500.0
 
 [node name="SkullPatrol3" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
-position = Vector2(2245, 1266)
+position = Vector2(2245, 1435)
 patrol_speed = 300.0
 chase_speed = 400.0
 top_down_mode = true
 patrol_distance = 1000.0
-catch_distance = 500.0
+chase_distance = 500.0
 
 [node name="SkullPatrol4" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
-position = Vector2(-106, 1926)
+position = Vector2(-106, 2095)
 patrol_speed = 300.0
 chase_speed = 400.0
 top_down_mode = true
 patrol_axis = "Vertical"
 patrol_distance = 1000.0
-catch_distance = 500.0
+chase_distance = 500.0
 
 [node name="SkullPatrol5" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
-position = Vector2(1421, 3000)
+position = Vector2(1421, 3169)
 patrol_speed = 300.0
 chase_speed = 400.0
 top_down_mode = true
 patrol_axis = "Vertical"
 patrol_distance = 1000.0
-catch_distance = 500.0
+chase_distance = 500.0
 
 [node name="SkullPatrol6" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
-position = Vector2(535, 2005)
+position = Vector2(535, 2174)
 patrol_speed = 300.0
 chase_speed = 400.0
 top_down_mode = true
 patrol_distance = 1000.0
-catch_distance = 500.0
+chase_distance = 500.0
 
 [node name="SkullPatrol7" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
-position = Vector2(3047, 1503)
+position = Vector2(3047, 1672)
 patrol_speed = 300.0
 chase_speed = 400.0
 top_down_mode = true
 patrol_axis = "Vertical"
 patrol_distance = 1000.0
-catch_distance = 500.0
+chase_distance = 500.0
 
 [node name="SkullPatrol8" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
-position = Vector2(4308, 814)
+position = Vector2(4308, 983)
 patrol_speed = 300.0
 chase_speed = 400.0
 top_down_mode = true
 patrol_axis = "Vertical"
 patrol_distance = 1000.0
-catch_distance = 500.0
+chase_distance = 500.0
 
 [node name="SkullPatrol9" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
-position = Vector2(2778, 3256)
+position = Vector2(2778, 3425)
 patrol_speed = 300.0
 chase_speed = 400.0
 top_down_mode = true
 patrol_distance = 1000.0
-catch_distance = 500.0
+chase_distance = 500.0
 
 [node name="SkullPatrol10" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
-position = Vector2(3874, -34)
+position = Vector2(3874, 135)
 patrol_speed = 300.0
 chase_speed = 400.0
 top_down_mode = true
 patrol_axis = "Vertical"
 patrol_distance = 1000.0
-catch_distance = 500.0
+chase_distance = 500.0
 
 [node name="TDPlayer" parent="Sortables" groups=["player"] instance=ExtResource("2_5rucc")]
 z_index = 0
@@ -1072,16 +1094,6 @@ offset_right = 328.0
 offset_bottom = 170.0
 text = "Menu"
 
-[node name="ColorRect" type="ColorRect" parent="CanvasLayer"]
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 3
-size_flags_vertical = 3
-color = Color(0, 0.1764706, 0.42352942, 0.25882354)
-
 [node name="WinPanel" type="Panel" parent="CanvasLayer"]
 process_mode = 3
 visible = false
@@ -1127,6 +1139,341 @@ position = Vector2(-129, 14)
 
 [node name="End" type="Marker2D" parent="."]
 position = Vector2(4891, 2250)
+
+[node name="Exitlight" type="PointLight2D" parent="End"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(1, 0.47843137, 0.47843137, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+script = ExtResource("16_rn0ox")
+
+[node name="Node2D" type="Node2D" parent="."]
+
+[node name="lamp" type="Sprite2D" parent="Node2D"]
+position = Vector2(1580, -178)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp2" type="Sprite2D" parent="Node2D"]
+position = Vector2(1037, 285)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp2"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp3" type="Sprite2D" parent="Node2D"]
+position = Vector2(1548, 285)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp3"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp4" type="Sprite2D" parent="Node2D"]
+position = Vector2(284, 785)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp4"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp5" type="Sprite2D" parent="Node2D"]
+position = Vector2(868, 785)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp5"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp6" type="Sprite2D" parent="Node2D"]
+position = Vector2(1343, 2702)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp6"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp8" type="Sprite2D" parent="Node2D"]
+position = Vector2(1349, 3326)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp8"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp9" type="Sprite2D" parent="Node2D"]
+position = Vector2(1460, 1541)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp9"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp10" type="Sprite2D" parent="Node2D"]
+position = Vector2(2740, 2911)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp10"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp11" type="Sprite2D" parent="Node2D"]
+position = Vector2(3513, 2101)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp11"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp12" type="Sprite2D" parent="Node2D"]
+position = Vector2(4086, 127)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp12"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp13" type="Sprite2D" parent="Node2D"]
+position = Vector2(2663, 911)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp13"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp14" type="Sprite2D" parent="Node2D"]
+position = Vector2(5009, 1835)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp14"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp15" type="Sprite2D" parent="Node2D"]
+position = Vector2(3643, 2851)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp15"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp16" type="Sprite2D" parent="Node2D"]
+position = Vector2(3657, 1008)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp16"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp17" type="Sprite2D" parent="Node2D"]
+position = Vector2(4416, 1376)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp17"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp18" type="Sprite2D" parent="Node2D"]
+position = Vector2(2617, 1645)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp18"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp19" type="Sprite2D" parent="Node2D"]
+position = Vector2(4567, 3057)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp19"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp20" type="Sprite2D" parent="Node2D"]
+position = Vector2(4962, 3586)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp20"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="lamp7" type="Sprite2D" parent="Node2D"]
+position = Vector2(74, 1934)
+texture = ExtResource("6_svtlv")
+region_enabled = true
+region_rect = Rect2(1328, 63, 119, 192)
+
+[node name="PointLight2D" type="PointLight2D" parent="Node2D/lamp7"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(0.7204674, 0.7204675, 0.7204674, 1)
+texture = SubResource("GradientTexture2D_8saxd")
+texture_scale = 0.59
+script = ExtResource("16_rn0ox")
+flicker_amount = 0.44
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="CanvasModulate"]
+environment = SubResource("Environment_8saxd")
 
 [connection signal="pressed" from="CanvasLayer/GameOverPanel/RetryButton" to="." method="restart_level"]
 [connection signal="pressed" from="CanvasLayer/GameOverPanel/MenuButton" to="." method="quit_to_menu"]

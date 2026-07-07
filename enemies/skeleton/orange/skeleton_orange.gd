@@ -52,7 +52,13 @@ var current_states:states = states.IDLE
 @export var patrol_distance: float = 200.0
 
 @export_group("Top Down Combat")
-@export var catch_distance: float = 78.0
+## Distance at which the enemy first notices the player and starts chasing
+## (assuming line-of-sight isn't blocked). This is the "detection radius" —
+## separate from how close it needs to be to actually land a hit.
+@export var chase_distance: float = 220.0
+## Distance at which the enemy can actually land an attack on the player.
+## Should be small — this is melee/contact range, not detection range.
+@export var attack_distance: float = 78.0
 @export var contact_damage: int = 25
 ## Collision layers that block line-of-sight to the player (your wall/tile layers).
 ## Chasing is cancelled if a wall on this mask is between the enemy and the player.
@@ -65,9 +71,15 @@ var current_states:states = states.IDLE
 ## How many look-flips before giving up and going back to patrol. Leave 0 to just use search_duration.
 @export var search_look_count: int = 3
 
+## Fraction of the "attack" animation's length to wait before actually
+## applying damage (i.e. when the swing "connects"). Tune this to match
+## the real impact frame of your animation. 0.5 = halfway through.
+@export_range(0.0, 1.0, 0.05) var attack_impact_fraction: float = 0.5
+
 var direction : int = 1
 var _player: Player
 var _attack_cooldown: float = 0.0
+var _is_attacking: bool = false
 
 var _top_down_state: TopDownState = TopDownState.PATROL
 var _search_timer: float = 0.0
@@ -120,21 +132,33 @@ func _top_down_physics(delta: float) -> void:
 	if player_hidden:
 		player_in_range = false
 
+	var dist_to_player := INF
+	if is_instance_valid(_player):
+		dist_to_player = global_position.distance_to(_player.global_position)
+
 	var can_see_player: bool
 	if _top_down_state == TopDownState.CHASE:
 		# Already chasing: only stop if the player is actually hidden.
+		# (No distance cutoff here — once chasing, it commits until it loses
+		# sight, otherwise it'd flicker in/out right at chase_distance's edge.)
 		can_see_player = is_instance_valid(_player) and not player_hidden
 	else:
-		# Not chasing yet: need range + line of sight to start.
-		can_see_player = player_in_range and is_instance_valid(_player) and not player_hidden and _has_line_of_sight()
+		# Not chasing yet: needs to be within chase_distance (the "notice"
+		# radius) with line of sight to actually start.
+		can_see_player = is_instance_valid(_player) and not player_hidden \
+			and dist_to_player <= chase_distance and _has_line_of_sight()
 
 	# Player reappeared / came back into range at any point -> always resume chase.
 	if can_see_player and _top_down_state != TopDownState.CHASE:
 		_top_down_state = TopDownState.CHASE
 
 	# Just lost the player (i.e. they hid) while chasing -> start searching.
-	if not can_see_player and _top_down_state == TopDownState.CHASE:
+	if not can_see_player and _top_down_state == TopDownState.CHASE and not _is_attacking:
 		_start_searching()
+
+	# While a swing is in progress, don't let movement/state logic override it.
+	if _is_attacking:
+		return
 
 	match _top_down_state:
 		TopDownState.CHASE:
@@ -166,7 +190,7 @@ func _process_chase(can_see_player: bool) -> void:
 		return
 	var to_player := _player.global_position - global_position
 	_last_known_player_pos = _player.global_position
-	if to_player.length() <= catch_distance:
+	if to_player.length() <= attack_distance:
 		_hit_player()
 		return
 	velocity = to_player.normalized() * chase_speed
@@ -266,14 +290,35 @@ func _face_towards(dir: Vector2) -> void:
 		body.scale.x = 1 if dir.x > 0.0 else -1
 
 
+## Plays the attack swing and only applies damage once the animation has
+## actually reached its impact point AND the player is still within
+## attack_distance at that moment. This stops the enemy from "hitting" the
+## player instantly from far away just because an attack was triggered.
 func _hit_player() -> void:
-	if _attack_cooldown > 0.0 or not is_instance_valid(_player):
+	if _attack_cooldown > 0.0 or not is_instance_valid(_player) or _is_attacking:
 		return
+
 	_attack_cooldown = 1.0
+	_is_attacking = true
 	velocity = Vector2.ZERO
+
 	if anim:
 		anim.play("attack")
-	_player.take_level_damage(contact_damage, global_position)
+		var impact_delay := anim.current_animation_length * attack_impact_fraction
+		await get_tree().create_timer(impact_delay).timeout
+
+	# Re-validate right before applying damage: the player may have moved
+	# away, hidden, or been invalidated during the wind-up.
+	if is_instance_valid(_player) and not _player.is_hidden:
+		if global_position.distance_to(_player.global_position) <= attack_distance:
+			_player.take_level_damage(contact_damage, global_position)
+
+	# Let the rest of the swing animation finish before resuming movement/AI.
+	if anim and anim.is_playing() and anim.current_animation == "attack":
+		await anim.animation_finished
+
+	_is_attacking = false
+
 
 func match_state():
 	match current_states:
@@ -342,8 +387,11 @@ func _on_attack_range_body_entered(body: Node2D) -> void:
 		player_in_attack_range = true
 		if top_down_mode:
 			_player = body as Player
-			if not _player.is_hidden:
-				_hit_player()
+			# Don't attack here directly — entering this Area2D just marks the
+			# player as "in attack range". Whether a hit actually lands is
+			# decided in _hit_player(), which re-checks the real attack_distance
+			# and times the damage to the animation's impact point instead of
+			# firing the instant this area is touched.
 
 func _on_attack_range_body_exited(body: Node2D) -> void:
 	if body.is_in_group("player"):

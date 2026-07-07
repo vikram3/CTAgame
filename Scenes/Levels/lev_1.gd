@@ -4,7 +4,7 @@ extends Node2D
 ## This script no longer generates the level at runtime. Paint the TileMap,
 ## place Coin / Prop / Guard scenes, and set patrol points directly in the
 ## Godot editor. This script only wires up signals, HUD text, the camera,
-## and win/lose flow.
+## night/glow atmosphere, and win/lose flow.
 
 signal level_completed(success: bool)
 
@@ -56,6 +56,31 @@ signal level_completed(success: bool)
 @export_flags_2d_physics var player_collision_layer: int = 2
 @export_flags_2d_physics var player_collision_mask: int = 1
 
+# ---------------------------------------------------------------------------
+# Night / glow atmosphere
+#
+# CanvasModulate darkens the whole scene uniformly (your "it's night" base
+# layer). WorldEnvironment's Environment resource should have glow_enabled
+# on — that's what makes any PointLight2D / emissive sprite actually bloom
+# instead of just being a flat bright circle. Individual lights (on coins,
+# lamps, the exit door, guards) stay as Light2D nodes placed in the editor;
+# this script just toggles/tunes the ones that need to react to gameplay.
+# ---------------------------------------------------------------------------
+@export_group("Night Atmosphere")
+@export var canvas_modulate: CanvasModulate
+@export var night_tint: Color = Color(0.12, 0.12, 0.22)
+@export var world_environment: WorldEnvironment
+
+## Light on/under the exit door. Starts disabled and switches on once the
+## player has collected enough coins, doubling as a visual "exit is open" cue.
+@export var exit_light: PointLight2D
+@export var exit_light_energy: float = 1.0
+@export var exit_light_fade_time: float = 0.6
+
+## Optional: a group name applied to guard PointLight2D "vision" lights, in
+## case you want to dim/brighten them globally (e.g. a stealth-boost pickup).
+@export var guard_light_group: String = "guard_lights"
+
 var _status_label: Label
 var _toast_timer: Timer
 var _level_finished: bool = false
@@ -73,6 +98,7 @@ func _wire_level() -> void:
 	_wire_exit_door()
 	_wire_hud()
 	_wire_panels()
+	_wire_night_atmosphere()
 
 	CollectedItems.coins_collected.connect(_on_coins_collected)
 
@@ -110,6 +136,10 @@ func _wire_exit_door() -> void:
 	exit_door.exit_reached.connect(_on_exit_reached)
 	exit_door.missing_coins.connect(_on_exit_missing_coins)
 
+	if exit_light:
+		exit_light.enabled = false
+		exit_light.energy = 0.0
+
 
 func _wire_hud() -> void:
 	if not hud:
@@ -127,6 +157,14 @@ func _wire_panels() -> void:
 	if win_panel:
 		win_panel.hide()
 		win_panel.process_mode = Node.PROCESS_MODE_ALWAYS
+
+
+func _wire_night_atmosphere() -> void:
+	if canvas_modulate:
+		canvas_modulate.color = night_tint
+
+	if world_environment and world_environment.environment:
+		world_environment.environment.glow_enabled = true
 
 
 func _configure_camera() -> void:
@@ -150,6 +188,17 @@ func _on_coins_collected() -> void:
 	if _status_label and CollectedItems.coins_amount >= required_coins:
 		_base_status_text = exit_open_text
 		_status_label.text = _base_status_text
+		_light_exit_door()
+
+
+func _light_exit_door() -> void:
+	if not exit_light or exit_light.enabled:
+		return
+
+	exit_light.enabled = true
+	var tween := create_tween()
+	tween.tween_property(exit_light, "energy", exit_light_energy, exit_light_fade_time) \
+		.from(0.0).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_OUT)
 
 
 func _on_exit_missing_coins(_needed: int) -> void:
