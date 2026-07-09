@@ -13,17 +13,10 @@ script = ExtResource("1_vya06")
 
 [node name="TDPlayer" parent="." instance=ExtResource("2_fhg1k")]
 position = Vector2(0, -305)
-movement_mode = 1
-platformer_gravity = 1200.0
-platformer_jump_velocity = -600.0
-platformer_run_speed = 1600.0
-
-[node name="Camera2D" type="Camera2D" parent="TDPlayer"]
 
 [node name="Platform" type="Node2D" parent="."]
 
 [node name="Props2" type="Sprite2D" parent="Platform"]
-position = Vector2(150, 0)
 texture = ExtResource("3_1q31s")
 region_enabled = true
 region_rect = Rect2(27, 445, 929, 219)
@@ -45,7 +38,7 @@ region_rect = Rect2(27, 445, 929, 219)
 shape = SubResource("RectangleShape2D_yvyp7")
 
 [node name="Props4" type="Sprite2D" parent="Platform"]
-position = Vector2(1892, 0)
+position = Vector2(2051, 0)
 texture = ExtResource("3_1q31s")
 region_enabled = true
 region_rect = Rect2(27, 445, 929, 219)
@@ -55,28 +48,7 @@ region_rect = Rect2(27, 445, 929, 219)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform/Props4/StaticBody2D"]
 shape = SubResource("RectangleShape2D_yvyp7")
 
-[node name="Props5" type="Sprite2D" parent="Platform"]
-position = Vector2(2697, -224)
-texture = ExtResource("3_1q31s")
-region_enabled = true
-region_rect = Rect2(27, 445, 929, 219)
-
-[node name="StaticBody2D" type="StaticBody2D" parent="Platform/Props5"]
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Platform/Props5/StaticBody2D"]
-shape = SubResource("RectangleShape2D_yvyp7")
-
 [node name="Enemies" type="Node2D" parent="."]
 
 [node name="skeleton_orange" parent="Enemies" instance=ExtResource("4_yvyp7")]
 position = Vector2(1985, -253)
-patrol_speed = 200.0
-chase_speed = 400.0
-patrol_distance = 1000.0
-chase_distance = 1000.0
-platformer_use_line_of_sight = true
-
-[node name="PointLight2D" parent="Enemies/skeleton_orange/body" index="8"]
-visible = false
-
-[editable path="Enemies/skeleton_orange"]

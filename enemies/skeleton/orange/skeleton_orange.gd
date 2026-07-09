@@ -76,10 +76,36 @@ var current_states:states = states.IDLE
 ## the real impact frame of your animation. 0.5 = halfway through.
 @export_range(0.0, 1.0, 0.05) var attack_impact_fraction: float = 0.5
 
+@export_group("Platformer Physical Collision")
+## Player and Enemy are both CharacterBody2D. If their collision layers/masks
+## overlap, Godot's physics solver treats contact between them as two solid
+## bodies shoving each other apart — that's the "player throws the enemy"
+## effect. Damage is meant to travel through Area2D overlap (hurt_box /
+## attack detection), not solid-body collision, so by default this adds a
+## physics collision exception between this enemy and the player the first
+## time it finds them — they simply pass through each other, while each
+## still collides with the floor/walls/everything else completely normally.
+@export var platformer_disable_solid_collision_with_player: bool = true
+
+@export_group("Platformer Detection")
+## Line-of-sight is OFF by default for platformer mode: a raycast between two
+## characters standing on the same flat ground grazes the top of the tile
+## collision and reports "blocked" almost constantly, which is why chasing
+## looked completely dead. Leave this off for simple "chase within radius"
+## behavior. Turn it on only if you actually have walls you want to block
+## vision around, and raise platformer_vision_height_offset so the ray
+## clears the floor.
+@export var platformer_use_line_of_sight: bool = false
+## Raises the raycast (negative = up, since Godot's Y+ is down) off of feet
+## height before checking line-of-sight, so it doesn't skim the floor tiles.
+## Only used when platformer_use_line_of_sight is true.
+@export var platformer_vision_height_offset: float = -16.0
+
 var direction : int = 1
 var _player: Player
 var _attack_cooldown: float = 0.0
 var _is_attacking: bool = false
+var _disabled_solid_collision_with_player: bool = false
 
 var _top_down_state: TopDownState = TopDownState.PATROL
 var _search_timer: float = 0.0
@@ -106,13 +132,29 @@ func _physics_process(delta: float) -> void:
 		return
 
 	_gravity()
+	# Detection no longer depends solely on a PlayerDetector/AttackRange Area2D
+	# being wired up correctly in the scene (wrong collision mask, missing
+	# shape, monitoring off, etc. all silently break that). This polls
+	# distance + line-of-sight every frame using the same chase_distance /
+	# attack_distance / vision_wall_mask exports as top-down mode, so it works
+	# even if those Area2D nodes aren't set up. If you DO have them wired
+	# correctly, their signals still fire and are harmless — this just
+	# overwrites player_in_range / player_in_attack_range right after with an
+	# independently-verified value.
+	_update_platformer_detection()
 	match_state()
 	state_transition()
 	move_and_slide()
 
-	if wall_detector.is_colliding() or !floor_detector.is_colliding():
-		direction *= -1
-	
+	# Only let the floor/wall raycasts auto-flip direction during ordinary
+	# patrol/idle movement. While CHASE/ATTACK/DASH_ATTACK are driving
+	# `direction` on purpose (towards the player), this used to immediately
+	# stomp that back the other way the instant a wall/ledge ray tripped,
+	# which is part of why chasing looked like it wasn't working.
+	if current_states == states.PATROL or current_states == states.IDLE:
+		if wall_detector.is_colliding() or !floor_detector.is_colliding():
+			direction *= -1
+
 	body.scale.x = direction
 
 func _gravity():
@@ -120,6 +162,52 @@ func _gravity():
 		velocity.y += gravity * get_process_delta_time()
 	else:
 		velocity.y = 0
+
+
+## Platformer-mode detection, independent of any Area2D scene wiring.
+## Sets player_in_range / player_in_attack_range from actual distance + LOS,
+## reusing the same chase_distance / attack_distance / vision_wall_mask
+## exports top-down mode already uses.
+func _update_platformer_detection() -> void:
+	if not is_instance_valid(_player):
+		_player = get_tree().get_first_node_in_group("player") as Player
+		if is_instance_valid(_player) and platformer_disable_solid_collision_with_player \
+				and not _disabled_solid_collision_with_player:
+			_disable_solid_collision_with_player()
+
+	if not is_instance_valid(_player):
+		player_in_range = false
+		player_in_attack_range = false
+		return
+
+	if _player.is_hidden:
+		player_in_range = false
+		player_in_attack_range = false
+		return
+
+	var dist := global_position.distance_to(_player.global_position)
+	var can_see := true
+	if platformer_use_line_of_sight:
+		can_see = _has_line_of_sight(platformer_vision_height_offset)
+
+	player_in_range = dist <= chase_distance and can_see
+	player_in_attack_range = dist <= attack_distance and can_see
+
+
+## Adds a physics collision exception between this enemy and the player, one
+## time. Unlike editing collision_layer/collision_mask, this ONLY disables
+## collision between these two specific bodies — it can't accidentally break
+## floor/wall detection for either of them (which is what happened when this
+## was done via layer/mask bits: if the player happens to share a physics
+## layer with the ground, clearing that bit from the enemy's mask also blinds
+## it to the floor, and it falls straight through). Damage still works
+## exactly as before via hurt_box / attack range Area2D overlap.
+func _disable_solid_collision_with_player() -> void:
+	if not is_instance_valid(_player):
+		return
+	add_collision_exception_with(_player)
+	_player.add_collision_exception_with(self)
+	_disabled_solid_collision_with_player = true
 
 
 func _top_down_physics(delta: float) -> void:
@@ -173,12 +261,16 @@ func _top_down_physics(delta: float) -> void:
 ## Casts a ray from this enemy to the player. Returns false (no line of sight)
 ## if anything on vision_wall_mask (walls/tiles) is in the way, so the enemy
 ## won't blindly chase/attack straight through a wall.
-func _has_line_of_sight() -> bool:
+## vertical_offset raises (negative) or lowers (positive) both ray endpoints
+## before casting — used by platformer mode to avoid grazing floor tiles.
+## Default 0.0 keeps top-down mode's behavior exactly as before.
+func _has_line_of_sight(vertical_offset: float = 0.0) -> bool:
 	if not is_instance_valid(_player):
 		return false
+	var offset := Vector2(0, vertical_offset)
 	var space_state := get_world_2d().direct_space_state
 	var query := PhysicsRayQueryParameters2D.create(
-		global_position, _player.global_position, vision_wall_mask
+		global_position + offset, _player.global_position + offset, vision_wall_mask
 	)
 	query.exclude = [self]
 	var result := space_state.intersect_ray(query)
@@ -329,11 +421,31 @@ func match_state():
 			velocity.x = patrol_speed * direction
 			anim.play("walk")
 		states.CHASE:
-			pass
+			# Was `pass` — detection worked (player_in_range flipped true) but
+			# nothing ever moved the enemy or faced it towards the player.
+			# That's the "not detecting" symptom: it saw the player, just did
+			# nothing about it until they wandered into attack range.
+			if is_instance_valid(_player):
+				var to_player_x := _player.global_position.x - global_position.x
+				if absf(to_player_x) > 1.0:
+					direction = 1 if to_player_x > 0.0 else -1
+			velocity.x = chase_speed * direction
+			anim.play("walk")
 		states.ATTACK:
+			# Was missing the actual damage application — it played the swing
+			# animation and went straight back to IDLE without ever calling
+			# take_level_damage, so attacks looked right but never hurt the
+			# player. Now mirrors top-down's _hit_player timing: wait for the
+			# animation's impact frame, then re-check range before applying.
 			velocity.x = 0
-			anim.play("attack")
-			await anim.animation_finished
+			if anim:
+				anim.play("attack")
+				var impact_delay := anim.current_animation_length * attack_impact_fraction
+				await get_tree().create_timer(impact_delay).timeout
+				if is_instance_valid(_player) and player_in_attack_range and not _player.is_hidden:
+					_player.take_level_damage(contact_damage, global_position)
+				if anim.is_playing() and anim.current_animation == "attack":
+					await anim.animation_finished
 			current_states = states.IDLE
 		states.HURT:
 			pass
@@ -353,10 +465,18 @@ func state_transition():
 		current_states = states.ATTACK
 		return
 	
-	#if player_in_range:
-		#current_states = states.CHASE
-		#return
-	
+	# This was commented out, which is the main bug: player_in_range was
+	# being set correctly by the detector Area2D, but nothing ever acted on
+	# it, so the enemy never left PATROL/IDLE to chase.
+	if player_in_range:
+		current_states = states.CHASE
+		return
+
+	# Player left detection range (and we're not attacking) -> stop chasing
+	# and let the idle/patrol timer pick a new state again.
+	if current_states == states.CHASE:
+		current_states = states.IDLE
+
 	if idle_walk_timer.is_stopped():
 		if current_states == states.IDLE:
 			idle_walk_timer.start(1)

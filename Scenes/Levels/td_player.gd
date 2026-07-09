@@ -9,7 +9,23 @@ signal damaged(current_health: float)
 signal hidden_state_changed(is_hidden: bool)
 
 # =====================================================
-# EXPORTS
+# MOVEMENT MODE
+#
+# TOP_DOWN  -> exact original Level 1 behaviour (4-directional, hiding, etc).
+# PLATFORMER -> new Level 2 behaviour (gravity, jumping, left/right only).
+#
+# Defaults to TOP_DOWN so any existing scene (Level 1) that doesn't set this
+# in the Inspector keeps working exactly as before. Level 2's Player node
+# just needs this switched to Platformer in the Inspector (Level2Controller
+# also sets it in code as a safety net).
+# =====================================================
+enum MovementMode { TOP_DOWN, PLATFORMER }
+
+@export_group("Movement Mode")
+@export var movement_mode: MovementMode = MovementMode.TOP_DOWN
+
+# =====================================================
+# EXPORTS (original — unchanged)
 # =====================================================
 @export var speed: float = 120.0
 @export var invulnerable_time: float = 1.0
@@ -21,7 +37,7 @@ signal hidden_state_changed(is_hidden: bool)
 @export var sprite: Node2D               # your AnimatedSprite2D or Sprite2D (for flipping/modulate)
 @export var hurt_box: Area2D
 
-# --- Hiding ---
+# --- Hiding (Top-Down only) ---
 ## Input action that both enters AND exits hiding. Defaults to Godot's built-in
 ## "ui_accept" (Space/Enter/gamepad A). Must be standing inside a HidingSpot's
 ## zone to hide; can be pressed from anywhere while hidden to break cover.
@@ -39,6 +55,37 @@ signal hidden_state_changed(is_hidden: bool)
 @export var hide_exit_dash_distance: float = 20.0
 ## How long that step-out dash takes — the in-between beat before free movement resumes.
 @export var hide_exit_dash_time: float = 0.16
+
+# --- Platformer (Level 2 only) ---
+@export_group("Platformer Movement")
+## Downward acceleration applied every physics frame while in Platformer mode
+## (used while rising / on the ground; see platformer_fall_gravity_multiplier
+## for the falling case).
+@export var platformer_gravity: float = 900.0
+## Multiplies gravity while falling (velocity.y > 0). Real platformers almost
+## never use the same gravity for rising and falling — falling faster than
+## you rise is a huge part of what makes a jump feel snappy instead of floaty.
+## 1.0 = no difference (the "floaty" feeling you're getting right now).
+## Try 1.5–2.0.
+@export var platformer_fall_gravity_multiplier: float = 1.7
+## Upward velocity applied on jump (negative = up).
+@export var platformer_jump_velocity: float = -320.0
+## Terminal fall speed so you don't accelerate forever off a big drop.
+@export var platformer_max_fall_speed: float = 700.0
+## Max horizontal run speed.
+@export var platformer_run_speed: float = 160.0
+## How fast horizontal velocity ramps toward target speed (higher = snappier).
+@export var platformer_ground_acceleration: float = 1400.0
+## Multiplier applied to acceleration while airborne (lower = floatier air control).
+@export var platformer_air_control_multiplier: float = 0.65
+## Grace window after walking off a ledge where a jump still registers.
+@export var platformer_coyote_time: float = 0.1
+## Grace window where a jump press slightly before landing still registers.
+@export var platformer_jump_buffer_time: float = 0.1
+## Releasing jump early while still rising cuts velocity by this factor (variable jump height).
+@export var platformer_jump_release_dampen: float = 0.45
+## Input action used to jump in Platformer mode.
+@export var platformer_jump_action: StringName = &"ui_accept"
 
 # Animation names expected on `anim`:
 #   idle_down, idle_up, idle_right, idle_left (or use idle_right + scale flip)
@@ -65,6 +112,10 @@ var _is_exiting_hide: bool = false
 var _saved_z_index: int = 0
 var _saved_z_as_relative: bool = true
 
+# --- Platformer state ---
+var _coyote_timer: float = 0.0
+var _jump_buffer_timer: float = 0.0
+
 
 func _ready() -> void:
 	add_to_group("player")
@@ -85,6 +136,7 @@ func _ready() -> void:
 
 
 func _physics_process(_delta: float) -> void:
+	# --- Shared across both modes (unchanged from original) ---
 	if is_dead:
 		velocity = Vector2.ZERO
 		move_and_slide()
@@ -95,6 +147,14 @@ func _physics_process(_delta: float) -> void:
 		velocity = _knockback_velocity
 		move_and_slide()
 		return
+
+	# --- Mode split ---
+	if movement_mode == MovementMode.PLATFORMER:
+		_physics_process_platformer(_delta)
+		return
+
+	# --- Everything below this line is the ORIGINAL Top-Down logic,
+	#     completely untouched, and only runs when movement_mode == TOP_DOWN. ---
 
 	if _is_dashing_to_hide:
 		# The entry dash tween is driving global_position — don't fight it with velocity.
@@ -134,7 +194,57 @@ func _physics_process(_delta: float) -> void:
 
 
 # =====================================================
-# FACING / ANIMATION
+# PLATFORMER MOVEMENT (Level 2 only — new)
+# =====================================================
+func _physics_process_platformer(delta: float) -> void:
+	# Gravity — stronger while falling than while rising. This single change
+	# is usually what turns a jump from "floaty/mushy" into "snappy/normal
+	# feeling", since a symmetric rise/fall arc is not how good platformer
+	# jumps are tuned.
+	var current_gravity := platformer_gravity
+	if velocity.y > 0.0:
+		current_gravity *= platformer_fall_gravity_multiplier
+	velocity.y += current_gravity * delta
+	if velocity.y > platformer_max_fall_speed:
+		velocity.y = platformer_max_fall_speed
+
+	# Coyote time bookkeeping
+	if is_on_floor():
+		_coyote_timer = platformer_coyote_time
+	else:
+		_coyote_timer -= delta
+
+	# Jump buffering
+	if Input.is_action_just_pressed(platformer_jump_action):
+		_jump_buffer_timer = platformer_jump_buffer_time
+	else:
+		_jump_buffer_timer -= delta
+
+	if _jump_buffer_timer > 0.0 and _coyote_timer > 0.0:
+		velocity.y = platformer_jump_velocity
+		_jump_buffer_timer = 0.0
+		_coyote_timer = 0.0
+
+	# Variable jump height — tap for a short hop, hold for full height.
+	if Input.is_action_just_released(platformer_jump_action) and velocity.y < 0.0:
+		velocity.y *= platformer_jump_release_dampen
+
+	var horizontal := Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
+	var target_speed := horizontal * platformer_run_speed
+	var accel := platformer_ground_acceleration
+	if not is_on_floor():
+		accel *= platformer_air_control_multiplier
+	velocity.x = move_toward(velocity.x, target_speed, accel * delta)
+
+	move_and_slide()
+
+	var facing_input := Vector2(horizontal, 0.0)
+	_update_facing(facing_input)
+	_update_animation(facing_input)
+
+
+# =====================================================
+# FACING / ANIMATION (shared — unchanged)
 # =====================================================
 func _update_facing(input_dir: Vector2) -> void:
 	if input_dir == Vector2.ZERO:
@@ -179,7 +289,7 @@ func _facing_vector() -> Vector2:
 
 
 # =====================================================
-# HIDING
+# HIDING (Top-Down only — unchanged)
 # =====================================================
 ## Called by a HidingSpot when the player enters its trigger area — makes this
 ## spot available to hide in, but does NOT hide automatically. Press hide_action
@@ -295,7 +405,7 @@ func _break_cover(exit_dir: Vector2) -> void:
 
 
 # =====================================================
-# DAMAGE / HEALTH
+# DAMAGE / HEALTH (shared — unchanged)
 # =====================================================
 func _on_hurt_box_area_entered(area: Area2D) -> void:
 	if is_dead or is_invulnerable:
@@ -346,7 +456,7 @@ func _on_health_depleated() -> void:
 	if anim:
 		anim.stop()
 	died.emit()
-	
+
 func _draw() -> void:
 	if OS.is_debug_build():
 		draw_line(Vector2(-8, 0), Vector2(8, 0), Color.CYAN, 1.5)
