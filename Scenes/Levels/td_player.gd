@@ -86,6 +86,22 @@ enum MovementMode { TOP_DOWN, PLATFORMER }
 @export var platformer_jump_release_dampen: float = 0.45
 ## Input action used to jump in Platformer mode.
 @export var platformer_jump_action: StringName = &"ui_accept"
+## Speeds up (or slows down) all animations while in Platformer mode.
+## 1.0 = normal, 1.5 = 50% faster, 2.0 = double speed, etc.
+## Applied via AnimationPlayer.speed_scale, so every clip (idle/walk in
+## all directions) speeds up together without touching individual animations.
+## Has zero effect in Top-Down mode (speed_scale is reset to 1.0 there).
+@export var platformer_anim_speed_scale: float = 1.5
+## Guaranteed collision layer/mask for Platformer mode, applied in _ready()
+## regardless of whatever a LevelController does (or fails to do). This is
+## what fixed coins not being collectible in Level 2 — the Player's
+## collision_layer was staying at whatever the editor happened to have
+## (1), which didn't match what Coin's Area2D was listening for (2),
+## because Level2Controller's wiring wasn't actually reaching this node.
+## Setting it here means Level 2 works correctly no matter what's set (or
+## not set) in the scene/controller. Has zero effect in Top-Down mode.
+@export var platformer_collision_layer: int = 2
+@export var platformer_collision_mask: int = 1
 
 # Animation names expected on `anim`:
 #   idle_down, idle_up, idle_right, idle_left (or use idle_right + scale flip)
@@ -156,6 +172,11 @@ func _physics_process(_delta: float) -> void:
 	# --- Everything below this line is the ORIGINAL Top-Down logic,
 	#     completely untouched, and only runs when movement_mode == TOP_DOWN. ---
 
+	# Make sure animations play at normal speed in Top-Down mode, in case
+	# platformer_anim_speed_scale was left applied from a previous mode switch.
+	if anim:
+		anim.speed_scale = 1.0
+
 	if _is_dashing_to_hide:
 		# The entry dash tween is driving global_position — don't fight it with velocity.
 		velocity = Vector2.ZERO
@@ -197,6 +218,22 @@ func _physics_process(_delta: float) -> void:
 # PLATFORMER MOVEMENT (Level 2 only — new)
 # =====================================================
 func _physics_process_platformer(delta: float) -> void:
+	# Speed up all animations in Platformer mode. Re-applied every frame
+	# (like the collision layer/mask below) so it's immune to anything else
+	# touching `anim.speed_scale`, and so it survives a mode switch back
+	# to Top-Down without needing extra bookkeeping there.
+	if anim:
+		anim.speed_scale = platformer_anim_speed_scale
+
+	# Re-asserted every frame (cheap int writes) rather than once in _ready(),
+	# because Level2Controller's own wiring runs AFTER this node's _ready()
+	# (Godot readies children before parents) and was overwriting a one-time
+	# _ready() fix with whatever its own (in this case wrong) values were.
+	# Doing it here guarantees Level 2 always has the right collision setup
+	# no matter what the scene/controller does.
+	collision_layer = platformer_collision_layer
+	collision_mask = platformer_collision_mask
+
 	# Gravity — stronger while falling than while rising. This single change
 	# is usually what turns a jump from "floaty/mushy" into "snappy/normal
 	# feeling", since a symmetric rise/fall arc is not how good platformer
@@ -240,7 +277,15 @@ func _physics_process_platformer(delta: float) -> void:
 
 	var facing_input := Vector2(horizontal, 0.0)
 	_update_facing(facing_input)
-	_update_animation(facing_input)
+
+	# While airborne, override the normal walk/idle animation with idle_up
+	# (rising) or idle_down (falling) instead — looks far better than a
+	# sideways walk cycle playing mid-jump. Horizontal input still flips the
+	# sprite so the player still visibly faces the direction they're moving.
+	if not is_on_floor():
+		_update_airborne_animation(horizontal)
+	else:
+		_update_animation(facing_input)
 
 
 # =====================================================
@@ -278,6 +323,20 @@ func _update_animation(input_dir: Vector2) -> void:
 			anim.play("walk_up" if moving else "idle_up")
 		Facing.DOWN:
 			anim.play("walk_down" if moving else "idle_down")
+
+
+## Airborne-only animation override (Platformer mode). Plays idle_up while
+## rising (jump) and idle_down while falling, instead of the normal walk/idle
+## cycle — a walk animation looks wrong while the player is in the air.
+## Sprite flip still tracks horizontal input so facing direction is preserved.
+func _update_airborne_animation(horizontal: float) -> void:
+	if anim == null:
+		return
+
+	if sprite and horizontal != 0.0:
+		sprite.scale.x = -1.0 if horizontal < 0.0 else 1.0
+
+	anim.play("idle_up" if velocity.y < 0.0 else "idle_down")
 
 
 func _facing_vector() -> Vector2:

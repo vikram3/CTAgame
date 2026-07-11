@@ -1,24 +1,59 @@
-[gd_scene load_steps=6 format=3 uid="uid://c0atksvcpbkw4"]
+[gd_scene load_steps=23 format=3 uid="uid://c0atksvcpbkw4"]
 
 [ext_resource type="Script" uid="uid://ccub2f76kiw7a" path="res://Scenes/Levels/lev_2.gd" id="1_vya06"]
 [ext_resource type="PackedScene" uid="uid://cv5y5kai8g7g4" path="res://Scenes/Levels/td_player.tscn" id="2_fhg1k"]
 [ext_resource type="Texture2D" uid="uid://chhosyq80pvhx" path="res://Assets/PlatformAssets/props 2.png" id="3_1q31s"]
+[ext_resource type="TileSet" uid="uid://d2yjy6fe8yl3s" path="res://Scenes/Levels/lev_2.tres" id="4_gd8ck"]
 [ext_resource type="PackedScene" uid="uid://byjk18f2ujvhk" path="res://enemies/skeleton/orange/skeleton_orange.tscn" id="4_yvyp7"]
+[ext_resource type="Script" uid="uid://8wj80ew8ipub" path="res://Scenes/Levels/sortables.gd" id="5_3kdxc"]
+[ext_resource type="TileSet" uid="uid://ch3p0jvfgkns0" path="res://Scenes/Levels/lev_1.tres" id="6_gd8ck"]
+[ext_resource type="Script" uid="uid://qrkno4wa7aw3" path="res://Scenes/Levels/exit_door.gd" id="7_hdnug"]
+[ext_resource type="Texture2D" uid="uid://y833bycojj61" path="res://Assets/TopDown/props 1.png" id="8_5qrc7"]
+[ext_resource type="PackedScene" uid="uid://dcpgodgyy0ael" path="res://Scenes/Collectables/Coin/coin.tscn" id="9_3fk8m"]
+[ext_resource type="PackedScene" uid="uid://bq36566u8yqrx" path="res://Scenes/Traps/Trap_1/trap_1.tscn" id="10_6qohv"]
+[ext_resource type="Script" uid="uid://3eot3xp0sdod" path="res://Scenes/Levels/top_down_damage_area.gd" id="11_18isv"]
+[ext_resource type="Texture2D" uid="uid://cp47ji1jjkf1" path="res://Assets/TopDown/Spear.png" id="12_5rtmd"]
+[ext_resource type="PackedScene" uid="uid://bthojiue67ein" path="res://Scenes/Traps/Trap_2/spike.tscn" id="13_fcxnj"]
+[ext_resource type="Script" uid="uid://bm4tlsnja3b5c" path="res://Scenes/Levels/hud.gd" id="17_hdnug"]
+[ext_resource type="Script" uid="uid://b6f48w5ow40o7" path="res://Scenes/Levels/point_light_2d.gd" id="18_5qrc7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yvyp7"]
 size = Vector2(882, 194)
 
-[node name="Lev_2" type="Node2D"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_iwvje"]
+radius = 96.0
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_i4puh"]
+size = Vector2(130, 100)
+
+[sub_resource type="Gradient" id="Gradient_rn0ox"]
+offsets = PackedFloat32Array(0.2, 0.6, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1.0566169, 1.0566169, 0.74671537, 1, 1, 1, 1, 0)
+metadata/_snap_enabled = true
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_18isv"]
+gradient = SubResource("Gradient_rn0ox")
+fill = 1
+fill_from = Vector2(0.5, 0.42)
+fill_to = Vector2(0.74786323, 0.25641027)
+
+[sub_resource type="Environment" id="Environment_5rtmd"]
+background_mode = 3
+glow_enabled = true
+glow_bloom = 0.1
+adjustment_saturation = 1.5
+
+[node name="Lev_2" type="Node2D" node_paths=PackedStringArray("player", "chest", "hud", "game_over_panel", "win_panel", "tile_map", "player_start", "chest_light", "world_environment")]
 script = ExtResource("1_vya06")
-
-[node name="TDPlayer" parent="." instance=ExtResource("2_fhg1k")]
-position = Vector2(0, -305)
-movement_mode = 1
-platformer_gravity = 1200.0
-platformer_jump_velocity = -600.0
-platformer_run_speed = 1600.0
-
-[node name="Camera2D" type="Camera2D" parent="TDPlayer"]
+player = NodePath("Sortables/TDPlayer")
+chest = NodePath("Sortables/Props/ExitDoor")
+hud = NodePath("CanvasLayer/HUD")
+game_over_panel = NodePath("CanvasLayer/GameOverPanel")
+win_panel = NodePath("CanvasLayer/WinPanel")
+tile_map = NodePath("Sortables/MazeWalls/TileMap")
+player_start = NodePath("Start")
+chest_light = NodePath("End/Exitlight")
+world_environment = NodePath("CanvasModulate/WorldEnvironment")
 
 [node name="Platform" type="Node2D" parent="."]
 
@@ -56,7 +91,7 @@ region_rect = Rect2(27, 445, 929, 219)
 shape = SubResource("RectangleShape2D_yvyp7")
 
 [node name="Props5" type="Sprite2D" parent="Platform"]
-position = Vector2(2697, -224)
+position = Vector2(2808, 13)
 texture = ExtResource("3_1q31s")
 region_enabled = true
 region_rect = Rect2(27, 445, 929, 219)
@@ -66,17 +101,314 @@ region_rect = Rect2(27, 445, 929, 219)
 [node name="CollisionShape2D" type="CollisionShape2D" parent="Platform/Props5/StaticBody2D"]
 shape = SubResource("RectangleShape2D_yvyp7")
 
-[node name="Enemies" type="Node2D" parent="."]
+[node name="Sortables" type="Node2D" parent="." node_paths=PackedStringArray("tile_map_layer")]
+y_sort_enabled = true
+script = ExtResource("5_3kdxc")
+tile_map_layer = NodePath("Layer3")
+point_color = Color(1, 0, 0, 0)
 
-[node name="skeleton_orange" parent="Enemies" instance=ExtResource("4_yvyp7")]
-position = Vector2(1985, -253)
+[node name="MazeWalls" type="Node2D" parent="Sortables"]
+y_sort_enabled = true
+
+[node name="TileMap" type="TileMap" parent="Sortables/MazeWalls"]
+y_sort_enabled = true
+tile_set = ExtResource("4_gd8ck")
+rendering_quadrant_size = 64
+format = 2
+layer_0/tile_data = PackedInt32Array(-393143, 1, 65536, 393433, 1, 1245184, 262389, 1, 1310720, -589550, 1, 1245184, -1310415, 1, 1310720, -1900212, 1, 1310720, -2686616, 1, 1245184, -2358882, 1, 1179648, -2489886, 1, 1179648, -2751965, 1, 1179648, -3276191, 1, 1179648)
+
+[node name="Props" type="Node2D" parent="Sortables"]
+y_sort_enabled = true
+
+[node name="ExitDoor" type="Area2D" parent="Sortables/Props"]
+position = Vector2(5575, -816)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("7_hdnug")
+required_coins = 20
+
+[node name="Props1" type="Sprite2D" parent="Sortables/Props/ExitDoor"]
+texture = ExtResource("8_5qrc7")
+region_enabled = true
+region_rect = Rect2(3078, 348, 120, 233)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/ExitDoor"]
+position = Vector2(0, 44)
+shape = SubResource("CircleShape2D_iwvje")
+
+[node name="Coin" parent="Sortables/Props" instance=ExtResource("9_3fk8m")]
+position = Vector2(3918, -436)
+scale = Vector2(6.425, 6.425)
+
+[node name="Coin2" parent="Sortables/Props" instance=ExtResource("9_3fk8m")]
+position = Vector2(3429, -331.99997)
+scale = Vector2(6.425, 6.425)
+
+[node name="Coin3" parent="Sortables/Props" instance=ExtResource("9_3fk8m")]
+position = Vector2(2585, -295)
+scale = Vector2(6.425, 6.425)
+
+[node name="Trap_1" parent="Sortables/Props" instance=ExtResource("10_6qohv")]
+process_mode = 4
+position = Vector2(2994, -200)
+
+[node name="Trap1Damage" type="Area2D" parent="Sortables/Props"]
+position = Vector2(1081, 215)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("11_18isv")
+damage = 14
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/Trap1Damage"]
+shape = SubResource("RectangleShape2D_i4puh")
+
+[node name="Spear" type="Sprite2D" parent="Sortables/Props/Trap1Damage"]
+position = Vector2(0, -59)
+texture = ExtResource("12_5rtmd")
+
+[node name="Spike" parent="Sortables/Props" instance=ExtResource("13_fcxnj")]
+process_mode = 4
+position = Vector2(1315, 1111)
+
+[node name="SpikeDamage" type="Area2D" parent="Sortables/Props"]
+position = Vector2(3182, -129)
+collision_layer = 0
+collision_mask = 2
+script = ExtResource("11_18isv")
+damage = 12
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Sortables/Props/SpikeDamage"]
+shape = SubResource("RectangleShape2D_i4puh")
+
+[node name="Spear" type="Sprite2D" parent="Sortables/Props/SpikeDamage"]
+position = Vector2(0, -58)
+texture = ExtResource("12_5rtmd")
+
+[node name="Enemies" type="Node2D" parent="Sortables"]
+y_sort_enabled = true
+
+[node name="skeleton_orange" parent="Sortables/Enemies" instance=ExtResource("4_yvyp7")]
+position = Vector2(2241, -253)
 patrol_speed = 200.0
-chase_speed = 400.0
+chase_speed = 600.0
 patrol_distance = 1000.0
 chase_distance = 1000.0
 platformer_use_line_of_sight = true
 
-[node name="PointLight2D" parent="Enemies/skeleton_orange/body" index="8"]
+[node name="PointLight2D" parent="Sortables/Enemies/skeleton_orange/body" index="8"]
 visible = false
 
-[editable path="Enemies/skeleton_orange"]
+[node name="Layer1" type="TileMapLayer" parent="Sortables"]
+y_sort_enabled = true
+use_parent_material = true
+tile_set = ExtResource("4_gd8ck")
+rendering_quadrant_size = 64
+
+[node name="Layer2" type="TileMapLayer" parent="Sortables"]
+y_sort_enabled = true
+use_parent_material = true
+tile_map_data = PackedByteArray(0, 0, 246, 255, 245, 255, 0, 0, 9, 0, 18, 0, 0, 0, 2, 0, 245, 255, 0, 0, 9, 0, 18, 0, 0, 0, 14, 0, 245, 255, 0, 0, 9, 0, 18, 0, 0, 0)
+tile_set = ExtResource("6_gd8ck")
+rendering_quadrant_size = 64
+
+[node name="Layer3" type="TileMapLayer" parent="Sortables"]
+z_as_relative = false
+y_sort_enabled = true
+use_parent_material = true
+tile_set = ExtResource("6_gd8ck")
+rendering_quadrant_size = 64
+
+[node name="Layer4" type="TileMapLayer" parent="Sortables"]
+y_sort_enabled = true
+use_parent_material = true
+tile_set = ExtResource("6_gd8ck")
+rendering_quadrant_size = 64
+
+[node name="TDPlayer" parent="Sortables" instance=ExtResource("2_fhg1k")]
+position = Vector2(0, -305)
+movement_mode = 1
+platformer_gravity = 800.0
+platformer_jump_velocity = -600.0
+platformer_run_speed = 1600.0
+
+[node name="Camera2D" type="Camera2D" parent="Sortables/TDPlayer"]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="HUD" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("health_bar", "coin_label")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("17_hdnug")
+health_bar = NodePath("ProgressBar")
+coin_label = NodePath("Label")
+
+[node name="Panel" type="Panel" parent="CanvasLayer/HUD"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -324.0
+offset_bottom = 106.0
+grow_horizontal = 0
+
+[node name="ProgressBar" type="ProgressBar" parent="CanvasLayer/HUD"]
+modulate = Color(0.52156866, 1, 0.19607843, 1)
+layout_mode = 1
+offset_left = 61.999996
+offset_top = 37.000004
+offset_right = 352.0
+offset_bottom = 64.000015
+scale = Vector2(3.225, 3.225)
+theme_override_colors/font_color = Color(0.30297032, 0.39887872, 0.08898588, 1)
+theme_override_colors/font_outline_color = Color(0, 0.8901961, 0, 1)
+theme_override_constants/outline_size = 0
+value = 100.0
+show_percentage = false
+
+[node name="Label" type="Label" parent="CanvasLayer/HUD"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -274.0
+offset_right = -26.0
+offset_bottom = 91.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 66
+text = "Coins: 0"
+
+[node name="StatusLabel" type="Label" parent="CanvasLayer/HUD"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -205.0
+offset_top = -111.0
+offset_right = 206.0
+offset_bottom = -88.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 41
+text = "Collect the coins, avoid the traps, then reach the exit."
+
+[node name="Timer" type="Timer" parent="CanvasLayer/HUD"]
+wait_time = 60.0
+
+[node name="TimerLabel" type="Label" parent="CanvasLayer/HUD"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 61
+
+[node name="GameOverPanel" type="Panel" parent="CanvasLayer"]
+process_mode = 3
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -190.0
+offset_top = -105.0
+offset_right = 190.0
+offset_bottom = 105.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="CanvasLayer/GameOverPanel"]
+layout_mode = 1
+offset_left = 28.0
+offset_top = 22.0
+offset_right = 352.0
+offset_bottom = 58.0
+text = "You Died"
+horizontal_alignment = 1
+
+[node name="RetryButton" type="Button" parent="CanvasLayer/GameOverPanel"]
+layout_mode = 1
+offset_left = 52.0
+offset_top = 128.0
+offset_right = 178.0
+offset_bottom = 170.0
+text = "Retry"
+
+[node name="MenuButton" type="Button" parent="CanvasLayer/GameOverPanel"]
+layout_mode = 1
+offset_left = 202.0
+offset_top = 128.0
+offset_right = 328.0
+offset_bottom = 170.0
+text = "Menu"
+
+[node name="WinPanel" type="Panel" parent="CanvasLayer"]
+process_mode = 3
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -205.0
+offset_top = -110.0
+offset_right = 205.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="CanvasLayer/WinPanel"]
+layout_mode = 1
+offset_left = 28.0
+offset_top = 22.0
+offset_right = 382.0
+offset_bottom = 60.0
+text = "Level Clear!"
+horizontal_alignment = 1
+
+[node name="ReplayButton" type="Button" parent="CanvasLayer/WinPanel"]
+layout_mode = 1
+offset_left = 62.0
+offset_top = 136.0
+offset_right = 188.0
+offset_bottom = 178.0
+text = "Replay"
+
+[node name="MenuButton" type="Button" parent="CanvasLayer/WinPanel"]
+layout_mode = 1
+offset_left = 222.0
+offset_top = 136.0
+offset_right = 348.0
+offset_bottom = 178.0
+text = "Menu"
+
+[node name="Start" type="Marker2D" parent="."]
+position = Vector2(-198, -256)
+
+[node name="End" type="Marker2D" parent="."]
+position = Vector2(4891, 2250)
+
+[node name="Exitlight" type="PointLight2D" parent="End"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(1, 0.47843137, 0.47843137, 1)
+texture = SubResource("GradientTexture2D_18isv")
+script = ExtResource("18_5qrc7")
+
+[node name="CanvasModulate" type="CanvasModulate" parent="."]
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="CanvasModulate"]
+environment = SubResource("Environment_5rtmd")
+
+[editable path="Sortables/Enemies/skeleton_orange"]
+[editable path="Sortables/TDPlayer"]
