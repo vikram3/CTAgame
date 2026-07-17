@@ -1,4 +1,4 @@
-[gd_resource type="TileSet" load_steps=23 format=3 uid="uid://d2yjy6fe8yl3s"]
+[gd_resource type="TileSet" load_steps=24 format=3 uid="uid://d2yjy6fe8yl3s"]
 
 [ext_resource type="Texture2D" uid="uid://chhosyq80pvhx" path="res://Assets/PlatformAssets/props 2.png" id="1_o8uaw"]
 [ext_resource type="PackedScene" uid="uid://coxf2jj255hr6" path="res://Scenes/Levels/prop.tscn" id="2_crqbj"]
@@ -17,6 +17,7 @@
 [ext_resource type="PackedScene" uid="uid://ulnpvs2vifm4" path="res://Scenes/Levels/prop4.tscn" id="13_buebq"]
 [ext_resource type="PackedScene" uid="uid://clvogvvueear1" path="res://Scenes/Levels/Ground5.tscn" id="13_nyx5c"]
 [ext_resource type="PackedScene" uid="uid://vm4bj7r41i41" path="res://Scenes/Levels/prop5.tscn" id="14_3bit3"]
+[ext_resource type="PackedScene" uid="uid://ba0m2kao2rspr" path="res://Scenes/Levels/prop16.tscn" id="14_f7375"]
 [ext_resource type="PackedScene" uid="uid://d2qrvohsum7la" path="res://Scenes/Levels/prop6.tscn" id="15_5rxva"]
 [ext_resource type="PackedScene" uid="uid://bnhkhemifvx2l" path="res://Scenes/Levels/prop7.tscn" id="16_luklg"]
 [ext_resource type="PackedScene" uid="uid://c5dwfxchrbgrp" path="res://Scenes/Levels/prop8.tscn" id="17_2700t"]
@@ -52,6 +53,7 @@ scenes/18/scene = ExtResource("10_ej5g3")
 scenes/19/scene = ExtResource("11_hxs6p")
 scenes/20/scene = ExtResource("13_nyx5c")
 scenes/21/scene = ExtResource("4_2qyee")
+scenes/22/scene = ExtResource("14_f7375")
 
 [resource]
 sources/0 = SubResource("TileSetAtlasSource_hdnug")

@@ -6,11 +6,11 @@
 [ext_resource type="PackedScene" uid="uid://rg6eyl8kgtdj" path="res://Scenes/Scene_Manager/trigger_area/transition_area.tscn" id="5_q6u4j"]
 [ext_resource type="Texture2D" uid="uid://xx3558ycywxc" path="res://Assets/button/button_arrow_left_pressed.png" id="8_ta6m8"]
 [ext_resource type="Texture2D" uid="uid://cynh16nr52nr2" path="res://Assets/button/button_arrow_right.png" id="9_1uvqt"]
-[ext_resource type="PackedScene" uid="uid://b8u54nwif8s4d" path="res://Player/player.tscn" id="10_1uvqt"]
+[ext_resource type="PackedScene" uid="uid://b8u54nwif8s4d" path="res://Scenes/Characters/Player/player.tscn" id="10_1uvqt"]
 [ext_resource type="Texture2D" uid="uid://b3ifpug2mjuo7" path="res://Assets/button/button_arrow_up_pressed.png" id="10_oe30g"]
 [ext_resource type="Texture2D" uid="uid://cgifynuyolm00" path="res://Assets/bgandTiles/skyBackgroundNight.png" id="10_ta6m8"]
 [ext_resource type="Texture2D" uid="uid://ccf05640ckx6m" path="res://Assets/bgandTiles/bgAssetsNight.png" id="11_1uvqt"]
-[ext_resource type="PackedScene" uid="uid://byjk18f2ujvhk" path="res://enemies/skeleton/orange/skeleton_orange.tscn" id="11_oe30g"]
+[ext_resource type="PackedScene" uid="uid://byjk18f2ujvhk" path="res://Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn" id="11_oe30g"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q6u4j"]
 size = Vector2(64, 40)

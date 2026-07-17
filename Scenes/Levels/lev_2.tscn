@@ -1,10 +1,10 @@
-[gd_scene load_steps=23 format=3 uid="uid://c0atksvcpbkw4"]
+[gd_scene load_steps=25 format=3 uid="uid://c0atksvcpbkw4"]
 
 [ext_resource type="Script" uid="uid://ccub2f76kiw7a" path="res://Scenes/Levels/lev_2.gd" id="1_vya06"]
 [ext_resource type="PackedScene" uid="uid://cv5y5kai8g7g4" path="res://Scenes/Levels/td_player.tscn" id="2_fhg1k"]
 [ext_resource type="Texture2D" uid="uid://chhosyq80pvhx" path="res://Assets/PlatformAssets/props 2.png" id="3_1q31s"]
 [ext_resource type="TileSet" uid="uid://d2yjy6fe8yl3s" path="res://Scenes/Levels/lev_2.tres" id="4_gd8ck"]
-[ext_resource type="PackedScene" uid="uid://byjk18f2ujvhk" path="res://enemies/skeleton/orange/skeleton_orange.tscn" id="4_yvyp7"]
+[ext_resource type="PackedScene" uid="uid://byjk18f2ujvhk" path="res://Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn" id="4_yvyp7"]
 [ext_resource type="Script" uid="uid://8wj80ew8ipub" path="res://Scenes/Levels/sortables.gd" id="5_3kdxc"]
 [ext_resource type="TileSet" uid="uid://ch3p0jvfgkns0" path="res://Scenes/Levels/lev_1.tres" id="6_gd8ck"]
 [ext_resource type="Script" uid="uid://qrkno4wa7aw3" path="res://Scenes/Levels/exit_door.gd" id="7_hdnug"]
@@ -14,7 +14,9 @@
 [ext_resource type="Script" uid="uid://3eot3xp0sdod" path="res://Scenes/Levels/top_down_damage_area.gd" id="11_18isv"]
 [ext_resource type="Texture2D" uid="uid://cp47ji1jjkf1" path="res://Assets/TopDown/Spear.png" id="12_5rtmd"]
 [ext_resource type="PackedScene" uid="uid://bthojiue67ein" path="res://Scenes/Traps/Trap_2/spike.tscn" id="13_fcxnj"]
+[ext_resource type="Texture2D" uid="uid://cgifynuyolm00" path="res://Assets/bgandTiles/skyBackgroundNight.png" id="17_5qrc7"]
 [ext_resource type="Script" uid="uid://bm4tlsnja3b5c" path="res://Scenes/Levels/hud.gd" id="17_hdnug"]
+[ext_resource type="Texture2D" uid="uid://ccf05640ckx6m" path="res://Assets/bgandTiles/bgAssetsNight.png" id="18_3fk8m"]
 [ext_resource type="Script" uid="uid://b6f48w5ow40o7" path="res://Scenes/Levels/point_light_2d.gd" id="18_5qrc7"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_yvyp7"]
@@ -54,11 +56,12 @@ tile_map = NodePath("Sortables/MazeWalls/TileMap")
 player_start = NodePath("Start")
 chest_light = NodePath("End/Exitlight")
 world_environment = NodePath("CanvasModulate/WorldEnvironment")
+use_camera_limits = true
 
 [node name="Platform" type="Node2D" parent="."]
 
 [node name="Props2" type="Sprite2D" parent="Platform"]
-position = Vector2(150, 0)
+position = Vector2(150, 46)
 texture = ExtResource("3_1q31s")
 region_enabled = true
 region_rect = Rect2(27, 445, 929, 219)
@@ -115,7 +118,7 @@ y_sort_enabled = true
 tile_set = ExtResource("4_gd8ck")
 rendering_quadrant_size = 64
 format = 2
-layer_0/tile_data = PackedInt32Array(-393143, 1, 65536, 393433, 1, 1245184, 262389, 1, 1310720, -589550, 1, 1245184, -1310415, 1, 1310720, -1900212, 1, 1310720, -2686616, 1, 1245184, -2358882, 1, 1179648, -2489886, 1, 1179648, -2751965, 1, 1179648, -3276191, 1, 1179648)
+layer_0/tile_data = PackedInt32Array(393433, 1, 1245184, 262389, 1, 1310720, -589550, 1, 1245184, -1310415, 1, 1310720, -1900212, 1, 1310720, -2686616, 1, 1245184, -2358882, 1, 1179648, -2489886, 1, 1179648, -2751965, 1, 1179648, -3276191, 1, 1179648, -393125, 1, 1441792)
 
 [node name="Props" type="Node2D" parent="Sortables"]
 y_sort_enabled = true
@@ -232,6 +235,10 @@ platformer_jump_velocity = -600.0
 platformer_run_speed = 1600.0
 
 [node name="Camera2D" type="Camera2D" parent="Sortables/TDPlayer"]
+limit_left = 0
+limit_top = -5000
+limit_right = 20000
+limit_bottom = 0
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
@@ -409,6 +416,77 @@ script = ExtResource("18_5qrc7")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="CanvasModulate"]
 environment = SubResource("Environment_5rtmd")
+
+[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+scroll_ignore_camera_zoom = true
+
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+
+[node name="SkyBackgroundNight" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+texture = ExtResource("17_5qrc7")
+
+[node name="ENV" type="Node2D" parent="."]
+z_index = -1
+
+[node name="BgAssetsNight3" type="Sprite2D" parent="ENV"]
+position = Vector2(94, -222)
+texture = ExtResource("18_3fk8m")
+region_enabled = true
+region_rect = Rect2(2584, 1720, 856, 392)
+
+[node name="BgAssetsNight11" type="Sprite2D" parent="ENV"]
+position = Vector2(503, 17)
+texture = ExtResource("18_3fk8m")
+region_enabled = true
+region_rect = Rect2(2144, 208, 1608, 296)
+
+[node name="BgAssetsNight12" type="Sprite2D" parent="ENV"]
+position = Vector2(2106, 17)
+texture = ExtResource("18_3fk8m")
+region_enabled = true
+region_rect = Rect2(2144, 208, 1608, 296)
+
+[node name="BgAssetsNight13" type="Sprite2D" parent="ENV"]
+position = Vector2(3691, 17)
+texture = ExtResource("18_3fk8m")
+region_enabled = true
+region_rect = Rect2(2144, 208, 1608, 296)
+
+[node name="BgAssetsNight14" type="Sprite2D" parent="ENV"]
+position = Vector2(5277, 17)
+texture = ExtResource("18_3fk8m")
+region_enabled = true
+region_rect = Rect2(2144, 208, 1608, 296)
+
+[node name="BgAssetsNight8" type="Sprite2D" parent="ENV"]
+position = Vector2(2476, -3132)
+texture = ExtResource("18_3fk8m")
+region_enabled = true
+region_rect = Rect2(1352, 296, 184, 1040)
+
+[node name="BgAssetsNight9" type="Sprite2D" parent="ENV"]
+position = Vector2(976, -414)
+texture = ExtResource("18_3fk8m")
+region_enabled = true
+region_rect = Rect2(144, 1488, 1096, 776)
+
+[node name="BgAssetsNight16" type="Sprite2D" parent="ENV"]
+position = Vector2(2427, -523)
+texture = ExtResource("18_3fk8m")
+region_enabled = true
+region_rect = Rect2(61, 2381, 1951, 1073)
+
+[node name="BgAssetsNight5" type="Sprite2D" parent="ENV"]
+position = Vector2(-619, -4243)
+texture = ExtResource("18_3fk8m")
+region_enabled = true
+region_rect = Rect2(184, 504, 536, 408)
+
+[node name="BgAssetsNight17" type="Sprite2D" parent="ENV"]
+position = Vector2(-427, -209)
+texture = ExtResource("18_3fk8m")
+region_enabled = true
+region_rect = Rect2(3784, 240, 288, 752)
 
 [editable path="Sortables/Enemies/skeleton_orange"]
 [editable path="Sortables/TDPlayer"]

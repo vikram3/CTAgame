@@ -1,22 +1,37 @@
-# Light Shape 2D (Baked)
+# Coin Adventure Game
 
-An optimized 2D lighting tool for Godot 4. Design complex light shapes with gizmos and bake them into textures to eliminate real-time overhead.
+Godot 4 project organized by gameplay area.
 
-## Key Features
-* **Interactive Gizmos:** Real-time viewport handles for radius, rotation, and arc spread.
-* **Baked Performance:** Converts math-heavy lights into optimized `ImageTexture` resources.
-* **Scene Optimization:** Unique `.res` file saving to prevent `.tscn` bloat.
+## Project Layout
 
-## How to Use
-1. **Setup:** Add a `PointLightShape2D` node.
-2. **Design:** Use viewport handles to shape the light.
-3. **Bake:** Click `BAKE_LIGHT_NOW` after using Inspector sliders.
-4. **Save:** Click `SAVE_TO_DISK` to create a permanent asset in `addons/light_shape_2d/baked_lights/`.
+- `Scenes/App/` - top-level app flow and main entry scenes.
+- `Scenes/Characters/` - playable character, enemies, projectiles, and character state machines.
+- `Scenes/Levels/` - playable levels, level scripts, tile sets, level props, and level-specific helpers.
+- `Scenes/UI/` - menus, HUD, health bars, chapter select, and webtoon reader UI.
+- `Scenes/Scene_Manager/` - scene loading, transitions, spawn points, and stage data.
+- `Scenes/Collectables/` - collectable gameplay scenes.
+- `Scenes/Traps/` - trap scenes and scripts.
+- `Scenes/Camera/` - camera rigs and camera effects.
+- `Scenes/HitBox_and_HurtBox/` - shared combat collision scenes.
+- `Scenes/Stats/` - reusable stats scenes and scripts.
+- `Assets/` - imported art, sprites, textures, webtoon panels, and source asset packs.
+- `Resources/` - reusable Godot resources such as sprite frames.
+- `Scripts/` - global scripts, autoloads, menu scripts, data classes, and shared managers.
+- `addons/` - third-party Godot plugins. Keep plugin code isolated here.
 
-## Workflow Tips
-* **Optimization:** Use node **Scale** for large areas instead of increasing **Radius**.
-* **Reset:** Use `RESET_SHAPE` to return to a 360° point light.
-* **Dynamic:** Color, Energy, and Z-Index can still be changed in real-time.
+## Organization Rules
 
----
-**Author:** Batuhan Dikmen | **License:** MIT
+1. Put new playable scenes under the closest existing `Scenes/` category.
+2. Keep scripts beside their scene when they are only used by that scene.
+3. Put shared singleton scripts in `Scripts/Autoload/`.
+4. Put reusable data resources in `Resources/`.
+5. Do not put game files at the project root except Godot config, docs, and repo files.
+6. Do not edit or move files inside `addons/` unless updating a plugin.
+
+## Current Main Paths
+
+- Main scene: `Scenes/App/main.tscn`
+- Player scene: `Scenes/Characters/Player/player.tscn`
+- Enemy scenes: `Scenes/Characters/Enemies/`
+- Title screen: `Scenes/UI/TitleScreen.tscn`
+- Webtoon reader: `Scenes/UI/WebtoonReader.tscn`

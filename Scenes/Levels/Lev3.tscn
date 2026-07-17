@@ -9,8 +9,8 @@
 [ext_resource type="Texture2D" uid="uid://b3ifpug2mjuo7" path="res://Assets/button/button_arrow_up_pressed.png" id="7_aomr6"]
 [ext_resource type="Texture2D" uid="uid://cgifynuyolm00" path="res://Assets/bgandTiles/skyBackgroundNight.png" id="8_utg6q"]
 [ext_resource type="Texture2D" uid="uid://ccf05640ckx6m" path="res://Assets/bgandTiles/bgAssetsNight.png" id="9_po77d"]
-[ext_resource type="PackedScene" uid="uid://b8u54nwif8s4d" path="res://Player/player.tscn" id="10_0gj6u"]
-[ext_resource type="PackedScene" uid="uid://byjk18f2ujvhk" path="res://enemies/skeleton/orange/skeleton_orange.tscn" id="11_g7hll"]
+[ext_resource type="PackedScene" uid="uid://b8u54nwif8s4d" path="res://Scenes/Characters/Player/player.tscn" id="10_0gj6u"]
+[ext_resource type="PackedScene" uid="uid://byjk18f2ujvhk" path="res://Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn" id="11_g7hll"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q6u4j"]
 size = Vector2(64, 40)

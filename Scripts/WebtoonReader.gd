@@ -539,7 +539,7 @@ func _add_panel_with_overlay(
 
 	# Playable trigger — anchored to bottom of wrapper
 	var already_done = GameData.is_game_completed(current_chapter, play_entry.game_index)
-	var trigger = preload("res://Scenes/PlayableTriggerPanel.tscn").instantiate()
+	var trigger = preload("res://Scenes/UI/PlayableTriggerPanel.tscn").instantiate()
 	trigger.name          = "Playable_" + str(play_index)
 	trigger.anchor_left   = 0.0
 	trigger.anchor_right  = 1.0
@@ -576,7 +576,7 @@ func _add_static_panel(entry: ChapterData.PanelEntry, index: int):
 func _add_playable_trigger_panel(entry: ChapterData.PanelEntry, index: int):
 	var already_done = GameData.is_game_completed(current_chapter, entry.game_index)
 
-	var trigger = preload("res://Scenes/PlayableTriggerPanel.tscn").instantiate()
+	var trigger = preload("res://Scenes/UI/PlayableTriggerPanel.tscn").instantiate()
 	trigger.name                  = "Playable_" + str(index)
 	trigger.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
 	trigger.custom_minimum_size.x = _panel_width()

@@ -1,7 +1,7 @@
 [gd_scene load_steps=60 format=3 uid="uid://byjk18f2ujvhk"]
 
 [ext_resource type="PackedScene" uid="uid://dg6wi0x66ov55" path="res://Scenes/HitBox_and_HurtBox/HitBox/hit_box.tscn" id="1_2krmh"]
-[ext_resource type="Script" uid="uid://diigtsqlbjov3" path="res://enemies/skeleton/orange/skeleton_orange.gd" id="1_psj33"]
+[ext_resource type="Script" uid="uid://diigtsqlbjov3" path="res://Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.gd" id="1_psj33"]
 [ext_resource type="Texture2D" uid="uid://b0lmmo3qytsd2" path="res://Assets/skeleton/orange/attack/1.png" id="1_yfomu"]
 [ext_resource type="PackedScene" uid="uid://bs4p61rtgmos4" path="res://Scenes/HitBox_and_HurtBox/HurtBox/Hurt_Box.tscn" id="2_p15w3"]
 [ext_resource type="Texture2D" uid="uid://dkf4gnhee061y" path="res://Assets/skeleton/orange/attack/2.png" id="2_psj33"]

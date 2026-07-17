@@ -9,7 +9,7 @@ func go_to_chapter_select():
 func go_to_chapter(num: int):
 	GameData.data.current_chapter = num
 	GameData.save_data()
-	get_tree().change_scene_to_file("res://Scenes/WebtoonReader.tscn")
+	get_tree().change_scene_to_file("res://Scenes/UI/WebtoonReader.tscn")
 
 func go_to_settings():
 	get_tree().change_scene_to_file("res://Scenes/UI/settings_screen.tscn")
