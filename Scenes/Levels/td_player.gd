@@ -75,9 +75,15 @@ enum MovementMode { TOP_DOWN, PLATFORMER }
 ## Max horizontal run speed.
 @export var platformer_run_speed: float = 160.0
 ## How fast horizontal velocity ramps toward target speed (higher = snappier).
+## Only used when platformer_instant_speed is false.
 @export var platformer_ground_acceleration: float = 1400.0
 ## Multiplier applied to acceleration while airborne (lower = floatier air control).
+## Only used when platformer_instant_speed is false.
 @export var platformer_air_control_multiplier: float = 0.65
+## Level 3 style movement: jump straight to platformer_run_speed on input
+## instead of ramping up/down through ground_acceleration. Feels snappier
+## and more "arcade," at the cost of the smoother accel/decel curve.
+@export var platformer_instant_speed: bool = true
 ## Grace window after walking off a ledge where a jump still registers.
 @export var platformer_coyote_time: float = 0.1
 ## Grace window where a jump press slightly before landing still registers.
@@ -102,6 +108,12 @@ enum MovementMode { TOP_DOWN, PLATFORMER }
 ## not set) in the scene/controller. Has zero effect in Top-Down mode.
 @export var platformer_collision_layer: int = 2
 @export var platformer_collision_mask: int = 1
+## Level 3 style knockback: instead of freezing input and hard-overriding
+## velocity for a fixed knockback_time (what Top-Down mode still does below),
+## Platformer mode layers a separate, decaying force on top of normal
+## movement via apply_force()/external_velocity — same model as your Level 3
+## character's force_decay. Higher = snaps back to normal faster.
+@export var platformer_force_decay: float = 750.0
 
 # Animation names expected on `anim`:
 #   idle_down, idle_up, idle_right, idle_left (or use idle_right + scale flip)
@@ -131,6 +143,20 @@ var _saved_z_as_relative: bool = true
 # --- Platformer state ---
 var _coyote_timer: float = 0.0
 var _jump_buffer_timer: float = 0.0
+## Decaying knockback force, added on top of normal movement each frame and
+## smoothed toward zero via platformer_force_decay — the Level 3 model.
+## Only used/updated in Platformer mode; Top-Down mode's knockback still
+## goes entirely through _knockback_velocity/_knockback_timer, untouched.
+var external_velocity: Vector2 = Vector2.ZERO
+## Gravity/jump's own vertical velocity, tracked separately from `velocity`.
+## `velocity.y` itself is recombined fresh every frame as
+## _platformer_vertical_velocity + external_velocity.y — it is NEVER fed
+## back into this accumulator. That separation is what stops knockback from
+## compounding: previously gravity's persistent velocity.y absorbed the
+## knockback every frame, then kept adding more (still-decaying) knockback
+## on top of that already-boosted value, snowballing into the player
+## rocketing upward instead of a quick pop that fades out.
+var _platformer_vertical_velocity: float = 0.0
 
 
 func _ready() -> void:
@@ -234,16 +260,15 @@ func _physics_process_platformer(delta: float) -> void:
 	collision_layer = platformer_collision_layer
 	collision_mask = platformer_collision_mask
 
-	# Gravity — stronger while falling than while rising. This single change
-	# is usually what turns a jump from "floaty/mushy" into "snappy/normal
-	# feeling", since a symmetric rise/fall arc is not how good platformer
-	# jumps are tuned.
+	# Gravity — stronger while falling than while rising. Operates on
+	# _platformer_vertical_velocity (not velocity.y directly) so it never
+	# absorbs knockback — see the var's comment above for why that matters.
 	var current_gravity := platformer_gravity
-	if velocity.y > 0.0:
+	if _platformer_vertical_velocity > 0.0:
 		current_gravity *= platformer_fall_gravity_multiplier
-	velocity.y += current_gravity * delta
-	if velocity.y > platformer_max_fall_speed:
-		velocity.y = platformer_max_fall_speed
+	_platformer_vertical_velocity += current_gravity * delta
+	if _platformer_vertical_velocity > platformer_max_fall_speed:
+		_platformer_vertical_velocity = platformer_max_fall_speed
 
 	# Coyote time bookkeeping
 	if is_on_floor():
@@ -258,20 +283,36 @@ func _physics_process_platformer(delta: float) -> void:
 		_jump_buffer_timer -= delta
 
 	if _jump_buffer_timer > 0.0 and _coyote_timer > 0.0:
-		velocity.y = platformer_jump_velocity
+		_platformer_vertical_velocity = platformer_jump_velocity
 		_jump_buffer_timer = 0.0
 		_coyote_timer = 0.0
 
 	# Variable jump height — tap for a short hop, hold for full height.
-	if Input.is_action_just_released(platformer_jump_action) and velocity.y < 0.0:
-		velocity.y *= platformer_jump_release_dampen
+	if Input.is_action_just_released(platformer_jump_action) and _platformer_vertical_velocity < 0.0:
+		_platformer_vertical_velocity *= platformer_jump_release_dampen
 
 	var horizontal := Input.get_action_strength("move_right") - Input.get_action_strength("move_left")
-	var target_speed := horizontal * platformer_run_speed
-	var accel := platformer_ground_acceleration
-	if not is_on_floor():
-		accel *= platformer_air_control_multiplier
-	velocity.x = move_toward(velocity.x, target_speed, accel * delta)
+
+	if platformer_instant_speed:
+		# Level 3 style — snap straight to full speed on input instead of
+		# ramping through an acceleration curve. Snappier, more "arcade."
+		velocity.x = horizontal * platformer_run_speed
+	else:
+		var target_speed := horizontal * platformer_run_speed
+		var accel := platformer_ground_acceleration
+		if not is_on_floor():
+			accel *= platformer_air_control_multiplier
+		velocity.x = move_toward(velocity.x, target_speed, accel * delta)
+
+	# Smooth knockback (Level 3 style): external_velocity is a separate,
+	# decaying force layered on top of normal movement instead of freezing
+	# input and overriding velocity outright for a fixed duration. It's set
+	# by apply_force() (called from take_level_damage() below), decays here,
+	# and is combined fresh into velocity every frame — never accumulated
+	# into _platformer_vertical_velocity or carried forward on its own.
+	external_velocity = external_velocity.move_toward(Vector2.ZERO, platformer_force_decay * delta)
+	velocity.x += external_velocity.x
+	velocity.y = _platformer_vertical_velocity + external_velocity.y
 
 	move_and_slide()
 
@@ -282,10 +323,20 @@ func _physics_process_platformer(delta: float) -> void:
 	# (rising) or idle_down (falling) instead — looks far better than a
 	# sideways walk cycle playing mid-jump. Horizontal input still flips the
 	# sprite so the player still visibly faces the direction they're moving.
+	# Uses _platformer_vertical_velocity rather than velocity.y so a strong
+	# knockback doesn't misclassify rising/falling for a frame.
 	if not is_on_floor():
 		_update_airborne_animation(horizontal)
 	else:
 		_update_animation(facing_input)
+
+
+## Applies an instantaneous force that decays smoothly over time (Level 3
+## style), instead of the Top-Down knockback's hard velocity override. Only
+## meaningful in Platformer mode — external_velocity is only read/decayed in
+## _physics_process_platformer above.
+func apply_force(direction: Vector2, strength: float) -> void:
+	external_velocity += direction.normalized() * strength
 
 
 # =====================================================
@@ -336,7 +387,7 @@ func _update_airborne_animation(horizontal: float) -> void:
 	if sprite and horizontal != 0.0:
 		sprite.scale.x = -1.0 if horizontal < 0.0 else 1.0
 
-	anim.play("idle_up" if velocity.y < 0.0 else "idle_down")
+	anim.play("idle_up" if _platformer_vertical_velocity < 0.0 else "idle_down")
 
 
 func _facing_vector() -> Vector2:
@@ -488,9 +539,22 @@ func take_level_damage(damage: int, source_position: Vector2) -> void:
 	if is_dead or is_invulnerable or not hurt_box:
 		return
 	hurt_box.apply_damage(damage)
+
 	var away := global_position - source_position
-	_knockback_velocity = away.normalized() * knockback_strength if away.length() > 0.0 else Vector2.DOWN * knockback_strength
-	_knockback_timer = knockback_time
+
+	if movement_mode == MovementMode.PLATFORMER:
+		# Smooth knockback (Level 3 style): apply_force layers a decaying
+		# force on top of normal movement instead of freezing input and
+		# overriding velocity outright for knockback_time. Doesn't touch
+		# _knockback_velocity/_knockback_timer at all, so the Top-Down
+		# branch below is completely unaffected.
+		var knock_dir := away.normalized() if away.length() > 0.0 else Vector2.UP
+		apply_force(knock_dir, knockback_strength)
+	else:
+		# Original Top-Down knockback — byte-for-byte unchanged.
+		_knockback_velocity = away.normalized() * knockback_strength if away.length() > 0.0 else Vector2.DOWN * knockback_strength
+		_knockback_timer = knockback_time
+
 	_start_invulnerability()
 
 
@@ -510,6 +574,8 @@ func _on_health_updated(current_health: float) -> void:
 func _on_health_depleated() -> void:
 	is_dead = true
 	velocity = Vector2.ZERO
+	external_velocity = Vector2.ZERO
+	_platformer_vertical_velocity = 0.0
 	if sprite:
 		sprite.modulate.a = 1.0
 	if anim:

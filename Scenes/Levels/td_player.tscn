@@ -197,8 +197,8 @@ _data = {
 }
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_cxu2i"]
-radius = 38.0
-height = 110.0
+radius = 79.0
+height = 252.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_cxu2i"]
 radius = 124.7758
@@ -233,8 +233,7 @@ libraries = {
 }
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-position = Vector2(0, 120)
-rotation = -1.5707964
+position = Vector2(0, 29)
 shape = SubResource("CapsuleShape2D_cxu2i")
 
 [node name="HurtBox" type="Area2D" parent="."]

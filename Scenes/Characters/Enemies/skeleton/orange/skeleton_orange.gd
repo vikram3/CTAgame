@@ -102,7 +102,23 @@ var current_states:states = states.IDLE
 @export var platformer_vision_height_offset: float = -16.0
 
 var direction : int = 1
-var _player: Player
+# Was typed `Player`, with `as Player` casts below. That only works if the
+# node in the "player" group is literally that exact GDScript class — a
+# different player character (e.g. Level 3's own script) is a different
+# class, so `as Player` would silently return null even though it's the
+# right node and in the right group. CharacterBody2D + duck typing
+# (accessing .is_hidden / .take_level_damage() directly, without a cast)
+# works with any player character that implements that small interface,
+# regardless of which script/class it actually is.
+# Deliberately untyped (no `: Type`). GDScript statically checks member
+# access on typed variables against that exact type's known members — even
+# CharacterBody2D doesn't have .is_hidden or .take_level_damage(), so typing
+# this as CharacterBody2D would fail to compile the moment we access those.
+# Leaving it untyped defers member lookup to runtime, which is what actual
+# duck typing needs: this works with ANY node in the "player" group that
+# happens to implement .is_hidden / .take_level_damage(), regardless of
+# which script/class it is.
+var _player
 var _attack_cooldown: float = 0.0
 var _is_attacking: bool = false
 var _disabled_solid_collision_with_player: bool = false
@@ -170,7 +186,7 @@ func _gravity():
 ## exports top-down mode already uses.
 func _update_platformer_detection() -> void:
 	if not is_instance_valid(_player):
-		_player = get_tree().get_first_node_in_group("player") as Player
+		_player = get_tree().get_first_node_in_group("player")
 		if is_instance_valid(_player) and platformer_disable_solid_collision_with_player \
 				and not _disabled_solid_collision_with_player:
 			_disable_solid_collision_with_player()
@@ -185,7 +201,7 @@ func _update_platformer_detection() -> void:
 		player_in_attack_range = false
 		return
 
-	var dist := global_position.distance_to(_player.global_position)
+	var dist: float = global_position.distance_to(_player.global_position)
 	var can_see := true
 	if platformer_use_line_of_sight:
 		can_see = _has_line_of_sight(platformer_vision_height_offset)
@@ -205,6 +221,8 @@ func _update_platformer_detection() -> void:
 func _disable_solid_collision_with_player() -> void:
 	if not is_instance_valid(_player):
 		return
+	if not (has_method("add_collision_exception_with") and _player.has_method("add_collision_exception_with")):
+		return
 	add_collision_exception_with(_player)
 	_player.add_collision_exception_with(self)
 	_disabled_solid_collision_with_player = true
@@ -214,9 +232,9 @@ func _top_down_physics(delta: float) -> void:
 	_attack_cooldown = maxf(_attack_cooldown - delta, 0.0)
 
 	if not is_instance_valid(_player):
-		_player = get_tree().get_first_node_in_group("player") as Player
+		_player = get_tree().get_first_node_in_group("player")
 
-	var player_hidden := is_instance_valid(_player) and _player.is_hidden
+	var player_hidden: bool = is_instance_valid(_player) and _player.is_hidden
 	if player_hidden:
 		player_in_range = false
 
@@ -280,7 +298,7 @@ func _has_line_of_sight(vertical_offset: float = 0.0) -> bool:
 func _process_chase(can_see_player: bool) -> void:
 	if not can_see_player:
 		return
-	var to_player := _player.global_position - global_position
+	var to_player: Vector2 = _player.global_position - global_position
 	_last_known_player_pos = _player.global_position
 	if to_player.length() <= attack_distance:
 		_hit_player()
@@ -426,7 +444,7 @@ func match_state():
 			# That's the "not detecting" symptom: it saw the player, just did
 			# nothing about it until they wandered into attack range.
 			if is_instance_valid(_player):
-				var to_player_x := _player.global_position.x - global_position.x
+				var to_player_x: float = _player.global_position.x - global_position.x
 				if absf(to_player_x) > 1.0:
 					direction = 1 if to_player_x > 0.0 else -1
 			velocity.x = chase_speed * direction
@@ -495,7 +513,7 @@ func choose_state():
 
 func _on_player_detector_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):
-		_player = body as Player
+		_player = body
 		player_in_range = not _player.is_hidden
 
 func _on_player_detector_body_exited(body: Node2D) -> void:
@@ -506,7 +524,7 @@ func _on_attack_range_body_entered(body: Node2D) -> void:
 	if body.is_in_group("player"):
 		player_in_attack_range = true
 		if top_down_mode:
-			_player = body as Player
+			_player = body
 			# Don't attack here directly — entering this Area2D just marks the
 			# player as "in attack range". Whether a hit actually lands is
 			# decided in _hit_player(), which re-checks the real attack_distance

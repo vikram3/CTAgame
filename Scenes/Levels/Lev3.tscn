@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://b4nukjd2ghyj2"]
+[gd_scene load_steps=26 format=3 uid="uid://b4nukjd2ghyj2"]
 
 [ext_resource type="Script" uid="uid://bhqfgi6bf0oo2" path="res://Scenes/Environments/Proto_Levels/proto_level.gd" id="1_8w3j6"]
 [ext_resource type="PackedScene" uid="uid://dmkxl3vi3shkq" path="res://Scenes/Environments/Proto_Levels/Moving_Platforms/moving_platform.tscn" id="2_enaaa"]
@@ -11,6 +11,8 @@
 [ext_resource type="Texture2D" uid="uid://ccf05640ckx6m" path="res://Assets/bgandTiles/bgAssetsNight.png" id="9_po77d"]
 [ext_resource type="PackedScene" uid="uid://b8u54nwif8s4d" path="res://Scenes/Characters/Player/player.tscn" id="10_0gj6u"]
 [ext_resource type="PackedScene" uid="uid://byjk18f2ujvhk" path="res://Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn" id="11_g7hll"]
+[ext_resource type="Script" uid="uid://bm4tlsnja3b5c" path="res://Scenes/Levels/hud.gd" id="12_xe2pq"]
+[ext_resource type="Script" uid="uid://b6f48w5ow40o7" path="res://Scenes/Levels/point_light_2d.gd" id="13_1tywi"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_q6u4j"]
 size = Vector2(64, 40)
@@ -42,8 +44,24 @@ size = Vector2(55, 76)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_hk4vc"]
 size = Vector2(318, 31)
 
-[node name="Level3" type="Node2D"]
+[sub_resource type="Gradient" id="Gradient_rn0ox"]
+offsets = PackedFloat32Array(0.2, 0.6, 1)
+colors = PackedColorArray(0, 0, 0, 1, 1.0566169, 1.0566169, 0.74671537, 1, 1, 1, 1, 0)
+metadata/_snap_enabled = true
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_ir514"]
+gradient = SubResource("Gradient_rn0ox")
+fill = 1
+fill_from = Vector2(0.5, 0.42)
+fill_to = Vector2(0.74786323, 0.25641027)
+
+[node name="Level3" type="Node2D" node_paths=PackedStringArray("player", "hud", "game_over_panel", "win_panel", "player_start")]
 script = ExtResource("1_8w3j6")
+player = NodePath("Player")
+hud = NodePath("CanvasLayer2/HUD")
+game_over_panel = NodePath("CanvasLayer2/GameOverPanel")
+win_panel = NodePath("CanvasLayer2/WinPanel")
+player_start = NodePath("Start")
 
 [node name="MovingPlatforms" type="Node2D" parent="."]
 
@@ -404,6 +422,7 @@ region_rect = Rect2(2019, 2763, 565, 639)
 
 [node name="Player" parent="." instance=ExtResource("10_0gj6u")]
 position = Vector2(72, 144)
+knockback_strength = 10.0
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
 visible = false
@@ -480,27 +499,207 @@ scale = Vector2(0.1, 0.1)
 
 [node name="skeleton_orange" parent="enemies" instance=ExtResource("11_g7hll")]
 position = Vector2(3619.9995, -590)
+attack_distance = 10.0
 
 [node name="skeleton_orange2" parent="enemies" instance=ExtResource("11_g7hll")]
 position = Vector2(7579.999, -60.000244)
+attack_distance = 10.0
 
 [node name="skeleton_orange3" parent="enemies" instance=ExtResource("11_g7hll")]
 position = Vector2(7929.999, -2810)
+attack_distance = 10.0
 
 [node name="skeleton_orange4" parent="enemies" instance=ExtResource("11_g7hll")]
 position = Vector2(14299.998, -60.000244)
+attack_distance = 10.0
 
 [node name="skeleton_orange5" parent="enemies" instance=ExtResource("11_g7hll")]
 position = Vector2(18120, -2710)
+attack_distance = 10.0
 
 [node name="skeleton_orange6" parent="enemies" instance=ExtResource("11_g7hll")]
 position = Vector2(20970, -80.000244)
+attack_distance = 10.0
 
 [node name="skeleton_orange7" parent="enemies" instance=ExtResource("11_g7hll")]
 position = Vector2(28750, -2710)
+attack_distance = 10.0
 
 [node name="skeleton_orange8" parent="enemies" instance=ExtResource("11_g7hll")]
 position = Vector2(28750, -2710)
+attack_distance = 10.0
+
+[node name="CanvasLayer2" type="CanvasLayer" parent="."]
+
+[node name="HUD" type="Control" parent="CanvasLayer2" node_paths=PackedStringArray("health_bar", "coin_label")]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("12_xe2pq")
+health_bar = NodePath("ProgressBar")
+coin_label = NodePath("Label")
+
+[node name="Panel" type="Panel" parent="CanvasLayer2/HUD"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -324.0
+offset_bottom = 106.0
+grow_horizontal = 0
+
+[node name="ProgressBar" type="ProgressBar" parent="CanvasLayer2/HUD"]
+modulate = Color(0.52156866, 1, 0.19607843, 1)
+layout_mode = 1
+offset_left = 61.999996
+offset_top = 37.000004
+offset_right = 352.0
+offset_bottom = 64.000015
+scale = Vector2(3.225, 3.225)
+theme_override_colors/font_color = Color(0.30297032, 0.39887872, 0.08898588, 1)
+theme_override_colors/font_outline_color = Color(0, 0.8901961, 0, 1)
+theme_override_constants/outline_size = 0
+value = 100.0
+show_percentage = false
+
+[node name="Label" type="Label" parent="CanvasLayer2/HUD"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -274.0
+offset_right = -26.0
+offset_bottom = 91.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 66
+text = "Coins: 0"
+
+[node name="StatusLabel" type="Label" parent="CanvasLayer2/HUD"]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -205.0
+offset_top = -111.0
+offset_right = 206.0
+offset_bottom = -88.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_font_sizes/font_size = 41
+text = "Collect the coins, avoid the traps, then reach the exit."
+
+[node name="Timer" type="Timer" parent="CanvasLayer2/HUD"]
+wait_time = 60.0
+
+[node name="TimerLabel" type="Label" parent="CanvasLayer2/HUD"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -20.0
+offset_right = 20.0
+offset_bottom = 23.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 61
+
+[node name="GameOverPanel" type="Panel" parent="CanvasLayer2"]
+process_mode = 3
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -190.0
+offset_top = -105.0
+offset_right = 190.0
+offset_bottom = 105.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="CanvasLayer2/GameOverPanel"]
+layout_mode = 1
+offset_left = 28.0
+offset_top = 22.0
+offset_right = 352.0
+offset_bottom = 58.0
+text = "You Died"
+horizontal_alignment = 1
+
+[node name="RetryButton" type="Button" parent="CanvasLayer2/GameOverPanel"]
+layout_mode = 1
+offset_left = 52.0
+offset_top = 128.0
+offset_right = 178.0
+offset_bottom = 170.0
+text = "Retry"
+
+[node name="MenuButton" type="Button" parent="CanvasLayer2/GameOverPanel"]
+layout_mode = 1
+offset_left = 202.0
+offset_top = 128.0
+offset_right = 328.0
+offset_bottom = 170.0
+text = "Menu"
+
+[node name="WinPanel" type="Panel" parent="CanvasLayer2"]
+process_mode = 3
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -205.0
+offset_top = -110.0
+offset_right = 205.0
+offset_bottom = 110.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="CanvasLayer2/WinPanel"]
+layout_mode = 1
+offset_left = 28.0
+offset_top = 22.0
+offset_right = 382.0
+offset_bottom = 60.0
+text = "Level Clear!"
+horizontal_alignment = 1
+
+[node name="ReplayButton" type="Button" parent="CanvasLayer2/WinPanel"]
+layout_mode = 1
+offset_left = 62.0
+offset_top = 136.0
+offset_right = 188.0
+offset_bottom = 178.0
+text = "Replay"
+
+[node name="MenuButton" type="Button" parent="CanvasLayer2/WinPanel"]
+layout_mode = 1
+offset_left = 222.0
+offset_top = 136.0
+offset_right = 348.0
+offset_bottom = 178.0
+text = "Menu"
+
+[node name="Start" type="Marker2D" parent="."]
+position = Vector2(149, 104)
+
+[node name="End" type="Marker2D" parent="."]
+position = Vector2(3230, 107)
+
+[node name="Exitlight" type="PointLight2D" parent="End"]
+position = Vector2(0, -82)
+rotation = -3.1415927
+scale = Vector2(14.89568, 10.9650345)
+color = Color(1, 0.47843137, 0.47843137, 1)
+texture = SubResource("GradientTexture2D_ir514")
+script = ExtResource("13_1tywi")
 
 [editable path="Cam_Root"]
 [editable path="TransitionArea"]
