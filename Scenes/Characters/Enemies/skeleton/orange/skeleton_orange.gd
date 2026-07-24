@@ -1,5 +1,11 @@
 extends CharacterBody2D
 
+## Emitted once, the moment this enemy actually dies (stats health hits 0).
+## Nothing previously set is_dead=true or emitted anything on death — the
+## DIE state was reachable in the match but never actually triggered by a
+## real death, so no level controller could detect a kill. This plugs that
+## gap without changing any existing behavior.
+signal defeated
 
 enum states{
 	IDLE,
@@ -140,6 +146,26 @@ func _ready() -> void:
 		_spawn_position = global_position
 		if anim:
 			anim.play("walk")
+
+	# Was never wired up before, so is_dead never actually became true and
+	# the DIE state was unreachable through a real death — nothing could
+	# tell when an enemy was actually defeated. Mirrors how Player.gd
+	# connects the same signal.
+	if stats and stats.has_signal("health_depleated"):
+		if not stats.health_depleated.is_connected(_on_health_depleated):
+			stats.health_depleated.connect(_on_health_depleated)
+
+
+## Marks this enemy as actually dead and notifies anything listening (e.g. a
+## wave-based level controller counting kills). Does not queue_free() itself
+## — that stays the level/animation's call, so a death animation can still
+## play out via the DIE state before the node goes away, if you want one.
+func _on_health_depleated() -> void:
+	if is_dead:
+		return
+	is_dead = true
+	velocity = Vector2.ZERO
+	defeated.emit()
 
 
 func _physics_process(delta: float) -> void:
