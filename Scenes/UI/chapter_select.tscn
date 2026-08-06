@@ -89,7 +89,7 @@ grow_horizontal = 0
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="CanvasLayer/CoinDisplay"]
 position = Vector2(-42.999996, 0)
-scale = Vector2(0.1, 0.1)
+scale = Vector2(0.8333333, 0.8333333)
 sprite_frames = SubResource("SpriteFrames_ypjic")
 autoplay = "default"
 

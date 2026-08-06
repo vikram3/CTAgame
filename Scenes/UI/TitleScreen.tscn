@@ -168,7 +168,7 @@ layout_mode = 2
 
 [node name="CoinIcon" type="AnimatedSprite2D" parent="CanvasLayer/RootLayout/ButtonsPanel/CoinDisplay/HBoxContainer"]
 position = Vector2(-45.999996, 32.999996)
-scale = Vector2(0.1, 0.1)
+scale = Vector2(0.8333333, 0.8333333)
 sprite_frames = SubResource("SpriteFrames_obdur")
 autoplay = "default"
 
@@ -185,7 +185,7 @@ layout_mode = 2
 
 [node name="CoinIcon" type="AnimatedSprite2D" parent="CanvasLayer/RootLayout/ButtonsPanel/CoinDisplay/HBoxContainer3"]
 position = Vector2(50.999996, 34.999996)
-scale = Vector2(0.1, 0.1)
+scale = Vector2(0.8333333, 0.8333333)
 sprite_frames = SubResource("SpriteFrames_obdur")
 autoplay = "default"
 

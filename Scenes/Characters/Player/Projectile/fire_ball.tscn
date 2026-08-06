@@ -331,7 +331,7 @@ shape = SubResource("CircleShape2D_jp4dy")
 
 [node name="coin" type="AnimatedSprite2D" parent="body"]
 rotation = 1.5707964
-scale = Vector2(0.01, 0.01)
+scale = Vector2(0.08333333, 0.08333333)
 sprite_frames = SubResource("SpriteFrames_yf0pk")
 animation = &"anim"
 autoplay = "anim"

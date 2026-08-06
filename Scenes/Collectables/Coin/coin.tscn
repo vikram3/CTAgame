@@ -136,7 +136,7 @@ script = ExtResource("1_dqvnt")
 anim = NodePath("AnimationPlayer")
 
 [node name="sprite" type="AnimatedSprite2D" parent="."]
-scale = Vector2(0.05, 0.05)
+scale = Vector2(0.4166667, 0.4166667)
 sprite_frames = SubResource("SpriteFrames_1fgso")
 animation = &"anim"
 speed_scale = 1.085
