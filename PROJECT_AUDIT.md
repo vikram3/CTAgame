@@ -1,0 +1,1055 @@
+# Project Audit - Phase 0
+
+Generated from static inspection of the Godot project on 2026-08-06. No gameplay, scene, script, resource, or asset files were modified while collecting this audit; only this audit document was created.
+
+## Reference Material Status
+
+- Mission source: `D:/CoinTrollAdventure/levels/CODEX_MISSION.md`.
+- HTML prototype: `D:/CoinTrollAdventure/levels/cointroll_merged_complete(4).html`; static scan found 19 level records with HUD/dialogue/level data embedded in JavaScript.
+- Prototype level records: Ch1 Bush Maze Sneak (tutorial), Ch1 Treasure Chase (chase), Ch2 Shadow Flood (exploration), Ch2 Boss Dodge (survival), Ch2 Reinforcement Wave (combat), Ch3 Cliff Panic (survival), Ch3 Forest Exploration (exploration), Ch4 Forest Escape (chase), Ch4 Combat Tutorial (combat), Ch5 Bull Stampede (survival), Ch5 Duel Warmup (combat), Ch6 Boomerang Duel (boss), Ch6 Crowd Scramble (scramble), Ch7 Victory Rush (celebration), Ch7 Ship Disaster (survival), Ch8 Sand Land Intro (exploration), Ch8 Contract Panic (scramble), Ch8 Wormfish Chase (chase), Ch8 BIG BOSS FINAL (boss).
+- PDF design doc: `D:/CoinTrollAdventure/Chapter 1 to 8 Game Segment.pdf` is present. PDF extraction libraries were not installed in this local Python environment during the audit, so this phase records the file as available and leaves detailed segment-by-segment gameplay alignment to Phase 7.
+
+## Structure Overview
+
+- `addons/`: 150 files, 0.2 MB.
+- `Assets/`: 3277 files, 773.8 MB.
+- `Resources/`: 1 files, 0.0 MB.
+- `Scenes/`: 177 files, 22.9 MB.
+- `Scripts/`: 30 files, 0.1 MB.
+- Root files of note: `project.godot`, `export_presets.cfg`, `README.md`, `icon.svg`.
+- Main scene resolves to `Scenes/UI/TitleScreen.tscn` from `uid://ck42ujmxyg137`.
+- Addons enabled: AS2P, godot_state_charts, light_shape_2d, simple_shadow_2d.
+
+## Project Settings Of Note
+
+- Godot config version 5; project feature flags: Godot `4.5`, `Mobile`.
+- Display: 720 x 1280 portrait viewport, `canvas_items` stretch, `expand` aspect, window mode 3.
+- Rendering: mobile renderer, default canvas texture filter `3`, ETC2/ASTC import enabled, forced PNG lossless compression.
+- Autoloads: `Global` -> `res://Scripts/Global.gd`, `CollectedItems` -> `res://Scripts/Collected_items.gd`, `TransitionManager` -> `res://Scripts/TransitionManager.gd`, `GameData` -> `res://Scripts/Autoload/GameData.gd`, `SceneManager` -> `res://Scripts/Autoload/SceneManager.gd`, `AchievementManager` -> `res://Scripts/Autoload/AchievementManager.gd`.
+- Input actions: `left`, `right`, `jump`, `Attack`, `dash`, `block`, `projectile`, `move_right`, `move_down`, `move_left`, `move_up`. Note: `move_down` contains a `null` event entry in `project.godot`.
+- 2D physics layers: 1=`Environment`, 2=`Player`, 3=`PlayerHitBox`, 4=`EnemyHitBox`, 5=`Enemy`.
+
+## Scene Inventory And Dependency Map
+
+- Scene files: 62 total, including 4 addon/editor scenes and 58 game scenes.
+- Common node types: Sprite2D (272), CollisionShape2D (184), Node (96), Node2D (61), PointLight2D (58), Label (56), Area2D (56), Button (55), StaticBody2D (47), TileMapLayer (37), CanvasLayer (28), Marker2D (20), Panel (19), VBoxContainer (16), HBoxContainer (16), Timer (16), TouchScreenButton (15), Control (13), AnimatedSprite2D (11), MarginContainer (10).
+- Largest scenes by node count: `Scenes/Levels/lev_1.tscn` (210), `Scenes/Characters/Player/player.tscn` (112), `Scenes/Levels/level_7.tscn` (101), `Scenes/Levels/level_6.tscn` (86), `Scenes/Levels/level_5.tscn` (86), `Scenes/Levels/Lev3.tscn` (86), `Scenes/Levels/lev_2.tscn` (68), `Scenes/Environments/Proto_Levels/proto_level.tscn` (38), `Scenes/UI/WebtoonReader.tscn` (28), `Scenes/UI/TitleScreen.tscn` (27).
+
+### Major Scene Summary
+- `Scenes/App/main.tscn`: 1 nodes; roots [('Main', 'Node2D')]; dominant nodes Node2D x1.
+- `Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn`: 15 nodes; roots [('skeleton_orange', 'CharacterBody2D')]; dominant nodes CollisionShape2D x5, Area2D x2, RayCast2D x2, CharacterBody2D x1, Node2D x1, AnimatedSprite2D x1.
+- `Scenes/Characters/Player/player.tscn`: 112 nodes; roots [('Player', 'CharacterBody2D')]; dominant nodes Node x93, CollisionShape2D x8, Timer x3, Node2D x2, AnimatedSprite2D x2, CharacterBody2D x1.
+- `Scenes/Environments/Proto_Levels/proto_level.tscn`: 38 nodes; roots [('Proto_Level', 'Node2D')]; dominant nodes Sprite2D x20, Node2D x4, CollisionShape2D x4, TouchScreenButton x3, CanvasLayer x2, Button x1.
+- `Scenes/Levels/Ground.tscn`: 3 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes StaticBody2D x1, Sprite2D x1, CollisionShape2D x1.
+- `Scenes/Levels/Ground2.tscn`: 3 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes StaticBody2D x1, Sprite2D x1, CollisionShape2D x1.
+- `Scenes/Levels/Ground3.tscn`: 3 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes StaticBody2D x1, Sprite2D x1, CollisionShape2D x1.
+- `Scenes/Levels/Ground4.tscn`: 3 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes StaticBody2D x1, Sprite2D x1, CollisionShape2D x1.
+- `Scenes/Levels/Ground5.tscn`: 3 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes StaticBody2D x1, Sprite2D x1, CollisionShape2D x1.
+- `Scenes/Levels/Lev3.tscn`: 86 nodes; roots [('Level3', 'Node2D')]; dominant nodes Sprite2D x36, CollisionShape2D x17, Button x5, Label x5, Node2D x4, CanvasLayer x3.
+- `Scenes/Levels/lev_1.tscn`: 210 nodes; roots [('Lev1', 'Node2D')]; dominant nodes Sprite2D x61, CollisionShape2D x39, PointLight2D x36, Area2D x21, StaticBody2D x18, Node2D x9.
+- `Scenes/Levels/lev_2.tscn`: 68 nodes; roots [('Lev_2', 'Node2D')]; dominant nodes Sprite2D x18, Node2D x7, CollisionShape2D x7, Label x5, StaticBody2D x4, TileMapLayer x4.
+- `Scenes/Levels/level_5.tscn`: 86 nodes; roots [('Level5', 'Node2D')]; dominant nodes Sprite2D x36, CollisionShape2D x17, Button x5, Label x5, Node2D x4, CanvasLayer x3.
+- `Scenes/Levels/level_6.tscn`: 86 nodes; roots [('Level_6', 'Node2D')]; dominant nodes Sprite2D x36, CollisionShape2D x17, Button x5, Label x5, Node2D x4, CanvasLayer x3.
+- `Scenes/Levels/level_7.tscn`: 101 nodes; roots [('Level_7', 'Node2D')]; dominant nodes Sprite2D x36, CollisionShape2D x22, Node2D x5, Button x5, Label x5, CanvasLayer x3.
+- `Scenes/Levels/prop.tscn`: 6 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes CollisionShape2D x2, StaticBody2D x1, Sprite2D x1, PointLight2D x1, Area2D x1.
+- `Scenes/Levels/prop1.tscn`: 6 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes CollisionShape2D x2, StaticBody2D x1, Sprite2D x1, PointLight2D x1, Area2D x1.
+- `Scenes/Levels/prop12.tscn`: 6 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes CollisionShape2D x2, StaticBody2D x1, Sprite2D x1, PointLight2D x1, Area2D x1.
+- `Scenes/Levels/prop13.tscn`: 6 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes CollisionShape2D x2, StaticBody2D x1, Sprite2D x1, PointLight2D x1, Area2D x1.
+- `Scenes/Levels/prop14.tscn`: 6 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes CollisionShape2D x2, StaticBody2D x1, Sprite2D x1, PointLight2D x1, Area2D x1.
+- `Scenes/Levels/prop15.tscn`: 6 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes CollisionShape2D x2, StaticBody2D x1, Sprite2D x1, PointLight2D x1, Area2D x1.
+- `Scenes/Levels/prop16.tscn`: 6 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes CollisionShape2D x2, StaticBody2D x1, Sprite2D x1, PointLight2D x1, Area2D x1.
+- `Scenes/Levels/prop2.tscn`: 6 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes CollisionShape2D x2, StaticBody2D x1, Sprite2D x1, PointLight2D x1, Area2D x1.
+- `Scenes/Levels/prop3.tscn`: 6 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes CollisionShape2D x2, StaticBody2D x1, Sprite2D x1, PointLight2D x1, Area2D x1.
+- `Scenes/Levels/prop4.tscn`: 6 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes CollisionShape2D x2, StaticBody2D x1, Sprite2D x1, PointLight2D x1, Area2D x1.
+- `Scenes/Levels/prop5.tscn`: 6 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes CollisionShape2D x2, StaticBody2D x1, Sprite2D x1, PointLight2D x1, Area2D x1.
+- `Scenes/Levels/prop6.tscn`: 6 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes CollisionShape2D x2, StaticBody2D x1, Sprite2D x1, PointLight2D x1, Area2D x1.
+- `Scenes/Levels/prop7.tscn`: 6 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes CollisionShape2D x2, StaticBody2D x1, Sprite2D x1, PointLight2D x1, Area2D x1.
+- `Scenes/Levels/prop8.tscn`: 6 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes CollisionShape2D x2, StaticBody2D x1, Sprite2D x1, PointLight2D x1, Area2D x1.
+- `Scenes/Levels/prop9.tscn`: 6 nodes; roots [('Prop', 'StaticBody2D')]; dominant nodes CollisionShape2D x2, StaticBody2D x1, Sprite2D x1, PointLight2D x1, Area2D x1.
+- `Scenes/Levels/td_player.tscn`: 7 nodes; roots [('TDPlayer', 'CharacterBody2D')]; dominant nodes CollisionShape2D x2, CharacterBody2D x1, Sprite2D x1, AnimationPlayer x1, Area2D x1, Node x1.
+- `Scenes/UI/chapter_select.tscn`: 11 nodes; roots [('ChapterSelect', 'Control')]; dominant nodes CanvasLayer x2, Label x2, Control x1, TextureRect x1, ScrollContainer x1, GridContainer x1.
+- `Scenes/UI/TitleScreen.tscn`: 27 nodes; roots [('TitleScreen', 'Control')]; dominant nodes HBoxContainer x7, Button x6, Label x3, Control x2, VBoxContainer x2, AnimatedSprite2D x2.
+- `Scenes/UI/WebtoonReader.tscn`: 28 nodes; roots [('WebtoonReader', 'Control')]; dominant nodes Button x7, Label x6, CanvasLayer x4, HBoxContainer x3, Control x2, ColorRect x1.
+
+### Scene Instances
+- `Scenes/Levels/lev_1.tscn` instances `res://Scenes/Collectables/Coin/coin.tscn` x37.
+- `Scenes/Levels/lev_1.tscn` instances `res://Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn` x10.
+- `Scenes/Levels/Lev3.tscn` instances `res://Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn` x8.
+- `Scenes/Levels/level_5.tscn` instances `res://Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn` x8.
+- `Scenes/Levels/level_6.tscn` instances `res://Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn` x8.
+- `Scenes/Levels/level_7.tscn` instances `res://Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn` x7.
+- `Scenes/Levels/Lev3.tscn` instances `res://Scenes/Environments/Proto_Levels/Moving_Platforms/moving_platform.tscn` x5.
+- `Scenes/Levels/level_5.tscn` instances `res://Scenes/Environments/Proto_Levels/Moving_Platforms/moving_platform.tscn` x5.
+- `Scenes/Levels/level_6.tscn` instances `res://Scenes/Environments/Proto_Levels/Moving_Platforms/moving_platform.tscn` x5.
+- `Scenes/Levels/level_7.tscn` instances `res://Scenes/Environments/Proto_Levels/Moving_Platforms/moving_platform.tscn` x5.
+- `Scenes/Environments/Proto_Levels/proto_level.tscn` instances `res://Scenes/Environments/Proto_Levels/Moving_Platforms/moving_platform.tscn` x4.
+- `Scenes/Environments/Small_Scenes/Sub_Scenes/sub_scene_2.tscn` instances `res://Scenes/Scene_Manager/trigger_area/transition_area.tscn` x3.
+- `Scenes/Levels/lev_2.tscn` instances `res://Scenes/Collectables/Coin/coin.tscn` x3.
+- `Scenes/App/main.tscn` instances `res://Scenes/UI/TitleScreen.tscn` x1.
+- `Scenes/App/main.tscn` instances `res://Scenes/UI/chapter_select.tscn` x1.
+- `Scenes/App/main.tscn` instances `res://Scenes/UI/WebtoonReader.tscn` x1.
+- `Scenes/App/main.tscn` instances `res://Scenes/Environments/Proto_Levels/proto_level.tscn` x1.
+- `Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn` instances `res://Scenes/HitBox_and_HurtBox/HitBox/hit_box.tscn` x1.
+- `Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn` instances `res://Scenes/HitBox_and_HurtBox/HurtBox/Hurt_Box.tscn` x1.
+- `Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn` instances `res://Scenes/Stats/stats.tscn` x1.
+- `Scenes/Characters/Player/player.tscn` instances `res://Scenes/HitBox_and_HurtBox/HitBox/hit_box.tscn` x1.
+- `Scenes/Characters/Player/player.tscn` instances `res://Scenes/HitBox_and_HurtBox/HurtBox/Hurt_Box.tscn` x1.
+- `Scenes/Characters/Player/player.tscn` instances `res://Scenes/Stats/stats.tscn` x1.
+- `Scenes/Characters/Player/player.tscn` instances `res://Scenes/UI/Health_Bar/health_bar.tscn` x1.
+- `Scenes/Characters/Player/Projectile/fire_ball.tscn` instances `res://Scenes/HitBox_and_HurtBox/HitBox/hit_box.tscn` x1.
+- `Scenes/Characters/Player/Projectile/fire_ball.tscn` instances `res://Scenes/Stats/stats.tscn` x1.
+- `Scenes/Environments/Proto_Levels/proto_level.tscn` instances `res://Scenes/Camera/cam_root.tscn` x1.
+- `Scenes/Environments/Proto_Levels/proto_level.tscn` instances `res://Scenes/Scene_Manager/trigger_area/transition_area.tscn` x1.
+- `Scenes/Environments/Proto_Levels/proto_level.tscn` instances `res://Scenes/Characters/Player/player.tscn` x1.
+- `Scenes/Environments/Proto_Levels/proto_level.tscn` instances `res://Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn` x1.
+- `Scenes/Environments/Small_Scenes/Sub_Scenes/sub_scene_1.tscn` instances `res://Scenes/Scene_Manager/trigger_area/transition_area.tscn` x1.
+- `Scenes/Environments/Small_Scenes/Sub_Scenes/sub_scene_3.tscn` instances `res://Scenes/Scene_Manager/trigger_area/transition_area.tscn` x1.
+- `Scenes/Environments/Small_Scenes/Sub_Scenes/sub_scene_4.tscn` instances `res://Scenes/Scene_Manager/trigger_area/transition_area.tscn` x1.
+- `Scenes/Levels/Lev3.tscn` instances `res://Scenes/Camera/cam_root.tscn` x1.
+- `Scenes/Levels/Lev3.tscn` instances `res://Scenes/Scene_Manager/trigger_area/transition_area.tscn` x1.
+- `Scenes/Levels/Lev3.tscn` instances `res://Scenes/Characters/Player/player.tscn` x1.
+- `Scenes/Levels/lev_1.tscn` instances `res://Scenes/Traps/Trap_1/trap_1.tscn` x1.
+- `Scenes/Levels/lev_1.tscn` instances `res://Scenes/Traps/Trap_2/spike.tscn` x1.
+- `Scenes/Levels/lev_1.tscn` instances `res://Scenes/Levels/td_player.tscn` x1.
+- `Scenes/Levels/lev_2.tscn` instances `res://Scenes/Traps/Trap_1/trap_1.tscn` x1.
+- `Scenes/Levels/lev_2.tscn` instances `res://Scenes/Traps/Trap_2/spike.tscn` x1.
+- `Scenes/Levels/lev_2.tscn` instances `res://Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn` x1.
+- `Scenes/Levels/lev_2.tscn` instances `res://Scenes/Levels/td_player.tscn` x1.
+- `Scenes/Levels/level_5.tscn` instances `res://Scenes/Camera/cam_root.tscn` x1.
+- `Scenes/Levels/level_5.tscn` instances `res://Scenes/Scene_Manager/trigger_area/transition_area.tscn` x1.
+- `Scenes/Levels/level_5.tscn` instances `res://Scenes/Characters/Player/player.tscn` x1.
+- `Scenes/Levels/level_6.tscn` instances `res://Scenes/Camera/cam_root.tscn` x1.
+- `Scenes/Levels/level_6.tscn` instances `res://Scenes/Scene_Manager/trigger_area/transition_area.tscn` x1.
+- `Scenes/Levels/level_6.tscn` instances `res://Scenes/Characters/Player/player.tscn` x1.
+- `Scenes/Levels/level_7.tscn` instances `res://Scenes/Camera/cam_root.tscn` x1.
+- `Scenes/Levels/level_7.tscn` instances `res://Scenes/Scene_Manager/trigger_area/transition_area.tscn` x1.
+- `Scenes/Levels/level_7.tscn` instances `res://Scenes/Characters/Player/player.tscn` x1.
+- `Scenes/Levels/level_7.tscn` instances `res://Scenes/HitBox_and_HurtBox/HitBox/hit_box.tscn` x1.
+- `Scenes/Levels/level_7.tscn` instances `res://Scenes/HitBox_and_HurtBox/HurtBox/Hurt_Box.tscn` x1.
+- `Scenes/Levels/level_7.tscn` instances `res://Scenes/Stats/stats.tscn` x1.
+- `Scenes/Scene_Manager/game_root.tscn` instances `res://Scenes/Camera/cam_root.tscn` x1.
+- `Scenes/Scene_Manager/game_root.tscn` instances `res://Scenes/Characters/Player/player.tscn` x1.
+
+### Script Attachments
+- `Scenes/App/main.tscn` node `Main` -> `res://Scripts/Autoload/SceneManager.gd`.
+- `Scenes/Camera/cam_root.tscn` node `Cam_Root` -> `res://Scenes/Camera/cam_root.gd`.
+- `Scenes/Camera/cam_root.tscn` node `./Camera2D` -> `res://Scenes/Camera/Screen_Shake.gd`.
+- `Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn` node `skeleton_orange` -> `res://Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.gd`.
+- `Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn` node `body/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Characters/Player/player.tscn` node `Player` -> `res://Scenes/Characters/Player/player.gd`.
+- `Scenes/Characters/Player/player.tscn` node `./StateChart` -> `res://addons/godot_state_charts/state_chart.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root` -> `res://addons/godot_state_charts/compound_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state` -> `res://addons/godot_state_charts/compound_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Idle` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Idle/run` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Idle/attack` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Idle/dash` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Idle/block` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Run` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Run/idle` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Run/attack` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Run/dash` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Run/block` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Ground_Dash` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Ground_Dash/idle` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Ground_Dash/run` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Ground_Dash/attack` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Ground_Dash/block` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Block` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Block/idle` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Block/run` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Block/parry` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Parry` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Parry/counter` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Parry/idle` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Parry/run` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Counter` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Counter/idle` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Counter/run` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Attacks` -> `res://addons/godot_state_charts/compound_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Attacks/Combo_1` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Attacks/Combo_1/next` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Attacks/Combo_2` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Attacks/Combo_2/next` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Attacks/Combo_3` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Attacks/Combo_3/next` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Attacks/to_idle` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Attacks/to_run` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/Attacks/block` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/to_air_state` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/to_hurt` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Ground_state/to_dead` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State` -> `res://addons/godot_state_charts/compound_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Jump` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Jump/fall` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Jump/double_jump` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Jump/attack` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Jump/dash` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Double_Jump` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Double_Jump/fall` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Double_Jump/attack` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Double_Jump/dash` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Fall` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Fall/double_jump` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Fall/jump` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Fall/attack` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Fall/dash` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Air_Attacks` -> `res://addons/godot_state_charts/compound_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Air_Attacks/Combo_1` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Air_Attacks/Combo_1/next` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Air_Attacks/Combo_2` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Air_Attacks/Combo_2/next` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Air_Attacks/Combo_3` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Air_Attacks/double_jump` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Air_Attacks/fall` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Air_Dash` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Air_Dash/double_jump` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Air_Dash/fall` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/Air_Dash/attack` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/to_ground_state` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/to_hurt` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Air_State/to_dead` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Hurt` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Hurt/to_dead` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Hurt/to_ground_state` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Hurt/to_air_state` -> `res://addons/godot_state_charts/transition.gd`.
+- `Scenes/Characters/Player/player.tscn` node `StateChart/root/Dead` -> `res://addons/godot_state_charts/atomic_state.gd`.
+- `Scenes/Characters/Player/player.tscn` node `./Jump_and_Gravity_Manager` -> `res://Scenes/Characters/Player/State_Machine/Jump_and_Gravity_Manager.gd`.
+- `Scenes/Characters/Player/player.tscn` node `./State_Transition_Manager` -> `res://Scenes/Characters/Player/State_Machine/state_transition_manager.gd`.
+- `Scenes/Characters/Player/player.tscn` node `State_Transition_Manager/Idle` -> `res://Scenes/Characters/Player/State_Machine/States/idle.gd`.
+- `Scenes/Characters/Player/player.tscn` node `State_Transition_Manager/Run` -> `res://Scenes/Characters/Player/State_Machine/States/run.gd`.
+- `Scenes/Characters/Player/player.tscn` node `State_Transition_Manager/Block` -> `res://Scenes/Characters/Player/State_Machine/States/block.gd`.
+- `Scenes/Characters/Player/player.tscn` node `State_Transition_Manager/Parry` -> `res://Scenes/Characters/Player/State_Machine/States/parry.gd`.
+- `Scenes/Characters/Player/player.tscn` node `State_Transition_Manager/Counter` -> `res://Scenes/Characters/Player/State_Machine/States/counter.gd`.
+- `Scenes/Characters/Player/player.tscn` node `State_Transition_Manager/Jump` -> `res://Scenes/Characters/Player/State_Machine/States/jump.gd`.
+- `Scenes/Characters/Player/player.tscn` node `State_Transition_Manager/Double_Jump` -> `res://Scenes/Characters/Player/State_Machine/States/double_jump.gd`.
+- `Scenes/Characters/Player/player.tscn` node `State_Transition_Manager/Fall` -> `res://Scenes/Characters/Player/State_Machine/States/fall.gd`.
+- `Scenes/Characters/Player/player.tscn` node `State_Transition_Manager/Attacks` -> `res://Scenes/Characters/Player/State_Machine/States/attacks.gd`.
+- `Scenes/Characters/Player/player.tscn` node `State_Transition_Manager/Air_Attacks` -> `res://Scenes/Characters/Player/State_Machine/States/air_attacks.gd`.
+- `Scenes/Characters/Player/player.tscn` node `State_Transition_Manager/Ground_Dash` -> `res://Scenes/Characters/Player/State_Machine/States/ground_dash.gd`.
+- `Scenes/Characters/Player/player.tscn` node `State_Transition_Manager/Air_Dash` -> `res://Scenes/Characters/Player/State_Machine/States/air_dash.gd`.
+- `Scenes/Characters/Player/player.tscn` node `State_Transition_Manager/Hurt` -> `res://Scenes/Characters/Player/State_Machine/States/hurt.gd`.
+- `Scenes/Characters/Player/player.tscn` node `State_Transition_Manager/Dead` -> `res://Scenes/Characters/Player/State_Machine/States/dead.gd`.
+- `Scenes/Characters/Player/Projectile/fire_ball.tscn` node `FireBall` -> `res://Scenes/Characters/Player/Projectile/fire_ball.gd`.
+- `Scenes/Collectables/Coin/coin.tscn` node `Coin` -> `res://Scenes/Collectables/Coin/coin.gd`.
+- `Scenes/Environments/Proto_Levels/Moving_Platforms/moving_platform.tscn` node `MovingPlatform` -> `res://Scenes/Environments/Proto_Levels/Moving_Platforms/moving_platform.gd`.
+- `Scenes/Environments/Proto_Levels/proto_level.tscn` node `Proto_Level` -> `res://Scenes/Environments/Proto_Levels/proto_level.gd`.
+- `Scenes/Environments/Small_Scenes/Sub_Scenes/sub_scene_1.tscn` node `SubScene_1` -> `res://Scenes/Scene_Manager/stages/stage_data.gd`.
+- `Scenes/Environments/Small_Scenes/Sub_Scenes/sub_scene_2.tscn` node `SubScene_2` -> `res://Scenes/Scene_Manager/stages/stage_data.gd`.
+- `Scenes/Environments/Small_Scenes/Sub_Scenes/sub_scene_3.tscn` node `SubScene_3` -> `res://Scenes/Scene_Manager/stages/stage_data.gd`.
+- `Scenes/Environments/Small_Scenes/Sub_Scenes/sub_scene_4.tscn` node `SubScene_4` -> `res://Scenes/Scene_Manager/stages/stage_data.gd`.
+- `Scenes/HitBox_and_HurtBox/HitBox/hit_box.tscn` node `Hit_Box` -> `res://Scenes/HitBox_and_HurtBox/HitBox/hit_box.gd`.
+- `Scenes/HitBox_and_HurtBox/HurtBox/Hurt_Box.tscn` node `HurtBox` -> `res://Scenes/HitBox_and_HurtBox/HurtBox/hurt_box.gd`.
+- `Scenes/Levels/Lev3.tscn` node `Level3` -> `res://Scenes/Environments/Proto_Levels/proto_level.gd`.
+- `Scenes/Levels/Lev3.tscn` node `CanvasLayer2/HUD` -> `res://Scenes/Levels/hud.gd`.
+- `Scenes/Levels/Lev3.tscn` node `End/Exitlight` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Lev1` -> `res://Scenes/Levels/lev_1.gd`.
+- `Scenes/Levels/lev_1.tscn` node `./Sortables` -> `res://Scenes/Levels/sortables.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/ExitDoor` -> `res://Scenes/Levels/exit_door.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Trap1Damage` -> `res://Scenes/Levels/top_down_damage_area.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/SpikeDamage` -> `res://Scenes/Levels/top_down_damage_area.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop/Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop8` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop8/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop9` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop9/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop10` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop10/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop2` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop2/Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop2/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop14` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop14/Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop14/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop11` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop11/Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop11/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop3` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop3/Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop3/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop4` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop4/Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop4/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop17` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop17/Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop17/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop12` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop12/Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop12/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop13` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop13/Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop13/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop5` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop5/Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop5/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop6` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop6/Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop6/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop15` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop15/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop15/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop16` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop16/Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop16/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop7` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop7/Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop7/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop18` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop18/Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Sortables/Props/Prop18/HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/lev_1.tscn` node `CanvasLayer/HUD` -> `res://Scenes/Levels/hud.gd`.
+- `Scenes/Levels/lev_1.tscn` node `End/Exitlight` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp2/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp3/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp4/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp5/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp6/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp8/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp9/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp10/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp11/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp12/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp13/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp14/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp15/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp16/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp17/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp18/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp19/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp20/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_1.tscn` node `Node2D/lamp7/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/lev_2.tscn` node `Lev_2` -> `res://Scenes/Levels/lev_2.gd`.
+- `Scenes/Levels/lev_2.tscn` node `./Sortables` -> `res://Scenes/Levels/sortables.gd`.
+- `Scenes/Levels/lev_2.tscn` node `Sortables/Props/ExitDoor` -> `res://Scenes/Levels/exit_door.gd`.
+- `Scenes/Levels/lev_2.tscn` node `Sortables/Props/Trap1Damage` -> `res://Scenes/Levels/top_down_damage_area.gd`.
+- `Scenes/Levels/lev_2.tscn` node `Sortables/Props/SpikeDamage` -> `res://Scenes/Levels/top_down_damage_area.gd`.
+- `Scenes/Levels/lev_2.tscn` node `CanvasLayer/HUD` -> `res://Scenes/Levels/hud.gd`.
+- `Scenes/Levels/lev_2.tscn` node `End/Exitlight` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/level_5.tscn` node `Level5` -> `res://Scenes/Levels/level_5.gd`.
+- `Scenes/Levels/level_5.tscn` node `CanvasLayer2/HUD` -> `res://Scenes/Levels/hud.gd`.
+- `Scenes/Levels/level_5.tscn` node `End/Exitlight` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/level_6.tscn` node `Level_6` -> `res://Scenes/Levels/level_6.gd`.
+- `Scenes/Levels/level_6.tscn` node `CanvasLayer2/HUD` -> `res://Scenes/Levels/hud.gd`.
+- `Scenes/Levels/level_6.tscn` node `End/Exitlight` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/level_7.tscn` node `Level_7` -> `res://Scenes/Levels/level_7.gd`.
+- `Scenes/Levels/level_7.tscn` node `enemies/Felix` -> `res://Scenes/Levels/felix.gd`.
+- `Scenes/Levels/level_7.tscn` node `enemies/Felix/body/PointLight2D` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/level_7.tscn` node `CanvasLayer2/HUD` -> `res://Scenes/Levels/hud.gd`.
+- `Scenes/Levels/level_7.tscn` node `End/Exitlight` -> `res://Scenes/Levels/point_light_2d.gd`.
+- `Scenes/Levels/prop.tscn` node `Prop` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/prop.tscn` node `Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/prop.tscn` node `./HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/prop1.tscn` node `Prop` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/prop1.tscn` node `Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/prop1.tscn` node `./HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/prop12.tscn` node `Prop` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/prop12.tscn` node `Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/prop12.tscn` node `./HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/prop13.tscn` node `Prop` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/prop13.tscn` node `Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/prop13.tscn` node `./HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/prop14.tscn` node `Prop` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/prop14.tscn` node `Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/prop14.tscn` node `./HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/prop15.tscn` node `Prop` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/prop15.tscn` node `Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/prop15.tscn` node `./HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/prop16.tscn` node `Prop` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/prop16.tscn` node `BgAssetsNight2/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/prop16.tscn` node `./HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/prop2.tscn` node `Prop` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/prop2.tscn` node `Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/prop2.tscn` node `./HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/prop3.tscn` node `Prop` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/prop3.tscn` node `Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/prop3.tscn` node `./HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/prop4.tscn` node `Prop` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/prop4.tscn` node `Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/prop4.tscn` node `./HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/prop5.tscn` node `Prop` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/prop5.tscn` node `Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/prop5.tscn` node `./HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/prop6.tscn` node `Prop` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/prop6.tscn` node `Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+- `Scenes/Levels/prop6.tscn` node `./HideZone` -> `res://Scenes/Levels/HidingSpot.gd`.
+- `Scenes/Levels/prop7.tscn` node `Prop` -> `res://Scenes/Levels/prop.gd`.
+- `Scenes/Levels/prop7.tscn` node `Sprite2D/PointLightShape2D` -> `res://addons/light_shape_2d/point_light_shape_2d.gd`.
+
+## Script Inventory
+
+- `Scripts/WebtoonReader.gd`: 805 lines; UI/story flow; functions: _ready, _wait_for_load_complete, _wait_for_layout, _setup_scroll_container, _setup_navigation, _setup_zoom_bar, _setup_scroll_indicator, _process. SPLIT CANDIDATE
+- `Scenes/Levels/td_player.gd`: 587 lines; player/controller; functions: _ready, _physics_process, _physics_process_platformer, apply_force, _update_facing, _update_animation, _update_airborne_animation, _facing_vector. SPLIT CANDIDATE
+- `Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.gd`: 565 lines; enemy AI/combat; functions: _ready, _on_health_depleated, _physics_process, _gravity, _update_platformer_detection, _disable_solid_collision_with_player, _top_down_physics, _has_line_of_sight. SPLIT CANDIDATE
+- `Scripts/ChapterData.gd`: 490 lines; UI/story flow; functions: data/constants or signal declarations. SPLIT CANDIDATE
+- `Scripts/ChapterSelect.gd`: 293 lines; UI/story flow; functions: _ready, _build_skeleton, _populate, _on_resized, _cols, _card_h, _make_card, _on_unlock.
+- `Scenes/Levels/level_5.gd`: 276 lines; level logic/HUD/props; functions: _ready, _wire_player, _wire_hud, _wire_panels, _wire_arena_entrance, _start_wave, _spawn_skull, _connect_defeated.
+- `Scenes/Levels/lev_2.gd`: 273 lines; level logic/HUD/props; functions: _ready, _wire_level, _process, _wire_player, _wire_chest, _on_chest_body_entered, _wire_hud, _wire_panels.
+- `Scripts/Autoload/GameData.gd`: 253 lines; autoload/global state; functions: _ready, save_data, save_chapter_zoom, get_chapter_zoom, load_data, _deep_merge, add_coins, spend_coins.
+- `Scenes/Levels/lev_1.gd`: 250 lines; level logic/HUD/props; functions: _ready, _wire_level, _wire_player, _wire_exit_door, _wire_hud, _wire_panels, _wire_night_atmosphere, _configure_camera.
+- `Scripts/Autoload/AchievementManager.gd`: 184 lines; autoload/global state; functions: on_segment_played, on_segment_completed, on_coins_changed, _check_chapter_clear, _check, _show_next_popup.
+- `Scenes/Characters/Enemies/skeleton/orange/Horn.gd`: 160 lines; enemy AI/combat; functions: _ready, _physics_process, _process_idle, _process_telegraph, _process_charging, _end_charge, _process_cooldown, _has_line_of_sight.
+- `Scenes/Levels/level_6.gd`: 154 lines; level logic/HUD/props; functions: _ready, _process, _wire_player, _wire_hud, _wire_panels, _on_player_died, _finish, restart_level.
+- `Scenes/Characters/Player/player.gd`: 154 lines; player/controller; functions: _ready, _physics_process, _smoothing_external_velocity, _flip_face, _set_direction, apply_force, _on_player_stats_health_updated, _init_projectile.
+- `Scenes/Environments/Proto_Levels/proto_level.gd`: 146 lines; level logic/HUD/props; functions: _ready, _wire_player, _wire_hud, _wire_panels, _wire_shadow_avatars, _on_coins_collected, _on_collision_burst, _restore_status_text.
+- `Scenes/Environments/Proto_Levels/Moving_Platforms/moving_platform.gd`: 143 lines; level logic/HUD/props; functions: _ready, _physics_process, _will_reach_limit, _start_wait, _on_direction_timeout, _on_disappear_timeout, _on_body_entered, _on_body_exited.
+- `Scenes/Levels/felix.gd`: 139 lines; level logic/HUD/props; functions: _ready, _physics_process, _update_animation, _queue_next_comment, _show_random_comment.
+- `Scenes/Characters/Player/State_Machine/States/block.gd`: 136 lines; player/controller; functions: _on_block_state_entered, _on_block_state_physics_processing, _end_block, _on_check_hit_area_entered, enable_parry_window, _show_perfect_parry_feedback, _spawn_perfect_text, _spawn_flash_effect.
+- `Scenes/Levels/level_7.gd`: 120 lines; level logic/HUD/props; functions: _ready, _wire_player, _wire_felix, _wire_hud, _wire_panel, _on_coins_collected, _update_hud, _finish.
+- `Scripts/TransitionManager.gd`: 98 lines; autoload/global state; functions: _ready, start_game_segment, _on_level_completed, end_game_segment, fade_to_black, fade_to_clear.
+- `Scenes/Characters/Player/State_Machine/Jump_and_Gravity_Manager.gd`: 92 lines; player/controller; functions: _ready, _on_ground_state_state_physics_processing, _on_air_state_state_physics_processing, _gravity_and_jump_mechanic, _air_movement.
+- `Scenes/Scene_Manager/scene_loader/scene_loader.gd`: 91 lines; gameplay/support; functions: load_level, _place_player, _snap_camera_to_player, _reset_camera, _apply_level_camera_limits, _lock_player, _unlock_player.
+- `Scenes/Characters/Player/State_Machine/state_transition_manager.gd`: 91 lines; player/controller; functions: _transition, _on_ground_state_state_physics_processing, _on_air_state_state_physics_processing.
+- `Scripts/TitleScreen.gd`: 79 lines; UI/story flow; functions: _ready, _setup_background, _on_start, _on_continue, _on_chapters, _on_settings, _on_quit_pressed.
+- `Scenes/Stats/Stats.gd`: 77 lines; gameplay/support; functions: _ready, _damage_given, _damage_deduction, _energy_consumption, _energy_deduction, _energy_refill, _health_refill.
+- `Scripts/achievement_popup.gd`: 45 lines; gameplay/support; functions: _ready, show_achievement, _on_close.
+- `Scenes/Traps/Trap_1/trap_1.gd`: 45 lines; gameplay/support; functions: _ready, _physics_process, _on_wait_timer_timeout.
+- `Scenes/Scene_Manager/stages/stage_data.gd`: 45 lines; gameplay/support; functions: _request_redraw, _draw.
+- `Scenes/Characters/Player/State_Machine/Skeleton_Scripts/Attacks.gd`: 44 lines; player/controller; functions: _combo_attack_window, _attack_name, _next_attack, _end_of_attack, _on_combo_state_physics_processing, _on_combo_state_exited, _on_attack_cool_down_timer_timeout.
+- `Scenes/Camera/Screen_Shake.gd`: 44 lines; gameplay/support; functions: _ready, _physics_process, _shake_logic, screen_shake.
+- `Scenes/Levels/HidingSpot.gd`: 41 lines; level logic/HUD/props; functions: _ready, get_hide_position, _on_body_entered, _on_body_exited.
+- `Scenes/Levels/top_down_patrol_hazard.gd`: 39 lines; level logic/HUD/props; functions: _ready, _physics_process, do_damage, _on_body_entered.
+- `Scripts/PlayableTriggerPanel.gd`: 37 lines; gameplay/support; functions: _ready, setup, set_width, set_play_again_mode.
+- `Scenes/Levels/sortables.gd`: 34 lines; level logic/HUD/props; functions: _process, _draw.
+- `Scenes/Characters/Player/State_Machine/Skeleton_Scripts/Dash.gd`: 34 lines; player/controller; functions: _ready, _on_dash_state_entered, _on_dash_state_physics_processing, _on_dash_state_exited.
+- `Scenes/Camera/cam_root.gd`: 32 lines; gameplay/support; functions: _physics_process, screen_shake, _on_stable_zone_body_entered, _on_stable_zone_body_exited.
+- `Scenes/Levels/prop.gd`: 31 lines; level logic/HUD/props; functions: _ready, _on_hide_zone_body_entered, _on_hide_zone_body_exited.
+- `Scripts/SettingsScreen.gd`: 29 lines; UI/story flow; functions: _ready, _on_music_changed, _on_sfx_changed.
+- `Scenes/Characters/Player/Projectile/fire_ball.gd`: 28 lines; player/controller; functions: _ready, _physics_process, _on_hit_box_body_entered.
+- `Scenes/UI/Health_Bar/health_bar.gd`: 27 lines; UI/story flow; functions: _set_health, _init_health, _on_timer_timeout.
+- `Scenes/Scene_Manager/trigger_area/transition_area.gd`: 27 lines; gameplay/support; functions: _on_goal_reached, _on_game_over.
+- `Scenes/Levels/hud.gd`: 26 lines; level logic/HUD/props; functions: _ready, _on_health_updated, _on_coins_changed.
+- `Scenes/Characters/Player/State_Machine/States/parry.gd`: 26 lines; player/controller; functions: _on_parry_state_entered, _on_parry_state_physics_processing, _on_parry_state_exited.
+- `Scenes/Characters/Player/State_Machine/States/idle.gd`: 24 lines; player/controller; functions: _on_idle_state_entered, _on_idle_state_physics_processing, _on_idle_state_exited, _on_animation_player_animation_finished.
+- `Scenes/Collectables/Coin/coin.gd`: 23 lines; gameplay/support; functions: _ready, on_player_entered.
+- `Scenes/Levels/point_light_2d.gd`: 22 lines; level logic/HUD/props; functions: _ready, _process.
+- `Scenes/Characters/Player/State_Machine/States/hurt.gd`: 22 lines; player/controller; functions: _on_hurt_box_area_entered, _on_hurt_state_entered, _on_hurt_state_physics_processing.
+- `Scenes/Levels/exit_door.gd`: 21 lines; level logic/HUD/props; functions: _ready, _on_body_entered.
+- `Scenes/Levels/top_down_damage_area.gd`: 20 lines; level logic/HUD/props; functions: _ready, do_damage, _on_body_entered.
+- `Scenes/Scene_Manager/game_root.gd`: 19 lines; gameplay/support; functions: _ready, _on_goal_reached, _on_game_over, _on_skip_button_pressed.
+- `Scenes/Levels/hurt_box.gd`: 19 lines; level logic/HUD/props; functions: _ready, _on_area_entered, apply_damage.
+- `Scenes/Traps/Trap_2/spike.gd`: 18 lines; gameplay/support; functions: _physics_process.
+- `Scenes/Levels/hide_zone.gd`: 18 lines; level logic/HUD/props; functions: _ready, _on_body_entered, _on_body_exited.
+- `Scenes/Scene_Manager/fade/fade_layer.gd`: 17 lines; gameplay/support; functions: fade_in, fade_out.
+- `Scenes/Characters/Player/State_Machine/States/run.gd`: 16 lines; player/controller; functions: _on_run_state_entered, _on_run_state_physics_processing, _on_run_state_exited.
+- `Scripts/Autoload/SceneManager.gd`: 15 lines; autoload/global state; functions: go_to_title, go_to_chapter_select, go_to_chapter, go_to_settings.
+- `Scenes/Environments/test_level_1.gd`: 15 lines; gameplay/support; functions: _ready, _on_trigger_body_entered, on_coins_collected.
+- `Scenes/Characters/Player/State_Machine/States/air_attacks.gd`: 15 lines; player/controller; functions: _on_combo_1_state_entered, _on_combo_2_state_entered, _on_combo_3_state_entered, _on_combo_3_state_processing.
+- `Scenes/HitBox_and_HurtBox/HitBox/hit_box.gd`: 14 lines; gameplay/support; functions: do_damage.
+- `Scripts/Stats_Resource.gd`: 13 lines; gameplay/support; functions: data/constants or signal declarations.
+- `Scripts/Global.gd`: 12 lines; autoload/global state; functions: _freeze.
+- `Scenes/Characters/Player/State_Machine/States/dead.gd`: 12 lines; player/controller; functions: _on_player_stats_health_depleated, _on_dead_state_entered, _on_dead_state_physics_processing.
+- `Scenes/Traps/Trap_3/ball.gd`: 11 lines; gameplay/support; functions: _ready, _physics_process.
+- `Scripts/Collected_items.gd`: 10 lines; gameplay/support; functions: reset.
+- `Scenes/HitBox_and_HurtBox/HurtBox/hurt_box.gd`: 10 lines; gameplay/support; functions: _ready, apply_damage.
+- `Scenes/Characters/Player/State_Machine/States/fall.gd`: 10 lines; player/controller; functions: _on_fall_state_entered, _on_fall_state_physics_processing.
+- `Scenes/Characters/Player/State_Machine/States/counter.gd`: 10 lines; player/controller; functions: _on_counter_state_entered, _reset.
+- `Scenes/Characters/Player/State_Machine/States/attacks.gd`: 10 lines; player/controller; functions: _on_combo_1_state_entered, _on_combo_2_state_entered, _on_combo_3_state_entered.
+- `Scenes/Characters/Player/State_Machine/States/double_jump.gd`: 9 lines; player/controller; functions: _on_double_jump_state_entered, _on_double_jump_state_physics_processing.
+- `Scenes/Characters/Player/State_Machine/States/jump.gd`: 7 lines; player/controller; functions: _on_jump_state_entered, _on_jump_state_physics_processing.
+- `Scenes/Characters/Player/State_Machine/States/ground_dash.gd`: 6 lines; player/controller; functions: _on_animation_player_animation_finished.
+- `Scenes/Characters/Player/State_Machine/States/air_dash.gd`: 6 lines; player/controller; functions: _on_animation_player_animation_finished.
+- `Scripts/Collecteditems.gd`: 1 lines; gameplay/support; functions: data/constants or signal declarations.
+- `Scenes/Levels/top_down_level.gd`: 0 lines; level logic/HUD/props; functions: data/constants or signal declarations.
+
+Split candidates over ~400 lines: `Scripts/WebtoonReader.gd` (805), `Scenes/Levels/td_player.gd` (587), `Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.gd` (565), `Scripts/ChapterData.gd` (490).
+
+## Resource Inventory
+
+- `Resources/spriteframes/player.tres`: 17.2 KB; used by `Scenes/Characters/Player/player.tscn`.
+- `Scenes/Levels/lev_1.tres`: 4.6 KB; used by `Scenes/Levels/lev_1.tscn`, `Scenes/Levels/lev_2.tscn`.
+- `Scenes/Levels/lev_2.tres`: 3.7 KB; used by `Scenes/Levels/lev_2.tscn`.
+
+## Asset Inventory
+
+- Non-addon images: 1631 files. Total non-addon image size: 759.0 MB.
+- Images directly referenced through `res://` in scenes/resources/scripts: 168.
+- Images with dynamic/story usage or no direct `res://` reference: 1463. Most of these are under `Assets/webtoon/` or `Assets/Video game/Refrence/`.
+- Actual on-screen size was computed where scene/resource text exposes a `Sprite2D` texture plus scale/region, or an `AnimatedSprite2D`/`SpriteFrames` frame. Animated sprite frames that come from `SpriteFrames` resources are reported at frame source size unless a local scene scale is explicit.
+
+### Displayed Image Usage - Highest Waste Ratios
+- `Assets/Player/CT/SpriteSheet.png` source 2020x7033; `Scenes/Characters/Player/player.tscn::Body/Sprite2D` as Sprite2D region displays about 27.4x22.3; waste ratio 23250.73.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight8` as Sprite2D region displays about 18.4x104.0; waste ratio 8767.36.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_6.tscn::ENV/BgAssetsNight8` as Sprite2D region displays about 18.4x104.0; waste ratio 8767.36.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_5.tscn::ENV/BgAssetsNight8` as Sprite2D region displays about 18.4x104.0; waste ratio 8767.36.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/Lev3.tscn::ENV/BgAssetsNight8` as Sprite2D region displays about 18.4x104.0; waste ratio 8767.36.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Environments/Proto_Levels/proto_level.tscn::ENV/BgAssetsNight8` as Sprite2D region displays about 18.4x104.0; waste ratio 8767.36.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight6` as Sprite2D region displays about 29.6x75.2; waste ratio 7537.21.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight21` as Sprite2D region displays about 29.6x75.2; waste ratio 7537.21.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_6.tscn::ENV/BgAssetsNight6` as Sprite2D region displays about 29.6x75.2; waste ratio 7537.21.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_6.tscn::ENV/BgAssetsNight21` as Sprite2D region displays about 29.6x75.2; waste ratio 7537.21.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_5.tscn::ENV/BgAssetsNight6` as Sprite2D region displays about 29.6x75.2; waste ratio 7537.21.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_5.tscn::ENV/BgAssetsNight21` as Sprite2D region displays about 29.6x75.2; waste ratio 7537.21.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/Lev3.tscn::ENV/BgAssetsNight6` as Sprite2D region displays about 29.6x75.2; waste ratio 7537.21.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/Lev3.tscn::ENV/BgAssetsNight21` as Sprite2D region displays about 29.6x75.2; waste ratio 7537.21.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Environments/Proto_Levels/proto_level.tscn::ENV/BgAssetsNight6` as Sprite2D region displays about 29.6x75.2; waste ratio 7537.21.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight3` as Sprite2D region displays about 85.6x39.2; waste ratio 4999.89.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight13` as Sprite2D region displays about 85.6x39.2; waste ratio 4999.89.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_6.tscn::ENV/BgAssetsNight3` as Sprite2D region displays about 85.6x39.2; waste ratio 4999.89.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_6.tscn::ENV/BgAssetsNight13` as Sprite2D region displays about 85.6x39.2; waste ratio 4999.89.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_5.tscn::ENV/BgAssetsNight3` as Sprite2D region displays about 85.6x39.2; waste ratio 4999.89.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_5.tscn::ENV/BgAssetsNight13` as Sprite2D region displays about 85.6x39.2; waste ratio 4999.89.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/Lev3.tscn::ENV/BgAssetsNight3` as Sprite2D region displays about 85.6x39.2; waste ratio 4999.89.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/Lev3.tscn::ENV/BgAssetsNight13` as Sprite2D region displays about 85.6x39.2; waste ratio 4999.89.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Environments/Proto_Levels/proto_level.tscn::ENV/BgAssetsNight3` as Sprite2D region displays about 85.6x39.2; waste ratio 4999.89.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Environments/Proto_Levels/proto_level.tscn::ENV/BgAssetsNight13` as Sprite2D region displays about 85.6x39.2; waste ratio 4999.89.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Environments/Proto_Levels/Moving_Platforms/moving_platform.tscn::./BgAssetsNight13` as Sprite2D region displays about 85.6x39.2; waste ratio 4999.89.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight5` as Sprite2D region displays about 81.98x62.4; waste ratio 3279.65.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight15` as Sprite2D region displays about 81.98x62.4; waste ratio 3279.65.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight14` as Sprite2D region displays about 81.98x62.4; waste ratio 3279.65.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_6.tscn::ENV/BgAssetsNight5` as Sprite2D region displays about 81.98x62.4; waste ratio 3279.65.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_6.tscn::ENV/BgAssetsNight15` as Sprite2D region displays about 81.98x62.4; waste ratio 3279.65.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_6.tscn::ENV/BgAssetsNight14` as Sprite2D region displays about 81.98x62.4; waste ratio 3279.65.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_5.tscn::ENV/BgAssetsNight5` as Sprite2D region displays about 81.98x62.4; waste ratio 3279.65.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_5.tscn::ENV/BgAssetsNight15` as Sprite2D region displays about 81.98x62.4; waste ratio 3279.65.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_5.tscn::ENV/BgAssetsNight14` as Sprite2D region displays about 81.98x62.4; waste ratio 3279.65.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/Lev3.tscn::ENV/BgAssetsNight5` as Sprite2D region displays about 81.98x62.4; waste ratio 3279.65.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/Lev3.tscn::ENV/BgAssetsNight15` as Sprite2D region displays about 81.98x62.4; waste ratio 3279.65.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/Lev3.tscn::ENV/BgAssetsNight14` as Sprite2D region displays about 81.98x62.4; waste ratio 3279.65.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Environments/Proto_Levels/proto_level.tscn::ENV/BgAssetsNight5` as Sprite2D region displays about 81.98x62.4; waste ratio 3279.65.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Environments/Proto_Levels/proto_level.tscn::ENV/BgAssetsNight15` as Sprite2D region displays about 81.98x62.4; waste ratio 3279.65.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Environments/Proto_Levels/proto_level.tscn::ENV/BgAssetsNight14` as Sprite2D region displays about 81.98x62.4; waste ratio 3279.65.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight4` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight35` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight34` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight33` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight32` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight31` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight19` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight12` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_6.tscn::ENV/BgAssetsNight4` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_6.tscn::ENV/BgAssetsNight35` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_6.tscn::ENV/BgAssetsNight34` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_6.tscn::ENV/BgAssetsNight33` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_6.tscn::ENV/BgAssetsNight32` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_6.tscn::ENV/BgAssetsNight31` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_6.tscn::ENV/BgAssetsNight19` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_6.tscn::ENV/BgAssetsNight12` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_5.tscn::ENV/BgAssetsNight4` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_5.tscn::ENV/BgAssetsNight35` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_5.tscn::ENV/BgAssetsNight34` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_5.tscn::ENV/BgAssetsNight33` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_5.tscn::ENV/BgAssetsNight32` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_5.tscn::ENV/BgAssetsNight31` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_5.tscn::ENV/BgAssetsNight19` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_5.tscn::ENV/BgAssetsNight12` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/Lev3.tscn::ENV/BgAssetsNight4` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/Lev3.tscn::ENV/BgAssetsNight35` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/Lev3.tscn::ENV/BgAssetsNight34` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/Lev3.tscn::ENV/BgAssetsNight33` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/Lev3.tscn::ENV/BgAssetsNight32` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/Lev3.tscn::ENV/BgAssetsNight31` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/Lev3.tscn::ENV/BgAssetsNight19` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/Lev3.tscn::ENV/BgAssetsNight12` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Environments/Proto_Levels/proto_level.tscn::ENV/BgAssetsNight4` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Environments/Proto_Levels/proto_level.tscn::ENV/BgAssetsNight19` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Environments/Proto_Levels/proto_level.tscn::ENV/BgAssetsNight12` as Sprite2D region displays about 160.8x49.4; waste ratio 2112.06.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight30` as Sprite2D region displays about 195.1x107.3; waste ratio 801.43.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight29` as Sprite2D region displays about 195.1x107.3; waste ratio 801.43.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight28` as Sprite2D region displays about 195.1x107.3; waste ratio 801.43.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; `Scenes/Levels/level_7.tscn::ENV/BgAssetsNight16` as Sprite2D region displays about 195.1x107.3; waste ratio 801.43.
+
+### Referenced Image Inventory
+- `Assets/Coin/Coin-1.png.png` source 800x800; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Coin/Coin-2.png.png` source 800x800; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Coin/Coin-3.png.png` source 800x800; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Coin/Coin-4.png.png` source 800x800; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Coin/Coin-5.png.png` source 800x800; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Coin/Coin-6.png.png` source 800x800; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Coin/Coin-7.png.png` source 800x800; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/PlatformAssets/props 2.png` source 6417x3719; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/Jump/Layer 14.png` source 129x211; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/Jump/Layer 15.png` source 188x197; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/Jump/Layer 16.png` source 200x191; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/Jump/Layer 17.png` source 137x207; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/Jump/Layer 18.png` source 137x207; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/Jump/Layer 19.png` source 224x281; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/SpriteSheet.png` source 2020x7033; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/attack_1/Layer 39.png` source 279x214; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/attack_1/Layer 40.png` source 689x211; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/attack_1/Layer 41.png` source 538x216; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/attack_1/Layer 42.png` source 311x217; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/attack_2/Layer 43.png` source 286x216; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/attack_2/Layer 44.png` source 226x226; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/attack_2/Layer 45.png` source 603x208; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/attack_2/Layer 46.png` source 657x205; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/attack_3/Layer 47.png` source 247x208; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/attack_3/Layer 48.png` source 252x210; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/attack_3/Layer 49.png` source 250x208; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/attack_3/Layer 50.png` source 616x389; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/attack_3/Layer 51.png` source 441x296; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/attack_3/Layer 52.png` source 458x214; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/attack_3/Layer 53.png` source 436x208; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/block/Layer 2.png` source 304x205; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/block/Layer 3.png` source 341x205; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/block/Layer 4.png` source 307x282; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/block/Layer 5.png` source 213x222; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/block/Layer 6.png` source 232x210; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/block/Layer 7.png` source 236x211; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/combo_attack/Layer 10.png` source 396x359; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/combo_attack/Layer 11.png` source 445x440; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/combo_attack/Layer 12.png` source 441x630; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/combo_attack/Layer 13.png` source 441x630; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/combo_attack/Layer 7.png` source 276x223; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/combo_attack/Layer 8.png` source 697x214; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/combo_attack/Layer 9.png` source 537x214; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/dash/Layer 28.png` source 238x201; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/death/Layer 15.png` source 179x215; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/death/Layer 16.png` source 197x305; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/death/Layer 17.png` source 217x291; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/death/Layer 18.png` source 271x208; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/death/Layer 19.png` source 272x269; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/death/Layer 20.png` source 320x209; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/hurt/Layer 2.png` source 144x215; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/hurt/Layer 3.png` source 177x220; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/hurt/Layer 4.png` source 190x232; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/hurt/Layer 5.png` source 178x232; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/hurt/Layer 6.png` source 199x240; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/hurt/Layer 7.png` source 194x226; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/hurt/Layer 8.png` source 189x245; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/idle/Layer 31.png` source 144x215; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/idle/Layer 32.png` source 144x210; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/idle/Layer 33.png` source 144x207; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/idle/Layer 34.png` source 144x203; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/idle/Layer 35.png` source 143x196; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/idle/Layer 36.png` source 144x203; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/idle/Layer 37.png` source 144x207; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/idle/Layer 38.png` source 144x210; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/idle_up_attack/Layer 2.png` source 304x205; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/idle_up_attack/Layer 3.png` source 304x205; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/idle_up_attack/Layer 4.png` source 311x330; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/idle_up_attack/Layer 5.png` source 264x365; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/idle_up_attack/Layer 6.png` source 261x365; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/idle_up_attack/Layer 7.png` source 303x382; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/power_attack/Layer 10.png` source 304x205; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/power_attack/Layer 11.png` source 341x205; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/power_attack/Layer 12.png` source 361x253; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/power_attack/Layer 13.png` source 361x276; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/power_attack/Layer 14.png` source 292x412; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/power_attack/Layer 15.png` source 338x346; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/power_attack/Layer 16.png` source 395x347; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/power_attack/Layer 17.png` source 674x347; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/run/Layer 2.png` source 195x202; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/run/Layer 3.png` source 172x205; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/run/Layer 4.png` source 181x205; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/run/Layer 5.png` source 178x197; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/run/Layer 6.png` source 192x205; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/run/Layer 7.png` source 192x221; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/run/Layer 8.png` source 193x211; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/run/Layer 9.png` source 194x211; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/run_jump/Layer 20.png` source 129x211; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/run_jump/Layer 22.png` source 137x207; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/run_jump/Layer 23.png` source 137x207; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/run_jump/Layer 24.png` source 164x166; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/run_jump/Layer 25.png` source 162x159; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Player/CT/run_jump/Layer 26.png` source 170x170; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/TopDown/Arrow.png` source 94x161; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/TopDown/GoundTile.png` source 1254x1254; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/TopDown/Spear.png` source 80x220; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/TopDown/coinTrollTopDown.png` source 3475x3050; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/TopDown/light_beam_PNG29.png` source 2262x2262; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/TopDown/props 1.png` source 3532x1698; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/Background/01 background.png` source 426x384; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/Background/02 background.png` source 426x384; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/Background/03 background B.png` source 426x384; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/Background/04 background.png` source 426x384; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/Background/05 background.png` source 426x384; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/main_lev_build.png` source 2048x1280; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Environment/World_2/PixelPlatformerSet1v.1.1/other_and_decorative.png` source 640x640; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-0.png` source 357x244; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-1.png` source 357x244; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-10.png` source 357x244; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-11.png` source 357x244; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-12.png` source 357x244; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-13.png` source 357x244; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-14.png` source 357x244; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-2.png` source 357x244; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-3.png` source 357x244; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-4.png` source 357x244; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-5.png` source 357x244; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-6.png` source 357x244; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-7.png` source 357x244; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-8.png` source 357x244; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-9.png` source 357x244; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/bgandTiles/bgAssetsNight.png` source 4096x4096; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/bgandTiles/skyBackgroundNight.png` source 3840x2160; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/button/button_arrow_left_pressed.png` source 192x192; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/button/button_arrow_right.png` source 192x192; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/button/button_arrow_up_pressed.png` source 192x192; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/button/button_back.png` source 149x69; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/button/button_start_pressed.png` source 172x69; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/attack/1.png` source 113x205; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/attack/2.png` source 154x207; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/attack/3.png` source 150x216; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/attack/4.png` source 277x201; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/attack/5.png` source 273x201; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/attack/6.png` source 320x217; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/attack/7.png` source 154x207; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/die/1.png` source 125x211; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/die/2.png` source 129x211; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/die/3.png` source 183x217; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/die/4.png` source 220x196; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/die/5.png` source 220x195; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/die/6.png` source 220x179; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/die/7.png` source 245x148; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/die/8.png` source 252x124; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/hurt/1.png` source 113x205; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/hurt/2.png` source 125x211; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/hurt/3.png` source 129x211; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/hurt/4.png` source 124x210; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/hurt/5.png` source 113x205; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/idle/1.png` source 113x205; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/idle/2.png` source 114x200; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/idle/3.png` source 113x194; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/idle/4.png` source 113x190; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/idle/5.png` source 114x188; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/idle/6.png` source 115x192; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/idle/7.png` source 113x195; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/idle/8.png` source 113x196; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/idle/9.png` source 114x201; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/walk/10.png` source 123x209; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/walk/2.png` source 118x213; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/walk/3.png` source 134x213; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/walk/4.png` source 140x212; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/walk/5.png` source 134x213; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/walk/6.png` source 120x209; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/walk/7.png` source 120x209; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/walk/8.png` source 117x210; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/skeleton/orange/walk/9.png` source 119x213; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `Assets/webtoon_art/titlescreenart.jpg` source 1280x720; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+- `icon.svg` source 128x128; direct `res://` reference found. See scene/resource owner in the dependency map before resizing.
+
+### Image Groups Not Directly Referenced
+- `Assets/webtoon/`: 980 image files not directly referenced by `res://` text scan; review dynamic loading/import references before removal.
+- `Assets/Video game/Refrence/`: 315 image files not directly referenced by `res://` text scan; review dynamic loading/import references before removal.
+- `Assets/Slash/`: 15 image files not directly referenced by `res://` text scan; review dynamic loading/import references before removal.
+- `Assets/Impact/`: 19 image files not directly referenced by `res://` text scan; review dynamic loading/import references before removal.
+- `Assets/skeleton/`: 44 image files not directly referenced by `res://` text scan; review dynamic loading/import references before removal.
+
+## Duplicate Assets
+
+- Exact duplicate image-content groups found: 71.
+- Duplicate group: `Assets/skeleton/blue/attack/7.png`, `Assets/skeleton/blue/die/1.png`, `Assets/skeleton/blue/die/5.png`, `Assets/skeleton/blue/hurt/Layer 18.png`, `Assets/skeleton/blue/hurt/Layer 22.png`, `Assets/skeleton/blue/idle/1.png`, `Assets/skeleton/blue/idle/9.png`, `Assets/skeleton/blue/walk/1.png`.
+- Duplicate group: `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Spell/Bringer-of-Death_Spell_1.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Spell/Bringer-of-Death_Spell_10.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Spell/Bringer-of-Death_Spell_2.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Spell/Bringer-of-Death_Spell_9.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/Spell/Bringer-of-Death_Spell_1.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/Spell/Bringer-of-Death_Spell_2.png`.
+- Duplicate group: `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Spell/Bringer-of-Death_Spell_11.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Spell/Bringer-of-Death_Spell_12.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Spell/Bringer-of-Death_Spell_3.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Spell/Bringer-of-Death_Spell_4.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/Spell/Bringer-of-Death_Spell_3.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/Spell/Bringer-of-Death_Spell_4.png`.
+- Duplicate group: `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Spell/Bringer-of-Death_Spell_15.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Spell/Bringer-of-Death_Spell_16.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Spell/Bringer-of-Death_Spell_7.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Spell/Bringer-of-Death_Spell_8.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/Spell/Bringer-of-Death_Spell_15.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/Spell/Bringer-of-Death_Spell_16.png`.
+- Duplicate group: `Assets/webtoon/ch2/09.png`, `Assets/webtoon/ch4/18.png`, `Assets/webtoon/ch5/31.png`, `Assets/webtoon/ch6/17.png`, `Assets/webtoon/ch7/29.png`, `Assets/webtoon/ch8/33.png`.
+- Duplicate group: `Assets/webtoon/ch2/10.png`, `Assets/webtoon/ch4/19.png`, `Assets/webtoon/ch5/32.png`, `Assets/webtoon/ch6/18.png`, `Assets/webtoon/ch7/30.png`, `Assets/webtoon/ch8/34.png`.
+- Duplicate group: `Assets/webtoon/ch2/11.png`, `Assets/webtoon/ch4/20.png`, `Assets/webtoon/ch5/33.png`, `Assets/webtoon/ch6/19.png`, `Assets/webtoon/ch7/31.png`, `Assets/webtoon/ch8/35.png`.
+- Duplicate group: `Assets/Player/CT/Jump/Layer 17.png`, `Assets/Player/CT/jump_attack/Layer 3.png`, `Assets/Player/CT/jump_attack/Layer 4.png`, `Assets/Player/CT/run_jump/Layer 22.png`, `Assets/Player/CT/run_jump/Layer 23.png`.
+- Duplicate group: `Assets/skeleton/blue/die/2.png`, `Assets/skeleton/blue/die/4.png`, `Assets/skeleton/blue/die/6.png`, `Assets/skeleton/blue/hurt/Layer 19.png`, `Assets/skeleton/blue/hurt/Layer 21.png`.
+- Duplicate group: `Assets/skeleton/orange/attack/1.png`, `Assets/skeleton/orange/hurt/1.png`, `Assets/skeleton/orange/hurt/5.png`, `Assets/skeleton/orange/idle/1.png`, `Assets/skeleton/orange/walk/1.png`.
+- Duplicate group: `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Spell/Bringer-of-Death_Spell_13.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Spell/Bringer-of-Death_Spell_14.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Spell/Bringer-of-Death_Spell_5.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Spell/Bringer-of-Death_Spell_6.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/Spell/Bringer-of-Death_Spell_14.png`.
+- Duplicate group: `Assets/Player/CT/block/Layer 2.png`, `Assets/Player/CT/idle_up_attack/Layer 2.png`, `Assets/Player/CT/jump_attack/Layer 2.png`, `Assets/Player/CT/power_attack/Layer 10.png`.
+- Duplicate group: `Assets/Player/CT/chest_search/Layer 31.png`, `Assets/Player/CT/death/Layer 15.png`, `Assets/Player/CT/panic/Layer 35.png`, `Assets/Player/CT/pickup/Layer 21.png`.
+- Duplicate group: `Assets/Slash/sprite_7033-0.png`, `Assets/Slash/sprite_7033-1.png`, `Assets/Video game/Refrence/Assets/Slash/sprite_7033-0.png`, `Assets/Video game/Refrence/Assets/Slash/sprite_7033-1.png`.
+- Duplicate group: `Assets/Video game/Refrence/Assets/Player/main_sprites/sprites/13.png`, `Assets/Video game/Refrence/Assets/Player/main_sprites/sprites/15.png`, `Assets/Video game/Refrence/Assets/Player/main_sprites/sprites/21.png`, `Assets/Video game/Refrence/Assets/Player/main_sprites/sprites/24.png`.
+- Duplicate group: `Assets/skeleton/blue/die/3.png`, `Assets/skeleton/blue/die/7.png`, `Assets/skeleton/blue/hurt/Layer 20.png`.
+- Duplicate group: `Assets/webtoon/ch3/119.png`, `Assets/webtoon/ch4/99.png`, `Assets/webtoon/ch6/149.png`.
+- Duplicate group: `Assets/Coin/Coin-1.png.png`, `Assets/Coin/Coin-7.png.png`.
+- Duplicate group: `Assets/Impact/impact_1/sprite_8100-0.png`, `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-0.png`.
+- Duplicate group: `Assets/Impact/impact_1/sprite_8100-1.png`, `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-1.png`.
+- Duplicate group: `Assets/Impact/impact_1/sprite_8100-10.png`, `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-10.png`.
+- Duplicate group: `Assets/Impact/impact_1/sprite_8100-11.png`, `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-11.png`.
+- Duplicate group: `Assets/Impact/impact_1/sprite_8100-12.png`, `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-12.png`.
+- Duplicate group: `Assets/Impact/impact_1/sprite_8100-13.png`, `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-13.png`.
+- Duplicate group: `Assets/Impact/impact_1/sprite_8100-14.png`, `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-14.png`.
+- Duplicate group: `Assets/Impact/impact_1/sprite_8100-2.png`, `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-2.png`.
+- Duplicate group: `Assets/Impact/impact_1/sprite_8100-3.png`, `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-3.png`.
+- Duplicate group: `Assets/Impact/impact_1/sprite_8100-4.png`, `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-4.png`.
+- Duplicate group: `Assets/Impact/impact_1/sprite_8100-5.png`, `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-5.png`.
+- Duplicate group: `Assets/Impact/impact_1/sprite_8100-6.png`, `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-6.png`.
+- Duplicate group: `Assets/Impact/impact_1/sprite_8100-7.png`, `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-7.png`.
+- Duplicate group: `Assets/Impact/impact_1/sprite_8100-8.png`, `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-8.png`.
+- Duplicate group: `Assets/Impact/impact_1/sprite_8100-9.png`, `Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-9.png`.
+- Duplicate group: `Assets/Impact/impact_2/SP103_01.png`, `Assets/Video game/Refrence/Assets/Impact/impact_2/SP103_01.png`.
+- Duplicate group: `Assets/Impact/impact_2/SP103_02.png`, `Assets/Video game/Refrence/Assets/Impact/impact_2/SP103_02.png`.
+- Duplicate group: `Assets/Impact/impact_2/SP103_03.png`, `Assets/Video game/Refrence/Assets/Impact/impact_2/SP103_03.png`.
+- Duplicate group: `Assets/Impact/impact_2/SP103_04.png`, `Assets/Video game/Refrence/Assets/Impact/impact_2/SP103_04.png`.
+- Duplicate group: `Assets/Player/CT/block/Layer 3.png`, `Assets/Player/CT/power_attack/Layer 11.png`.
+- Duplicate group: `Assets/skeleton/blue/attack/1.png`, `Assets/skeleton/blue/attack/6.png`.
+- Duplicate group: `Assets/skeleton/blue/idle/3.png`, `Assets/skeleton/blue/idle/7.png`.
+- Duplicate group: `Assets/skeleton/blue/idle/4.png`, `Assets/skeleton/blue/idle/6.png`.
+- Duplicate group: `Assets/skeleton/orange/attack/2.png`, `Assets/skeleton/orange/attack/7.png`.
+- Duplicate group: `Assets/skeleton/orange/die/1.png`, `Assets/skeleton/orange/hurt/2.png`.
+- Duplicate group: `Assets/skeleton/orange/die/2.png`, `Assets/skeleton/orange/hurt/3.png`.
+- Duplicate group: `Assets/skeleton/orange/walk/6.png`, `Assets/skeleton/orange/walk/7.png`.
+- Duplicate group: `Assets/Slash/sprite_7033-10.png`, `Assets/Video game/Refrence/Assets/Slash/sprite_7033-10.png`.
+- Duplicate group: `Assets/Slash/sprite_7033-11.png`, `Assets/Video game/Refrence/Assets/Slash/sprite_7033-11.png`.
+- Duplicate group: `Assets/Slash/sprite_7033-12.png`, `Assets/Video game/Refrence/Assets/Slash/sprite_7033-12.png`.
+- Duplicate group: `Assets/Slash/sprite_7033-13.png`, `Assets/Video game/Refrence/Assets/Slash/sprite_7033-13.png`.
+- Duplicate group: `Assets/Slash/sprite_7033-14.png`, `Assets/Video game/Refrence/Assets/Slash/sprite_7033-14.png`.
+- Duplicate group: `Assets/Slash/sprite_7033-2.png`, `Assets/Video game/Refrence/Assets/Slash/sprite_7033-2.png`.
+- Duplicate group: `Assets/Slash/sprite_7033-3.png`, `Assets/Video game/Refrence/Assets/Slash/sprite_7033-3.png`.
+- Duplicate group: `Assets/Slash/sprite_7033-4.png`, `Assets/Video game/Refrence/Assets/Slash/sprite_7033-4.png`.
+- Duplicate group: `Assets/Slash/sprite_7033-5.png`, `Assets/Video game/Refrence/Assets/Slash/sprite_7033-5.png`.
+- Duplicate group: `Assets/Slash/sprite_7033-6.png`, `Assets/Video game/Refrence/Assets/Slash/sprite_7033-6.png`.
+- Duplicate group: `Assets/Slash/sprite_7033-7.png`, `Assets/Video game/Refrence/Assets/Slash/sprite_7033-7.png`.
+- Duplicate group: `Assets/Slash/sprite_7033-8.png`, `Assets/Video game/Refrence/Assets/Slash/sprite_7033-8.png`.
+- Duplicate group: `Assets/Slash/sprite_7033-9.png`, `Assets/Video game/Refrence/Assets/Slash/sprite_7033-9.png`.
+- Duplicate group: `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/Attack/Bringer-of-Death_Attack_1.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Attack/Bringer-of-Death_Attack_1.png`.
+- Duplicate group: `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/Attack/Bringer-of-Death_Attack_10.png`, `Assets/Video game/Refrence/Assets/Enemies/Bringer-Of-Death/Individual Sprite/No Effect Sprites/Attack/Bringer-of-Death_Attack_10.png`.
+
+## Unused Assets
+
+- Direct static scan found 483 non-webtoon/non-webtoon_art images with no direct `res://` reference. Treat these as candidates, not deletion approvals, because `.import` UID indirection and dynamic directory loading need editor verification.
+- Candidate unused: `Assets/button/button_arrow_down_pressed.png` source 192x192.
+- Candidate unused: `Assets/Impact/impact_1/sprite_8100-0.png` source 357x244.
+- Candidate unused: `Assets/Impact/impact_1/sprite_8100-1.png` source 357x244.
+- Candidate unused: `Assets/Impact/impact_1/sprite_8100-10.png` source 357x244.
+- Candidate unused: `Assets/Impact/impact_1/sprite_8100-11.png` source 357x244.
+- Candidate unused: `Assets/Impact/impact_1/sprite_8100-12.png` source 357x244.
+- Candidate unused: `Assets/Impact/impact_1/sprite_8100-13.png` source 357x244.
+- Candidate unused: `Assets/Impact/impact_1/sprite_8100-14.png` source 357x244.
+- Candidate unused: `Assets/Impact/impact_1/sprite_8100-2.png` source 357x244.
+- Candidate unused: `Assets/Impact/impact_1/sprite_8100-3.png` source 357x244.
+- Candidate unused: `Assets/Impact/impact_1/sprite_8100-4.png` source 357x244.
+- Candidate unused: `Assets/Impact/impact_1/sprite_8100-5.png` source 357x244.
+- Candidate unused: `Assets/Impact/impact_1/sprite_8100-6.png` source 357x244.
+- Candidate unused: `Assets/Impact/impact_1/sprite_8100-7.png` source 357x244.
+- Candidate unused: `Assets/Impact/impact_1/sprite_8100-8.png` source 357x244.
+- Candidate unused: `Assets/Impact/impact_1/sprite_8100-9.png` source 357x244.
+- Candidate unused: `Assets/Impact/impact_2/SP103_01.png` source 32x32.
+- Candidate unused: `Assets/Impact/impact_2/SP103_02.png` source 32x32.
+- Candidate unused: `Assets/Impact/impact_2/SP103_03.png` source 32x32.
+- Candidate unused: `Assets/Impact/impact_2/SP103_04.png` source 32x32.
+- Candidate unused: `Assets/Player/CT/chest_search/Layer 31.png` source 179x215.
+- Candidate unused: `Assets/Player/CT/chest_search/Layer 32.png` source 143x211.
+- Candidate unused: `Assets/Player/CT/chest_search/Layer 33.png` source 140x199.
+- Candidate unused: `Assets/Player/CT/chest_search/Layer 34.png` source 147x188.
+- Candidate unused: `Assets/Player/CT/dash/Layer 27.png` source 194x203.
+- Candidate unused: `Assets/Player/CT/dash/Layer 29.png` source 169x205.
+- Candidate unused: `Assets/Player/CT/dash/Layer 30.png` source 133x213.
+- Candidate unused: `Assets/Player/CT/jump_attack/Layer 2.png` source 304x205.
+- Candidate unused: `Assets/Player/CT/jump_attack/Layer 3.png` source 137x207.
+- Candidate unused: `Assets/Player/CT/jump_attack/Layer 4.png` source 137x207.
+- Candidate unused: `Assets/Player/CT/jump_attack/Layer 5.png` source 306x353.
+- Candidate unused: `Assets/Player/CT/jump_attack/Layer 6.png` source 255x403.
+- Candidate unused: `Assets/Player/CT/knockback_hurt/Layer 10.png` source 239x177.
+- Candidate unused: `Assets/Player/CT/knockback_hurt/Layer 11.png` source 295x179.
+- Candidate unused: `Assets/Player/CT/knockback_hurt/Layer 12.png` source 335x182.
+- Candidate unused: `Assets/Player/CT/knockback_hurt/Layer 13.png` source 351x144.
+- Candidate unused: `Assets/Player/CT/knockback_hurt/Layer 14.png` source 320x123.
+- Candidate unused: `Assets/Player/CT/knockback_hurt/Layer 9.png` source 214x219.
+- Candidate unused: `Assets/Player/CT/panic/Layer 35.png` source 179x215.
+- Candidate unused: `Assets/Player/CT/panic/Layer 36.png` source 144x215.
+- Candidate unused: `Assets/Player/CT/panic/Layer 37.png` source 164x230.
+- Candidate unused: `Assets/Player/CT/panic/Layer 38.png` source 181x236.
+- Candidate unused: `Assets/Player/CT/panic/Layer 39.png` source 239x266.
+- Candidate unused: `Assets/Player/CT/pickup/Layer 21.png` source 179x215.
+- Candidate unused: `Assets/Player/CT/pickup/Layer 22.png` source 161x224.
+- Candidate unused: `Assets/Player/CT/pickup/Layer 23.png` source 179x226.
+- Candidate unused: `Assets/Player/CT/pickup/Layer 24.png` source 177x212.
+- Candidate unused: `Assets/Player/CT/pickup/Layer 25.png` source 172x204.
+- Candidate unused: `Assets/Player/CT/pickup/Layer 26.png` source 170x212.
+- Candidate unused: `Assets/Player/CT/pickup/Layer 27.png` source 171x226.
+- Candidate unused: `Assets/Player/CT/pickup/Layer 28.png` source 164x224.
+- Candidate unused: `Assets/Player/CT/pickup/Layer 29.png` source 164x221.
+- Candidate unused: `Assets/Player/CT/pickup/Layer 30.png` source 166x221.
+- Candidate unused: `Assets/Player/CT/run_jump/Layer 21.png` source 238x201.
+- Candidate unused: `Assets/Player/CT/storm_push/Layer 40.png` source 276x201.
+- Candidate unused: `Assets/Player/CT/storm_push/Layer 41.png` source 272x197.
+- Candidate unused: `Assets/Player/CT/storm_push/Layer 42.png` source 260x198.
+- Candidate unused: `Assets/Player/CT/storm_push/Layer 43.png` source 279x196.
+- Candidate unused: `Assets/Player/CT/walk/Layer 10.png` source 114x207.
+- Candidate unused: `Assets/Player/CT/walk/Layer 11.png` source 119x204.
+- Candidate unused: `Assets/Player/CT/walk/Layer 12.png` source 119x204.
+- Candidate unused: `Assets/Player/CT/walk/Layer 13.png` source 140x206.
+- Candidate unused: `Assets/Player/CT/walk/Layer 2.png` source 136x206.
+- Candidate unused: `Assets/Player/CT/walk/Layer 3.png` source 137x206.
+- Candidate unused: `Assets/Player/CT/walk/Layer 4.png` source 140x203.
+- Candidate unused: `Assets/Player/CT/walk/Layer 5.png` source 129x211.
+- Candidate unused: `Assets/Player/CT/walk/Layer 6.png` source 119x204.
+- Candidate unused: `Assets/Player/CT/walk/Layer 7.png` source 119x204.
+- Candidate unused: `Assets/Player/CT/walk/Layer 8.png` source 114x207.
+- Candidate unused: `Assets/Player/CT/walk/Layer 9.png` source 120x209.
+- Candidate unused: `Assets/skeleton/blue/attack/1.png` source 154x196.
+- Candidate unused: `Assets/skeleton/blue/attack/2.png` source 150x216.
+- Candidate unused: `Assets/skeleton/blue/attack/3.png` source 277x201.
+- Candidate unused: `Assets/skeleton/blue/attack/4.png` source 273x201.
+- Candidate unused: `Assets/skeleton/blue/attack/5.png` source 320x210.
+- Candidate unused: `Assets/skeleton/blue/attack/6.png` source 154x196.
+- Candidate unused: `Assets/skeleton/blue/attack/7.png` source 113x199.
+- Candidate unused: `Assets/skeleton/blue/die/1.png` source 113x199.
+- Candidate unused: `Assets/skeleton/blue/die/10.png` source 220x185.
+- Candidate unused: `Assets/skeleton/blue/die/11.png` source 220x172.
+- Candidate unused: `Assets/skeleton/blue/die/12.png` source 245x144.
+- Candidate unused: `Assets/skeleton/blue/die/13.png` source 252x117.
+- Candidate unused: `Assets/skeleton/blue/die/2.png` source 121x198.
+- Candidate unused: `Assets/skeleton/blue/die/3.png` source 123x197.
+- Candidate unused: `Assets/skeleton/blue/die/4.png` source 121x198.
+- Candidate unused: `Assets/skeleton/blue/die/5.png` source 113x199.
+- Candidate unused: `Assets/skeleton/blue/die/6.png` source 121x198.
+- Candidate unused: `Assets/skeleton/blue/die/7.png` source 123x197.
+- Candidate unused: `Assets/skeleton/blue/die/8.png` source 183x202.
+- Candidate unused: `Assets/skeleton/blue/die/9.png` source 220x187.
+- Candidate unused: `Assets/skeleton/blue/hurt/Layer 18.png` source 113x199.
+- Candidate unused: `Assets/skeleton/blue/hurt/Layer 19.png` source 121x198.
+- Candidate unused: `Assets/skeleton/blue/hurt/Layer 20.png` source 123x197.
+- Candidate unused: `Assets/skeleton/blue/hurt/Layer 21.png` source 121x198.
+- Candidate unused: `Assets/skeleton/blue/hurt/Layer 22.png` source 113x199.
+- Candidate unused: `Assets/skeleton/blue/idle/1.png` source 113x199.
+- Candidate unused: `Assets/skeleton/blue/idle/2.png` source 113x193.
+- Candidate unused: `Assets/skeleton/blue/idle/3.png` source 113x189.
+- Candidate unused: `Assets/skeleton/blue/idle/4.png` source 113x185.
+- Candidate unused: `Assets/skeleton/blue/idle/5.png` source 113x181.
+- Candidate unused: `Assets/skeleton/blue/idle/6.png` source 113x185.
+- Candidate unused: `Assets/skeleton/blue/idle/7.png` source 113x189.
+- Candidate unused: `Assets/skeleton/blue/idle/8.png` source 113x193.
+- Candidate unused: `Assets/skeleton/blue/idle/9.png` source 113x199.
+- Candidate unused: `Assets/skeleton/blue/walk/1.png` source 113x199.
+- Candidate unused: `Assets/skeleton/blue/walk/2.png` source 118x199.
+- Candidate unused: `Assets/skeleton/blue/walk/3.png` source 134x200.
+- Candidate unused: `Assets/skeleton/blue/walk/4.png` source 140x198.
+- Candidate unused: `Assets/skeleton/blue/walk/5.png` source 134x199.
+- Candidate unused: `Assets/skeleton/blue/walk/6.png` source 120x195.
+- Candidate unused: `Assets/skeleton/blue/walk/7.png` source 117x199.
+- Candidate unused: `Assets/skeleton/blue/walk/8.png` source 118x199.
+- Candidate unused: `Assets/skeleton/blue/walk/9.png` source 123x197.
+- Candidate unused: `Assets/skeleton/orange/walk/1.png` source 113x205.
+- Candidate unused: `Assets/Slash/sprite_7033-0.png` source 800x800.
+- Candidate unused: `Assets/Slash/sprite_7033-1.png` source 800x800.
+- Candidate unused: `Assets/Slash/sprite_7033-10.png` source 800x800.
+- Candidate unused: `Assets/Slash/sprite_7033-11.png` source 800x800.
+- Candidate unused: `Assets/Slash/sprite_7033-12.png` source 800x800.
+- Candidate unused: `Assets/Slash/sprite_7033-13.png` source 800x800.
+- ...and 363 additional candidate unused images.
+
+## Broken Or Missing References
+
+- Missing `res://` target: `res://Assets/Environment/Test_Block/box.jpeg`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_0.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_1.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_10.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_11.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_12.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_13.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_14.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_15.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_16.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_17.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_18.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_19.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_2.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_20.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_21.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_22.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_23.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_24.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_25.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_26.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_27.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_28.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_29.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_3.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_4.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_5.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_6.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_7.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_8.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs/fire_ball_side_medium/imgs/img_9.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_0.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_1.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_10.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_11.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_12.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_13.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_14.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_15.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_16.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_17.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_18.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_19.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_2.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_20.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_21.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_22.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_23.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_24.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_25.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_26.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_27.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_28.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_29.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_3.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_4.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_5.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_6.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_7.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_8.png`.
+- Missing `res://` target: `res://Assets/Player_Projectile/fireballs_explosion/fire_ball_side_medium/imgs_explode/img_9.png`.
+- Missing `res://` target: `res://addons/light_shape_2d/baked_lights/`.
+- Missing `res://` target: `res://addons/light_shape_2d/baked_lights/light_12151251101175.res`.
+- Missing `res://` target: `res://addons/light_shape_2d/baked_lights/light_12504277280579.res`.
+- Missing `res://` target: `res://addons/light_shape_2d/baked_lights/light_12606400193991.res`.
+- Missing `res://` target: `res://addons/light_shape_2d/baked_lights/light_12674968770162.res`.
+- Missing `res://` target: `res://addons/light_shape_2d/baked_lights/light_12757042815992.res`.
+- Missing `res://` target: `res://addons/light_shape_2d/baked_lights/light_12823883244784.res`.
+- Missing `res://` target: `res://addons/light_shape_2d/baked_lights/light_12886311265039.res`.
+- Missing `res://` target: `res://addons/light_shape_2d/baked_lights/light_12950282789622.res`.
+- Missing `res://` target: `res://addons/light_shape_2d/baked_lights/light_13016234023301.res`.
+- Missing `res://` target: `res://addons/light_shape_2d/baked_lights/light_13081698722189.res`.
+- Missing `res://` target: `res://addons/light_shape_2d/baked_lights/light_13143321436822.res`.
+- Missing `res://` target: `res://addons/light_shape_2d/baked_lights/light_13207007748574.res`.
+- Missing `res://` target: `res://addons/light_shape_2d/baked_lights/light_13268865343887.res`.
+- Missing `res://` target: `res://addons/light_shape_2d/baked_lights/light_13716011801156.res`.
+- Missing `res://` target: `res://brand/icon.svg`.
+- UID-only dependencies could not be fully resolved without opening the project in the Godot editor; run an editor dependency check before Phase 1 edits.
+
+## TileMap Audit
+
+- `Scenes/Environments/Proto_Levels/Moving_Platforms/moving_platform.tscn`: tile sizes declared [('32', '32')]; TileMapLayer count 2; legacy TileMap token count 2.
+- `Scenes/Environments/Small_Scenes/enviroment.tscn`: tile sizes declared not explicit in text; TileMapLayer count 6; legacy TileMap token count 6.
+- `Scenes/Environments/Small_Scenes/Sub_Scenes/sub_scene_1.tscn`: tile sizes declared not explicit in text; TileMapLayer count 5; legacy TileMap token count 5.
+- `Scenes/Environments/Small_Scenes/Sub_Scenes/sub_scene_2.tscn`: tile sizes declared not explicit in text; TileMapLayer count 5; legacy TileMap token count 5.
+- `Scenes/Environments/Small_Scenes/Sub_Scenes/sub_scene_3.tscn`: tile sizes declared not explicit in text; TileMapLayer count 5; legacy TileMap token count 5.
+- `Scenes/Environments/Small_Scenes/Sub_Scenes/sub_scene_4.tscn`: tile sizes declared not explicit in text; TileMapLayer count 5; legacy TileMap token count 5.
+- `Scenes/Levels/lev_1.tscn`: tile sizes declared not explicit in text; TileMapLayer count 6; legacy TileMap token count 9.
+- `Scenes/Levels/lev_2.tscn`: tile sizes declared not explicit in text; TileMapLayer count 4; legacy TileMap token count 7.
+- `Scenes/Levels/lev_1.tres`: tile sizes declared [('32', '32')]; TileMapLayer count 0; legacy TileMap token count 0.
+- `Scenes/Levels/lev_2.tres`: tile sizes declared not explicit in text; TileMapLayer count 0; legacy TileMap token count 0.
+- Tile usage appears mixed between old `TileMap` and Godot 4 `TileMapLayer` text tokens. `lev_1.tres` and `lev_2.tres` should be opened in editor for exact source atlas/tile-size validation before any scaling.
+
+## Collision Audit
+
+- Shape subresources: RectangleShape2D x122, CircleShape2D x10, CapsuleShape2D x4.
+- No static `PackedVector2Array` collision polygon above 16 points was detected. Most collisions appear to use primitive rectangle/capsule/circle shapes.
+
+## Performance Flags
+
+- Scripts with `_process` or `_physics_process`: `Scenes/Camera/cam_root.gd` ['_physics_process'], `Scenes/Camera/Screen_Shake.gd` ['_physics_process'], `Scenes/Characters/Enemies/skeleton/orange/Horn.gd` ['_physics_process'], `Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.gd` ['_physics_process'], `Scenes/Characters/Player/player.gd` ['_physics_process'], `Scenes/Characters/Player/Projectile/fire_ball.gd` ['_physics_process'], `Scenes/Environments/Proto_Levels/Moving_Platforms/moving_platform.gd` ['_physics_process'], `Scenes/Levels/felix.gd` ['_physics_process'], `Scenes/Levels/lev_2.gd` ['_process'], `Scenes/Levels/level_6.gd` ['_process'], `Scenes/Levels/point_light_2d.gd` ['_process'], `Scenes/Levels/sortables.gd` ['_process'], `Scenes/Levels/td_player.gd` ['_physics_process'], `Scenes/Levels/top_down_patrol_hazard.gd` ['_physics_process'], `Scenes/Traps/Trap_1/trap_1.gd` ['_physics_process'], `Scenes/Traps/Trap_2/spike.gd` ['_physics_process'], `Scenes/Traps/Trap_3/ball.gd` ['_physics_process'], `Scripts/WebtoonReader.gd` ['_process'].
+- Timer nodes: 16; RayCast2D nodes: 5. Review for one-shot/unused nodes: `addons/godot_state_charts/utilities/editor_debugger/editor_debugger.tscn`::./Timer, `addons/godot_state_charts/utilities/state_chart_debugger.tscn`::./Timer, `Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn`::./idle_and_walk, `Scenes/Characters/Player/player.tscn`::./Attack_CoolDown_Timer, `Scenes/Characters/Player/player.tscn`::./Air_Attack_CoolDown_Timer, `Scenes/Characters/Player/player.tscn`::./Counter_Timer, `Scenes/Environments/Proto_Levels/Moving_Platforms/moving_platform.tscn`::./DirectionTimer, `Scenes/Environments/Proto_Levels/Moving_Platforms/moving_platform.tscn`::./DisappearTimer, `Scenes/Levels/Lev3.tscn`::CanvasLayer2/HUD/Timer, `Scenes/Levels/lev_2.tscn`::CanvasLayer/HUD/Timer, `Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn`::body/wall_detector, `Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.tscn`::body/floor_detector, `Scenes/Levels/level_7.tscn`::enemies/Felix/body/wall_detector, `Scenes/Levels/level_7.tscn`::enemies/Felix/body/floor_detector, `Scenes/Traps/Trap_3/ball.tscn`::./RayCast2D.
+- Many level scenes embed repeated `PointLight2D` and prop script instances; `lev_1.tscn` especially repeats `point_light_2d.gd` and prop/hiding-spot wiring many times.
+- `Assets/Video game/Refrence/` is the largest asset subtree and contains PSD/GIF/license/reference material alongside runtime PNGs, increasing import and repository weight.
+
+## Naming And Style Inconsistencies
+
+- Mixed case folders: `Assets`, `Resources`, `Scenes`, `Scripts` versus target lowercase phase-2 structure.
+- Duplicate or confusing script names: `Collected_items.gd` and `Collecteditems.gd`; `Stats.gd` and `Stats_Resource.gd`; `Hurt_Box.tscn` and `hurt_box.gd`; `Lev3.tscn`, `lev_1.tscn`, `level_5.tscn`.
+- Typos appear in paths/names: `enviroment.tscn`, `Refrence`, `health depleated` signal/function spelling in enemy code.
+- Input naming mixes `Attack` with lowercase actions (`left`, `right`, `jump`, `dash`) and top-down `move_*` actions.
+
+## Prioritized Issue List
+
+### High
+- Several production scripts exceed the Phase 4 split threshold: `Scripts/WebtoonReader.gd`, `Scenes/Levels/td_player.gd`, `Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.gd`, and `Scripts/ChapterData.gd`.
+- Asset organization is currently the highest-risk maintenance issue: runtime art, source/reference packs, PSDs, GIF previews, and imported textures are mixed under `Assets/Video game/Refrence/`.
+- Static project settings include a `null` input event under `move_down`; verify whether Godot reports an editor warning.
+- `lev_1.tscn` is very large and heavily duplicated, with repeated prop/light/hiding-spot structures that will complicate future safe edits.
+
+### Medium
+- Exact duplicate image files exist, especially between runtime folders and the `Assets/Video game/Refrence/Assets/...` mirror. Consolidation should happen only after scene/resource references are repointed.
+- Many images are not directly referenced in project text. Some are likely dynamic webtoon pages or reference material; separate dynamic story assets from unused/reference packs before deletion decisions.
+- Mixed `TileMap`/`TileMapLayer` patterns and separate level tilesets (`lev_1.tres`, `lev_2.tres`) need editor validation for consistent tile sizes and atlas scaling.
+- Multiple gameplay scripts poll every frame; inspect each `_process`/`_physics_process` for signal-ready or state-gated simplification in Phase 6.
+
+### Low
+- Naming inconsistencies and typos should be normalized during folder/project organization, after references can be updated safely.
+- Addon/editor files dominate script counts but should stay untouched unless they are proven to affect runtime.
+- Current README does not describe the intended phase-2 folder layout or current level architecture.
+
+## Phase 0 Stop Point
+
+Phase 0 is complete as a static audit. Per mission instructions, do not proceed to Phase 1 until this audit is reviewed and approved.
