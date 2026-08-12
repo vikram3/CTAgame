@@ -1,0 +1,167 @@
+﻿List,Card Name,Description,Labels,Priority,Phase
+Done,Phase 0 project audit,"- Priority: Done
+- Output: `PROJECT_AUDIT.md`
+- Notes: Static audit produced structure, dependencies, scripts, resources, assets, duplicates, missing references, and priorities.",,Done,
+Done,Coin frame optimization,"- Priority: Done
+- Output: 7 coin PNGs resized from 800x800 to 96x96; scene scales adjusted to preserve visible size.
+- Notes: Invisible in-game by design; reduces source asset size.",,Done,
+Done,Restore missing projectile and platform textures,"- Priority: Done
+- Output: Restored fireball frame folders and `box.jpeg` from sibling backup project.
+- Notes: Fixes major broken image references without replacing art.",,Done,
+Doing Now,Phase 1 reference validation,"- Priority: High
+- Goal: Get image references to zero missing runtime assets, except addon-only fallbacks that are harmless.
+- Checklist:
+  - Rerun missing `res://` image scan.
+  - Confirm restored projectile frames match `fire_ball.tscn`.
+  - Confirm moving platform `box.jpeg` exists.
+  - Note any addon-only missing references separately.",High,High,
+Doing Now,Phase 1 safe asset wins,"- Priority: High
+- Goal: Optimize only asset groups whose displayed sizes are understood.
+- Candidate batches:
+  - Coin frames: done.
+  - Projectile frames: inspect dimensions and displayed scale before resizing.
+  - `bgAssetsNight.png`: high waste, but used as an atlas in several scenes, so only resize after mapping all regions.
+  - `props 2.png` and `props 1.png`: high value, but TileSet/region dependent, so require careful atlas audit.",High,High,
+Next,Install or locate Godot CLI/editor,"- Priority: High
+- Why: Static checks are not enough. The project needs editor import/dependency validation.
+- Done when:
+  - `godot --version` works, or the exact Godot executable path is documented.
+  - Project opens with import cache regenerated.
+  - Missing dependency warnings are captured.",High,High,
+Next,Finish Phase 1 asset optimization,"- Priority: High
+- Why: Assets are the largest source of repo bloat and broken references.
+- Done when:
+  - Referenced oversized images are resized only when safe.
+  - Unused assets are removed only after confirmed zero references.
+  - `CHANGELOG.md` explains every non-trivial asset decision.
+  - All scenes open with no broken texture references.",High,High,
+Next,Phase 2 folder organization plan,"- Priority: High
+- Why: The repo currently mixes runtime assets, reference packs, scenes, scripts, and addons.
+- Done when:
+  - Final target folder map is approved.
+  - Move list is generated.
+  - Risky path moves are grouped into small commits.",High,High,
+Next,Move runtime assets into clean folders,"- Priority: High
+- Depends on: folder organization plan.
+- Done when:
+  - Runtime art is under `assets/`.
+  - Reference/source packs are separated or clearly marked.
+  - Scene/resource/script paths are updated.
+  - Godot opens without missing dependency errors.",High,High,
+Next,Move scenes into gameplay folders,"- Priority: High
+- Depends on: runtime asset move.
+- Done when:
+  - Levels, player, enemies, UI, traps, collectables, camera, and managers have clear homes.
+  - No scene node hierarchy changes yet.",High,High,
+Backlog - Architecture,Normalize top-level level scene structure,"- Priority: Medium
+- Phase: 3
+- Done when: each gameplay scene uses a predictable grouping such as Player, EnemySpawner, TileMap, Objects, Camera, UI, Navigation, Audio, Triggers.","Medium,3",Medium,3
+Backlog - Architecture,Remove dead and empty nodes,"- Priority: Medium
+- Phase: 3
+- Done when: empty containers and redundant nesting are removed without changing behavior.","Medium,3",Medium,3
+Backlog - Architecture,Split `Scripts/WebtoonReader.gd`,"- Priority: High
+- Phase: 4
+- Why: 805 lines, too many responsibilities.
+- Suggested split: loading, navigation, zoom/scroll UI, input/touch handling, overlay state.","High,4",High,4
+Backlog - Architecture,Split `Scenes/Levels/td_player.gd`,"- Priority: High
+- Phase: 4
+- Why: 587 lines, mixes movement, animation, combat, hiding, damage, and top-down/platformer modes.
+- Suggested split: movement, animation, combat/damage, hiding interaction, mode controller.","High,4",High,4
+Backlog - Architecture,Split `skeleton_orange.gd`,"- Priority: High
+- Phase: 4
+- Why: 565 lines, mixes platformer AI, top-down AI, combat, search, return, health, and effects.
+- Suggested split: stats, sensing, movement, combat, state behavior.","High,4",High,4
+Backlog - Architecture,Convert magic numbers to resources/constants,"- Priority: Medium
+- Phase: 4
+- Done when: enemy stats, player movement values, level timers, rewards, and damage values are named or data-driven.","Medium,4",Medium,4
+Backlog - Architecture,Replace fragile node paths,"- Priority: Medium
+- Phase: 4
+- Done when: relative lookups are replaced with exported `NodePath`s, signals, groups, or autoload references.","Medium,4",Medium,4
+Backlog - Levels,Map existing Godot levels to 19 prototype segments,"- Priority: High
+- Phase: 7
+- Done when: every PDF/HTML segment has a Godot scene status: implemented, partial, missing, or mismatch.","High,7",High,7
+Backlog - Levels,Create reusable level archetypes,"- Priority: High
+- Phase: 7
+- Candidate archetypes:
+  - Tutorial coin collection.
+  - Timed chase.
+  - Survival arena.
+  - Combat wave.
+  - Boss arena.
+  - Exploration plus coins.
+  - Auto-scroll escape.","High,7",High,7
+Backlog - Levels,Verify Chapter 1 segments,"- Priority: High
+- Phase: 7
+- Segments: Bush Maze Sneak, Treasure Chase.","High,7",High,7
+Backlog - Levels,Verify Chapter 2 segments,"- Priority: High
+- Phase: 7
+- Segments: Shadow Flood, Boss Dodge, Reinforcement Wave.","High,7",High,7
+Backlog - Levels,Verify Chapters 3-8 segments,"- Priority: Medium
+- Phase: 7
+- Done when: all remaining segment mechanics, timers, enemy counts, coin targets, hazards, and win conditions are checked against PDF/HTML.","Medium,7",Medium,7
+Backlog - Data And Save,Audit current save data,"- Priority: Medium
+- Phase: 8
+- Done when: current tracked data is listed and mapped to player, coins, story flags, inventory, level completion, and settings.","Medium,8",Medium,8
+Backlog - Data And Save,Restructure save data,"- Priority: Medium
+- Phase: 8
+- Done when: data is grouped into resources or JSON consistently, with no lost tracked values.","Medium,8",Medium,8
+Backlog - Data And Save,Add migration/default handling,"- Priority: Medium
+- Phase: 8
+- Done when: old or missing save keys do not crash the game.","Medium,8",Medium,8
+Backlog - QA,Static reference scan,"- Priority: High
+- Phase: 9
+- Done when: no missing runtime `res://` paths remain.","High,9",High,9
+Backlog - QA,Editor warning pass,"- Priority: High
+- Phase: 9
+- Depends on: Godot CLI/editor path.
+- Done when: warnings/errors are captured and technical bugs are fixed.","High,9",High,9
+Backlog - QA,Playtest chapter flow,"- Priority: High
+- Phase: 9
+- Done when: title -> chapter select -> webtoon -> playable segment -> completion path works for each implemented segment.","High,9",High,9
+Backlog - QA,Verify input map,"- Priority: Medium
+- Phase: 9
+- Done when: `move_down` null input is fixed if Godot reports it, and action naming is normalized later if needed.","Medium,9",Medium,9
+Later / Nice To Have,README rewrite,"- Priority: Low
+- Phase: 10
+- Done when: README explains folder structure, how to run the project, where levels/enemies/data live, and known limitations.","Low,10",Low,10
+Later / Nice To Have,Notes for review,"- Priority: Low
+- Phase: 10
+- Done when: all uncertain choices and human-review items are collected in `NOTES_FOR_REVIEW.md`.","Low,10",Low,10
+Later / Nice To Have,Final changelog cleanup,"- Priority: Low
+- Phase: 10
+- Done when: each phase has grouped entries with a one-line why.
+
+## Suggested Milestones
+
+### Milestone 1: Stabilize The Prototype
+- Cards: finish Phase 1 validation, restore/fix missing references, locate Godot CLI/editor, run editor dependency check.
+- Outcome: project opens cleanly enough to work safely.
+
+### Milestone 2: Make The Repo Navigable
+- Cards: Phase 2 folder organization, path updates, README draft.
+- Outcome: assets/scenes/scripts are findable.
+
+### Milestone 3: Make The Code Maintainable
+- Cards: scene cleanup, split large scripts, replace fragile paths.
+- Outcome: future gameplay work stops feeling scary.
+
+### Milestone 4: Align The Actual Game
+- Cards: map all 19 segments, create reusable level archetypes, verify win conditions.
+- Outcome: the Godot project matches the intended Coin Troll Adventure design.
+
+### Milestone 5: QA And Ship-Ready Docs
+- Cards: save-system cleanup, technical bug fixes, playtest matrix, final docs.
+- Outcome: stable demo-ready project.
+
+## The First 10 Cards To Do
+
+1. Finish missing image reference validation.
+2. Locate Godot executable and run an editor/import check.
+3. Finish safe Phase 1 asset cleanup.
+4. Commit Phase 1 asset/reference fixes.
+5. Create exact Phase 2 move map.
+6. Move runtime assets in small batches.
+7. Move scenes/scripts/resources in small batches.
+8. Normalize level scene structure.
+9. Split `td_player.gd`.
+10. Map implemented scenes against the 19 intended gameplay segments.","Low,10",Low,10
