@@ -1,0 +1,17 @@
+[remap]
+
+importer="csv_translation"
+type="Translation"
+uid="uid://bblhfroecrxgq"
+
+[deps]
+
+files=["res://trello_import.Card Name.translation", "res://trello_import.Description.translation", "res://trello_import.Labels.translation", "res://trello_import.Priority.translation", "res://trello_import.Phase.translation"]
+
+source_file="res://trello_import.csv"
+dest_files=["res://trello_import.Card Name.translation", "res://trello_import.Description.translation", "res://trello_import.Labels.translation", "res://trello_import.Priority.translation", "res://trello_import.Phase.translation"]
+
+[params]
+
+compress=true
+delimiter=0
