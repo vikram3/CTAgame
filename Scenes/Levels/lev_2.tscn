@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://c0atksvcpbkw4"]
+[gd_scene load_steps=25 format=4 uid="uid://c0atksvcpbkw4"]
 
 [ext_resource type="Script" uid="uid://ccub2f76kiw7a" path="res://Scenes/Levels/lev_2.gd" id="1_vya06"]
 [ext_resource type="PackedScene" uid="uid://cv5y5kai8g7g4" path="res://Scenes/Levels/td_player.tscn" id="2_fhg1k"]
@@ -204,13 +204,14 @@ visible = false
 [node name="Layer1" type="TileMapLayer" parent="Sortables"]
 y_sort_enabled = true
 use_parent_material = true
+tile_map_data = PackedByteArray("AACoAf//AQAAAAAAAgBdAfz/AQAAAAAAAQAyAfz/AQAAAAAABQDbAfH/AQAAAAAACwB8AQsAAQAAAAAACwDbAQQAAQAAAAAADQAPAgMAAQAAAAAAEgAsAgIAAQAAAAAAEgB0AgMAAQAAAAAAEgBNAgEAAQAAAAAAEgCnAgUAAQAAAAAAEgDzAgQAAQAAAAAAEgDJAgQAAQAAAAAAEgDDAgUAAQAAAAAAEgCrAvf/AQAAAAAAEgDkAvX/AQAAAAAAEgCmAs//AQAAAAAAFADEAs7/AQAAAAAAFADiAs3/AQAAAAAAFAD/Asn/AQAAAAAAFQD8As7/AQAAAAAAFQDvAs3/AQAAAAAAFQDEAr//AQAAAAAAFgClAsH/AQAAAAAAFgA=")
 tile_set = ExtResource("4_gd8ck")
 rendering_quadrant_size = 64
 
 [node name="Layer2" type="TileMapLayer" parent="Sortables"]
 y_sort_enabled = true
 use_parent_material = true
-tile_map_data = PackedByteArray(0, 0, 246, 255, 245, 255, 0, 0, 9, 0, 18, 0, 0, 0, 2, 0, 245, 255, 0, 0, 9, 0, 18, 0, 0, 0, 14, 0, 245, 255, 0, 0, 9, 0, 18, 0, 0, 0)
+tile_map_data = PackedByteArray("AAD2//X/AAAJABIAAAACAPX/AAAJABIAAAAOAPX/AAAJABIAAAA=")
 tile_set = ExtResource("6_gd8ck")
 rendering_quadrant_size = 64
 
