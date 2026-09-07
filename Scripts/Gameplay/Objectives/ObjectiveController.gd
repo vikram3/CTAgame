@@ -39,7 +39,7 @@ func _on_objective_completed(objective: ObjectiveBase) -> void:
 	if _is_finished:
 		return
 	_completed_objectives[objective] = true
-	if not objectives.is_empty() and _completed_objectives.size() >= objectives.size():
+	if _required_objective_count() > 0 and _completed_objectives.size() >= _required_objective_count():
 		_is_finished = true
 		all_completed.emit()
 
@@ -53,3 +53,11 @@ func _on_objective_failed(objective: ObjectiveBase) -> void:
 
 func _on_objective_progress_changed(objective: ObjectiveBase, current: float, target: float) -> void:
 	objective_progress_changed.emit(objective, current, target)
+
+
+func _required_objective_count() -> int:
+	var count: int = 0
+	for objective in objectives:
+		if objective and objective.counts_towards_completion:
+			count += 1
+	return count

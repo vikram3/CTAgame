@@ -7,6 +7,7 @@ signal progress_changed(objective: ObjectiveBase, current: float, target: float)
 
 @export var objective_id: StringName
 @export_multiline var failure_message: String
+@export var counts_towards_completion: bool = true
 
 var is_active: bool = false
 var is_complete: bool = false
