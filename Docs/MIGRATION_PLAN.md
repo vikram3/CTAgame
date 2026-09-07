@@ -27,3 +27,18 @@ This is the recommended next implementation phase. It intentionally does not sta
 - Do not switch player-controller stack inside a level without an explicit migration and playtest.
 - Keep Level 1 and Level 2 scene changes isolated from unrelated cleanup.
 - Require a passing Godot parser/import check before each new segment becomes reachable from the webtoon flow.
+
+## Phase 1 Classification
+
+| Classification | Files and folders | Phase 1 decision |
+| --- | --- | --- |
+| Keep in current location | `project.godot`, enabled addons, all autoloads, UI scenes/scripts, player scenes/scripts, `lev_1`, `lev_2`, shared Stats/HitBox/HurtBox | Preserve in place. |
+| Safe to migrate | Documentation and empty production destination folders | Created in place; no runtime relocation needed. |
+| Needs dependency migration | Props, `lev_1`, `lev_2`, tilesets, skeleton, moving platform, scene manager | Leave in place until Godot import/reference validation is available. |
+| Prototype/legacy | `Scenes/App/main.tscn`, `Scenes/Scene_Manager/game_root.tscn`, `Scenes/Environments/Small_Scenes`, generic prototype level, duplicate numbered level layouts | Retain untouched until live references and intended ownership are confirmed. |
+| Reference asset | `Assets/Video game/Refrence`, webtoon source panels, source art packs | Retain untouched. No deletion or relocation. |
+| Unknown | Unreferenced art, duplicate-looking assets, `output/`, `tmp/`, empty `Collecteditems.gd` | Leave untouched pending a Godot import pass and reference review. |
+
+## Phase 1 Migrations
+
+No existing project file was moved or renamed. The required destination hierarchy was created with `.gitkeep` placeholders so it is available for controlled future migrations.

@@ -41,3 +41,10 @@ Do not merge these controllers in one migration. Phase 1 should establish only s
 - Enabled addons.
 - `Assets/Video game/Refrence/`; it contains source/reference material intermingled with possible runtime art.
 - Existing `output/` and `tmp/` worktree content.
+
+## Phase 1 Cleanup Record
+
+- Production destination folders now exist as empty tracked placeholders.
+- No gameplay, UI, autoload, scene-manager, player, level, resource, or asset file was moved in this phase.
+- `Stats.take_damage(damage)` is the public damage entry point for the existing platformer player bridge. It delegates to the established deduction implementation, preserving all current HurtBox callers.
+- The invalid null event in the `move_down` Input Map entry was removed. The existing S-key binding is unchanged.

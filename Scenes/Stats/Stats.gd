@@ -45,6 +45,10 @@ func _damage_deduction(damage: int) -> void:
 		emit_signal("health_depleated")
 
 
+func take_damage(damage: int) -> void:
+	_damage_deduction(damage)
+
+
 # =================================
 # ENERGY MANAGEMENT
 # =================================
