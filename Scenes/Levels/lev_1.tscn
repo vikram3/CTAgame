@@ -259,10 +259,10 @@ fill_to = Vector2(0.74786323, 0.25641027)
 
 [sub_resource type="Environment" id="Environment_8saxd"]
 background_mode = 3
-background_color = Color(0.012, 0.02, 0.055, 1)
+background_color = Color(0.045, 0.07, 0.14, 1)
 glow_enabled = true
-glow_bloom = 0.16
-adjustment_saturation = 1.25
+glow_bloom = 0.08
+adjustment_saturation = 1.08
 
 [node name="Lev1" type="Node2D" node_paths=PackedStringArray("player", "exit_door", "hud", "game_over_panel", "win_panel", "tile_map", "player_start", "exit_position", "canvas_modulate", "world_environment", "exit_light")]
 script = ExtResource("1_vgi1v")
@@ -276,7 +276,7 @@ player_start = NodePath("Start")
 exit_position = NodePath("End")
 use_camera_limits = true
 canvas_modulate = NodePath("CanvasModulate")
-night_tint = Color(0.055, 0.075, 0.145, 1)
+night_tint = Color(0.48, 0.53, 0.68, 1)
 world_environment = NodePath("CanvasModulate/WorldEnvironment")
 exit_light = NodePath("End/Exitlight")
 exit_light_energy = 1.35
@@ -1167,7 +1167,7 @@ region_rect = Rect2(1337, 540, 193, 352)
 [node name="Enemies" type="Node2D" parent="Sortables"]
 y_sort_enabled = true
 
-[node name="SkullPatrol1" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
+[node name="SkullPatrol1" parent="Sortables/Enemies" groups=["level_1_guards"] instance=ExtResource("3_xfajc")]
 position = Vector2(2772, -19)
 patrol_speed = 145.0
 chase_speed = 265.0
@@ -1177,7 +1177,7 @@ patrol_distance = 620.0
 chase_distance = 340.0
 attack_distance = 86.0
 
-[node name="SkullPatrol2" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
+[node name="SkullPatrol2" parent="Sortables/Enemies" groups=["level_1_guards"] instance=ExtResource("3_xfajc")]
 position = Vector2(780, 721)
 patrol_speed = 125.0
 chase_speed = 235.0
@@ -1187,7 +1187,7 @@ patrol_distance = 520.0
 chase_distance = 300.0
 attack_distance = 82.0
 
-[node name="SkullPatrol3" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
+[node name="SkullPatrol3" parent="Sortables/Enemies" groups=["level_1_guards"] instance=ExtResource("3_xfajc")]
 position = Vector2(2245, 1435)
 patrol_speed = 160.0
 chase_speed = 285.0
@@ -1196,7 +1196,7 @@ patrol_distance = 700.0
 chase_distance = 365.0
 attack_distance = 88.0
 
-[node name="SkullPatrol4" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
+[node name="SkullPatrol4" parent="Sortables/Enemies" groups=["level_1_guards"] instance=ExtResource("3_xfajc")]
 position = Vector2(-106, 2095)
 patrol_speed = 135.0
 chase_speed = 250.0
@@ -1206,7 +1206,7 @@ patrol_distance = 560.0
 chase_distance = 315.0
 attack_distance = 82.0
 
-[node name="SkullPatrol5" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
+[node name="SkullPatrol5" parent="Sortables/Enemies" groups=["level_1_guards"] instance=ExtResource("3_xfajc")]
 position = Vector2(1421, 3169)
 patrol_speed = 175.0
 chase_speed = 305.0
@@ -1216,7 +1216,7 @@ patrol_distance = 640.0
 chase_distance = 390.0
 attack_distance = 90.0
 
-[node name="SkullPatrol6" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
+[node name="SkullPatrol6" parent="Sortables/Enemies" groups=["level_1_guards"] instance=ExtResource("3_xfajc")]
 position = Vector2(535, 2174)
 patrol_speed = 145.0
 chase_speed = 265.0
@@ -1225,7 +1225,7 @@ patrol_distance = 520.0
 chase_distance = 330.0
 attack_distance = 84.0
 
-[node name="SkullPatrol7" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
+[node name="SkullPatrol7" parent="Sortables/Enemies" groups=["level_1_guards"] instance=ExtResource("3_xfajc")]
 position = Vector2(3047, 1672)
 patrol_speed = 165.0
 chase_speed = 290.0
@@ -1235,7 +1235,7 @@ patrol_distance = 680.0
 chase_distance = 375.0
 attack_distance = 88.0
 
-[node name="SkullPatrol8" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
+[node name="SkullPatrol8" parent="Sortables/Enemies" groups=["level_1_guards"] instance=ExtResource("3_xfajc")]
 position = Vector2(4308, 983)
 patrol_speed = 155.0
 chase_speed = 280.0
@@ -1245,7 +1245,7 @@ patrol_distance = 600.0
 chase_distance = 360.0
 attack_distance = 86.0
 
-[node name="SkullPatrol9" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
+[node name="SkullPatrol9" parent="Sortables/Enemies" groups=["level_1_guards"] instance=ExtResource("3_xfajc")]
 position = Vector2(2778, 3425)
 patrol_speed = 180.0
 chase_speed = 315.0
@@ -1254,7 +1254,7 @@ patrol_distance = 720.0
 chase_distance = 400.0
 attack_distance = 92.0
 
-[node name="SkullPatrol10" parent="Sortables/Enemies" instance=ExtResource("3_xfajc")]
+[node name="SkullPatrol10" parent="Sortables/Enemies" groups=["level_1_guards"] instance=ExtResource("3_xfajc")]
 position = Vector2(3874, 135)
 patrol_speed = 170.0
 chase_speed = 300.0
@@ -1310,7 +1310,7 @@ rendering_quadrant_size = 64
 
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
-[node name="HUD" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("health_bar", "coin_label")]
+[node name="HUD" type="Control" parent="CanvasLayer" node_paths=PackedStringArray("health_bar", "coin_label", "player", "stamina_bar")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -1320,6 +1320,8 @@ grow_vertical = 2
 script = ExtResource("5_5rucc")
 health_bar = NodePath("ProgressBar")
 coin_label = NodePath("Label")
+player = NodePath("../../Sortables/TDPlayer")
+stamina_bar = NodePath("StaminaBar")
 
 [node name="Panel" type="Panel" parent="CanvasLayer/HUD"]
 layout_mode = 1
@@ -1355,6 +1357,31 @@ offset_bottom = 91.0
 grow_horizontal = 0
 theme_override_font_sizes/font_size = 66
 text = "Coins: 0"
+
+[node name="StaminaBar" type="ProgressBar" parent="CanvasLayer/HUD"]
+modulate = Color(0.18, 0.78, 1, 1)
+layout_mode = 1
+offset_left = 62.0
+offset_top = 133.0
+offset_right = 352.0
+offset_bottom = 150.0
+scale = Vector2(3.225, 3.225)
+theme_override_colors/font_color = Color(0.1, 0.32, 0.48, 1)
+theme_override_colors/font_outline_color = Color(0.18, 0.78, 1, 1)
+theme_override_font_sizes/font_size = 14
+value = 100.0
+show_percentage = false
+
+[node name="StaminaLabel" type="Label" parent="CanvasLayer/HUD"]
+layout_mode = 1
+offset_left = 62.0
+offset_top = 117.000015
+offset_right = 352.0
+offset_bottom = 143.00002
+scale = Vector2(3.225, 3.225)
+theme_override_colors/font_color = Color(0.55, 0.9, 1, 1)
+theme_override_font_sizes/font_size = 18
+text = "SPRINT"
 
 [node name="StatusLabel" type="Label" parent="CanvasLayer/HUD"]
 layout_mode = 1

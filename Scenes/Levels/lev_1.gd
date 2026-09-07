@@ -39,6 +39,13 @@ signal level_completed(success: bool)
 @export var hidden_text: String = "Hidden"
 @export var toast_duration: float = 1.4
 
+@export_group("Stealth Pacing")
+## The heist deliberately gets hotter as the player secures more loot. These
+## thresholds create a readable opening, a contested mid-game, and a tense exit.
+@export var alert_threshold_one: int = 7
+@export var alert_threshold_two: int = 14
+@export var guard_alert_multipliers: PackedFloat32Array = PackedFloat32Array([1.0, 1.12, 1.26])
+
 # ---------------------------------------------------------------------------
 # Camera
 # ---------------------------------------------------------------------------
@@ -87,12 +94,14 @@ var _status_label: Label
 var _toast_timer: Timer
 var _level_finished: bool = false
 var _base_status_text: String
+var _guard_alert_phase: int = 0
 
 
 func _ready() -> void:
 	CollectedItems.reset()
 	_base_status_text = objective_text
 	_wire_level()
+	_update_objective_status()
 
 
 func _wire_level() -> void:
@@ -174,7 +183,10 @@ func _wire_night_atmosphere() -> void:
 		var guard_light := node as PointLight2D
 		if guard_light:
 			guard_light.color = guard_light_color
-			guard_light.energy = guard_light_energy
+			if guard_light.has_method("set_light_energy"):
+				guard_light.call("set_light_energy", guard_light_energy)
+			else:
+				guard_light.energy = guard_light_energy
 
 
 func _configure_camera() -> void:
@@ -195,10 +207,63 @@ func _configure_camera() -> void:
 
 
 func _on_coins_collected() -> void:
-	if _status_label and CollectedItems.coins_amount >= required_coins:
+	if CollectedItems.coins_amount >= required_coins:
 		_base_status_text = exit_open_text
-		_status_label.text = _base_status_text
+		if _status_label:
+			_status_label.text = _base_status_text
 		_light_exit_door()
+		return
+
+	_update_alert_phase()
+	_update_objective_status()
+
+
+func _update_alert_phase() -> void:
+	var target_phase: int = 0
+	if CollectedItems.coins_amount >= alert_threshold_two:
+		target_phase = 2
+	elif CollectedItems.coins_amount >= alert_threshold_one:
+		target_phase = 1
+
+	if target_phase == _guard_alert_phase:
+		return
+
+	var previous_multiplier: float = guard_alert_multipliers[_guard_alert_phase]
+	var next_multiplier: float = guard_alert_multipliers[target_phase]
+	var ratio: float = next_multiplier / previous_multiplier
+	_guard_alert_phase = target_phase
+
+	for node in get_tree().get_nodes_in_group("level_1_guards"):
+		var guard := node as CharacterBody2D
+		if not guard:
+			continue
+		guard.set("patrol_speed", float(guard.get("patrol_speed")) * ratio)
+		guard.set("chase_speed", float(guard.get("chase_speed")) * ratio)
+		guard.set("chase_distance", float(guard.get("chase_distance")) * ratio)
+
+	for node in get_tree().get_nodes_in_group(guard_light_group):
+		var guard_light := node as PointLight2D
+		if guard_light:
+			var alert_energy: float = guard_light_energy * (1.0 + 0.18 * _guard_alert_phase)
+			if guard_light.has_method("set_light_energy"):
+				guard_light.call("set_light_energy", alert_energy)
+			else:
+				guard_light.energy = alert_energy
+
+
+func _update_objective_status() -> void:
+	if not _status_label:
+		return
+
+	var progress := "Coins: %d / %d" % [CollectedItems.coins_amount, required_coins]
+	match _guard_alert_phase:
+		0:
+			_base_status_text = "%s  Stay low. Cover breaks pursuit." % progress
+		1:
+			_base_status_text = "%s  Patrols are alert. Lose sight, then hide." % progress
+		_:
+			_base_status_text = "%s  Final sweep. Plan the route to the exit." % progress
+	_status_label.text = _base_status_text
 
 
 func _light_exit_door() -> void:

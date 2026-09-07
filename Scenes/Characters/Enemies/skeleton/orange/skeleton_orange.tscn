@@ -414,7 +414,7 @@ size = Vector2(80, 176)
 script = ExtResource("43_aukii")
 metadata/_custom_type_script = "uid://ba0i3u40ltfdw"
 
-[node name="skeleton_orange" type="CharacterBody2D" node_paths=PackedStringArray("idle_walk_timer", "floor_detector", "wall_detector", "body", "stats", "anim")]
+[node name="skeleton_orange" type="CharacterBody2D" node_paths=PackedStringArray("idle_walk_timer", "floor_detector", "wall_detector", "body", "stats", "anim", "awareness_light")]
 collision_layer = 16
 script = ExtResource("1_psj33")
 enemy_data = ExtResource("45_enemy_data")
@@ -424,6 +424,7 @@ wall_detector = NodePath("body/wall_detector")
 body = NodePath("body")
 stats = NodePath("Stats")
 anim = NodePath("body/AnimationPlayer")
+awareness_light = NodePath("body/PointLight2D")
 
 [node name="body" type="Node2D" parent="."]
 

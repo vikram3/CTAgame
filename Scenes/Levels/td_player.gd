@@ -7,6 +7,7 @@ class_name Player
 signal died
 signal damaged(current_health: float)
 signal hidden_state_changed(is_hidden: bool)
+signal stamina_changed(current_stamina: float, max_stamina: float)
 
 # =====================================================
 # MOVEMENT MODE
@@ -36,6 +37,15 @@ enum MovementMode { TOP_DOWN, PLATFORMER }
 @export var anim: AnimationPlayer        # AnimationPlayer node
 @export var sprite: Node2D               # your AnimatedSprite2D or Sprite2D (for flipping/modulate)
 @export var hurt_box: Area2D
+
+@export_group("Top Down Sprint")
+@export var sprint_action: StringName = &"sprint"
+@export_range(1.0, 2.0, 0.05) var sprint_speed_multiplier: float = 1.5
+@export_range(1.0, 2.0, 0.05) var sprint_animation_speed_scale: float = 1.2
+@export_range(1.0, 200.0, 1.0) var stamina_max: float = 100.0
+@export_range(1.0, 100.0, 1.0) var stamina_drain_per_second: float = 34.0
+@export_range(1.0, 100.0, 1.0) var stamina_recovery_per_second: float = 26.0
+@export_range(0.0, 3.0, 0.05) var stamina_recovery_delay: float = 0.7
 
 # --- Hiding (Top-Down only) ---
 ## Input action that both enters AND exits hiding. Defaults to Godot's built-in
@@ -125,8 +135,11 @@ var facing: Facing = Facing.DOWN
 var is_dead: bool = false
 var is_invulnerable: bool = false
 var is_hidden: bool = false
+var is_sprinting: bool = false
+var current_stamina: float
 var _knockback_velocity: Vector2 = Vector2.ZERO
 var _knockback_timer: float = 0.0
+var _stamina_recovery_timer: float = 0.0
 
 var _invuln_timer: Timer
 
@@ -161,6 +174,7 @@ var _platformer_vertical_velocity: float = 0.0
 
 func _ready() -> void:
 	add_to_group("player")
+	current_stamina = stamina_max
 
 	if stats:
 		stats.health_updated.connect(_on_health_updated)
@@ -186,6 +200,7 @@ func _physics_process(_delta: float) -> void:
 
 	if _knockback_timer > 0.0:
 		_knockback_timer -= _delta
+		_update_top_down_sprint(Vector2.ZERO, _delta)
 		velocity = _knockback_velocity
 		move_and_slide()
 		return
@@ -205,11 +220,13 @@ func _physics_process(_delta: float) -> void:
 
 	if _is_dashing_to_hide:
 		# The entry dash tween is driving global_position — don't fight it with velocity.
+		_update_top_down_sprint(Vector2.ZERO, _delta)
 		velocity = Vector2.ZERO
 		return
 
 	if _is_exiting_hide:
 		# Committed to a break-cover step-out dash — same deal.
+		_update_top_down_sprint(Vector2.ZERO, _delta)
 		velocity = Vector2.ZERO
 		return
 
@@ -223,6 +240,7 @@ func _physics_process(_delta: float) -> void:
 			return
 
 	if is_hidden and _current_hide_spot:
+		_update_top_down_sprint(Vector2.ZERO, _delta)
 		_process_hidden(_delta)
 		return
 
@@ -233,11 +251,36 @@ func _physics_process(_delta: float) -> void:
 	if input_dir.length() > 1.0:
 		input_dir = input_dir.normalized()
 
-	velocity = input_dir * speed
+	_update_top_down_sprint(input_dir, _delta)
+	velocity = input_dir * speed * (sprint_speed_multiplier if is_sprinting else 1.0)
 	move_and_slide()
 
 	_update_facing(input_dir)
 	_update_animation(input_dir)
+
+
+func _update_top_down_sprint(input_dir: Vector2, delta: float) -> void:
+	var previous_stamina: float = current_stamina
+	var can_sprint := movement_mode == MovementMode.TOP_DOWN \
+		and not is_dead \
+		and not is_hidden \
+		and input_dir.length_squared() > 0.001 \
+		and current_stamina > 0.0 \
+		and Input.is_action_pressed(sprint_action)
+
+	is_sprinting = can_sprint
+	if is_sprinting:
+		current_stamina = maxf(0.0, current_stamina - stamina_drain_per_second * delta)
+		_stamina_recovery_timer = stamina_recovery_delay
+	else:
+		_stamina_recovery_timer = maxf(0.0, _stamina_recovery_timer - delta)
+		if _stamina_recovery_timer <= 0.0:
+			current_stamina = minf(stamina_max, current_stamina + stamina_recovery_per_second * delta)
+
+	if anim:
+		anim.speed_scale = sprint_animation_speed_scale if is_sprinting else 1.0
+	if not is_equal_approx(previous_stamina, current_stamina):
+		stamina_changed.emit(current_stamina, stamina_max)
 
 
 # =====================================================

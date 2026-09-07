@@ -17,6 +17,11 @@ func _ready() -> void:
 		_phase_offset = randf() * TAU
 
 
+func set_light_energy(value: float) -> void:
+	_base_energy = value
+	energy = value
+
+
 func _process(_delta: float) -> void:
 	var t := Time.get_ticks_msec() / 1000.0 * flicker_speed + _phase_offset
 	energy = _base_energy + sin(t) * flicker_amount

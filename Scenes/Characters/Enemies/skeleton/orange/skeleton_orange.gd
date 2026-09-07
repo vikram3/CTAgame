@@ -14,6 +14,7 @@ enum states{
 # since top-down mode drives its own tiny state machine in _top_down_physics)
 enum TopDownState{
 	PATROL,
+	SUSPICIOUS,
 	CHASE,
 	SEARCH,
 	RETURN
@@ -29,6 +30,7 @@ var current_states:states = states.IDLE
 @export var wall_detector:RayCast2D
 @export var body:Node2D
 @export var anim:AnimationPlayer
+@export var awareness_light: PointLight2D
 
 @export var patrol_speed:float = 30.0
 @export var dash_speed:float = 80.0
@@ -59,6 +61,14 @@ var current_states:states = states.IDLE
 ## Collision layers that block line-of-sight to the player (your wall/tile layers).
 ## Chasing is cancelled if a wall on this mask is between the enemy and the player.
 @export_flags_2d_physics var vision_wall_mask: int = 1
+
+@export_group("Top Down Awareness")
+## A short, visible hesitation before a guard commits to a chase. This gives
+## the player a fair chance to break line-of-sight or use nearby cover.
+@export_range(0.1, 3.0, 0.05) var suspicion_duration: float = 0.85
+@export var patrol_light_color: Color = Color(1.0, 0.22, 0.16, 1.0)
+@export var suspicious_light_color: Color = Color(1.0, 0.72, 0.16, 1.0)
+@export var chase_light_color: Color = Color(1.0, 0.08, 0.12, 1.0)
 
 ## How long (seconds) the enemy stands still "looking around" after losing the player.
 @export var search_duration: float = 1.6
@@ -123,6 +133,7 @@ var _top_down_state: TopDownState = TopDownState.PATROL
 var _search_timer: float = 0.0
 var _search_look_timer: float = 0.0
 var _search_looks_done: int = 0
+var _suspicion_timer: float = 0.0
 var _last_known_player_pos: Vector2
 
 # Spawn point patrol is centered around, captured once in _ready().
@@ -257,9 +268,18 @@ func _top_down_physics(delta: float) -> void:
 		can_see_player = is_instance_valid(_player) and not player_hidden \
 			and dist_to_player <= chase_distance and _has_line_of_sight()
 
-	# Player reappeared / came back into range at any point -> always resume chase.
+	if _top_down_state == TopDownState.SUSPICIOUS:
+		if not can_see_player:
+			_top_down_state = TopDownState.RETURN
+			_set_awareness_light(patrol_light_color)
+		else:
+			_process_suspicion(delta)
+		return
+
+	# A guard that catches a glimpse of CT pauses to confirm it. This is the
+	# stealth telegraph: use the moment to round a corner or hide.
 	if can_see_player and _top_down_state != TopDownState.CHASE:
-		_top_down_state = TopDownState.CHASE
+		_start_suspicion()
 
 	# Just lost the player (i.e. they hid) while chasing -> start searching.
 	if not can_see_player and _top_down_state == TopDownState.CHASE and not _is_attacking:
@@ -270,6 +290,8 @@ func _top_down_physics(delta: float) -> void:
 		return
 
 	match _top_down_state:
+		TopDownState.SUSPICIOUS:
+			_process_suspicion(delta)
 		TopDownState.CHASE:
 			_process_chase(can_see_player)
 		TopDownState.SEARCH:
@@ -309,8 +331,29 @@ func _process_chase(can_see_player: bool) -> void:
 	velocity = to_player.normalized() * chase_speed
 	move_and_slide()
 	_face_towards(velocity)
+	_set_awareness_light(chase_light_color)
 	if anim:
 		anim.play("walk")
+
+
+func _start_suspicion() -> void:
+	_top_down_state = TopDownState.SUSPICIOUS
+	_suspicion_timer = suspicion_duration
+	_set_awareness_light(suspicious_light_color)
+
+
+func _process_suspicion(delta: float) -> void:
+	velocity = Vector2.ZERO
+	move_and_slide()
+	if is_instance_valid(_player):
+		_face_towards(_player.global_position - global_position)
+	if anim:
+		anim.play("idle")
+
+	_suspicion_timer -= delta
+	if _suspicion_timer <= 0.0:
+		_top_down_state = TopDownState.CHASE
+		_set_awareness_light(chase_light_color)
 
 
 func _start_searching() -> void:
@@ -321,6 +364,7 @@ func _start_searching() -> void:
 	velocity = Vector2.ZERO
 	# First glance towards wherever the player was last headed.
 	_face_towards(_last_known_player_pos - global_position)
+	_set_awareness_light(suspicious_light_color)
 
 
 func _process_search(delta: float) -> void:
@@ -343,6 +387,7 @@ func _process_search(delta: float) -> void:
 	var done_looking := search_look_count > 0 and _search_looks_done >= search_look_count
 	if _search_timer <= 0.0 or done_looking:
 		_top_down_state = TopDownState.RETURN
+		_set_awareness_light(patrol_light_color)
 
 
 ## After giving up the search, walk back to the very first spawn position
@@ -365,6 +410,7 @@ func _process_return(delta: float) -> void:
 
 	if anim:
 		anim.play("walk")
+	_set_awareness_light(patrol_light_color)
 
 
 func _process_patrol(delta: float) -> void:
@@ -396,6 +442,12 @@ func _process_patrol(delta: float) -> void:
 
 	if anim:
 		anim.play("walk" if velocity.length() > 1.0 else "idle")
+	_set_awareness_light(patrol_light_color)
+
+
+func _set_awareness_light(color: Color) -> void:
+	if awareness_light:
+		awareness_light.color = color
 
 
 func _face_towards(dir: Vector2) -> void:
