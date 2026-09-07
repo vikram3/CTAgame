@@ -247,4 +247,7 @@ func restart_level() -> void:
 
 func quit_to_menu(menu_scene_path: String = "res://Scenes/UI/TitleScreen.tscn") -> void:
 	get_tree().paused = false
+	if not level_completed.get_connections().is_empty():
+		level_completed.emit(false)
+		return
 	get_tree().change_scene_to_file(menu_scene_path)

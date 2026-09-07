@@ -665,6 +665,10 @@ func smooth_scroll_to(target_y: float):
 #  GAME SEGMENT FLOW
 # ════════════════════════════════════════════
 func _on_play_pressed(entry: ChapterData.PanelEntry, panel_index: int):
+	if not SceneManager.is_gameplay_segment_available(entry.playable_scene):
+		push_error("WebtoonReader: gameplay segment is unavailable: %s" % entry.playable_scene)
+		return
+
 	saved_scroll_position = scroll_container.scroll_vertical
 	GameData.save_chapter_progress(current_chapter, saved_scroll_position)
 	GameData.record_segment_played(current_chapter, entry.game_index)
@@ -673,7 +677,7 @@ func _on_play_pressed(entry: ChapterData.PanelEntry, panel_index: int):
 	TransitionManager.current_panel_index   = panel_index
 	TransitionManager.current_game_index    = entry.game_index
 	TransitionManager.current_coins_reward  = entry.coins_reward
-	TransitionManager.start_game_segment(entry.playable_scene, self)
+	SceneManager.start_gameplay_segment(entry.playable_scene, self)
 
 
 func restore_scroll_only():
@@ -718,7 +722,7 @@ func advance_past_playable():
 			_on_chapter_fully_completed()
 
 	await _wait_for_layout()
-	scroll_container.scroll_vertical = int(saved_scroll_position)
+	_scroll_to_next_panel_after(panel_index)
 
 
 func _scroll_to_next_panel_after(panel_index: int):

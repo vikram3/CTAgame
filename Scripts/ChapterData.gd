@@ -32,7 +32,27 @@ const CHAPTER_UNLOCK_COSTS = {
 	8: 350,
 }
 
+const CHAPTER_CONFIG_PATHS = {
+	1: "res://Resources/Levels/chapter_01_config.tres",
+	2: "res://Resources/Levels/chapter_02_config.tres",
+	3: "res://Resources/Levels/chapter_03_config.tres",
+	4: "res://Resources/Levels/chapter_04_config.tres",
+	5: "res://Resources/Levels/chapter_05_config.tres",
+	6: "res://Resources/Levels/chapter_06_config.tres",
+	7: "res://Resources/Levels/chapter_07_config.tres",
+	8: "res://Resources/Levels/chapter_08_config.tres",
+}
+
+static func get_config(chapter: int) -> ChapterConfig:
+	var path := String(CHAPTER_CONFIG_PATHS.get(chapter, ""))
+	if path.is_empty():
+		return null
+	return ResourceLoader.load(path) as ChapterConfig
+
 static func get_unlock_cost(chapter: int) -> int:
+	var config := get_config(chapter)
+	if config:
+		return config.unlock_cost
 	return CHAPTER_UNLOCK_COSTS.get(chapter, (chapter - 1) * 50)
 
 
@@ -58,11 +78,12 @@ class PanelEntry:
 static func get_chapter(num: int) -> Array:
 	var panels: Array = []
 
-	if not CHAPTER_PAGE_COUNTS.has(num):
+	var config := get_config(num)
+	if config == null:
 		push_error("ChapterData: Chapter %d page count not set!" % num)
 		return panels
 
-	var page_count    = CHAPTER_PAGE_COUNTS[num]
+	var page_count    = config.page_count
 	var playable_defs = ChapterData.get_playable_definitions(num)
 
 	for page in range(1, page_count + 1):
@@ -133,6 +154,20 @@ static func get_total_chapters() -> int:
 #    scene         → scene path for this segment (swap out PROTO_LEVEL when ready)
 # ─────────────────────────────────────────────────────────────────────────────
 static func get_playable_definitions(chapter: int) -> Array:
+	var config := get_config(chapter)
+	if config:
+		var definitions: Array = []
+		for segment in config.segments:
+			definitions.append({
+				"before_page": segment.before_page,
+				"text": segment.transition_text,
+				"game_index": segment.game_index,
+				"coins_reward": segment.coins_reward,
+				"scene": segment.scene_path,
+			})
+		return definitions
+
+	# Legacy fallback for an absent or malformed chapter config.
 	match chapter:
 
 		# ══════════════════════════════════════════════════════════════════════

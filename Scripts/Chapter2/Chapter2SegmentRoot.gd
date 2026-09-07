@@ -36,7 +36,7 @@ func restart_level() -> void:
 
 func quit_to_menu() -> void:
 	get_tree().paused = false
-	get_tree().change_scene_to_file("res://Scenes/UI/TitleScreen.tscn")
+	level_completed.emit(false)
 
 
 func _on_level_completed(success: bool) -> void:
