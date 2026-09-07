@@ -80,6 +80,8 @@ signal level_completed(success: bool)
 ## Optional: a group name applied to guard PointLight2D "vision" lights, in
 ## case you want to dim/brighten them globally (e.g. a stealth-boost pickup).
 @export var guard_light_group: String = "guard_lights"
+@export var guard_light_color: Color = Color(1.0, 0.22, 0.16, 1.0)
+@export_range(0.0, 2.0, 0.05) var guard_light_energy: float = 0.65
 
 var _status_label: Label
 var _toast_timer: Timer
@@ -165,6 +167,14 @@ func _wire_night_atmosphere() -> void:
 
 	if world_environment and world_environment.environment:
 		world_environment.environment.glow_enabled = true
+
+	# Guard lights are a readable, low-intensity warning in the dark. They
+	# support the patrol game without revealing the entire maze at once.
+	for node in get_tree().get_nodes_in_group(guard_light_group):
+		var guard_light := node as PointLight2D
+		if guard_light:
+			guard_light.color = guard_light_color
+			guard_light.energy = guard_light_energy
 
 
 func _configure_camera() -> void:
