@@ -28,8 +28,6 @@ func _ready() -> void:
 	elif scenario == "escape":
 		_spawn_companion()
 		_spawn_escape_system()
-	else:
-		_spawn_tutorial_note()
 
 
 func _process(delta: float) -> void:
@@ -98,13 +96,6 @@ func _spawn_escape_system() -> void:
 	goal.add_child(shape)
 	goal.body_entered.connect(_on_goal_body_entered)
 	add_child(goal)
-
-
-func _spawn_tutorial_note() -> void:
-	var note := Label.new()
-	note.text = "Tank: use fire. Speed: stay close. Barreldugo: dodge projectiles."
-	note.position = Vector2(-300, -180)
-	add_child(note)
 
 
 func _complete() -> void:

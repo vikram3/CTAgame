@@ -123,4 +123,3 @@ func _manual_save_to_disk():
 		if Engine.is_editor_hint():
 			EditorInterface.get_resource_filesystem().scan()
 		self.texture = load(save_path)
-		print("Saved to: ", save_path)

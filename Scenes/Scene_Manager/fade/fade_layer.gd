@@ -8,10 +8,8 @@ func fade_in() -> void:
 	var tween := rect.create_tween()
 	tween.tween_property(rect, "modulate:a", 1.0, fade_time)
 	await tween.finished
-	print("Fade in done")
 
 func fade_out() -> void:
 	var tween := rect.create_tween()
 	tween.tween_property(rect, "modulate:a", 0.0, fade_time)
 	await tween.finished
-	print("Fade out finished")

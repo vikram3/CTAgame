@@ -118,8 +118,6 @@ func _init_projectile():
 		get_tree().current_scene.add_child(p)
 		CollectedItems.coins_amount -= 1
 		CollectedItems.emit_signal("coins_collected")
-	else:
-		print("No coins")
 func lock_input():
 	input_locked = true
 func unlock_input():

@@ -1,6 +1,8 @@
 extends CharacterBody2D
 class_name CompanionFollow
 
+signal comment_requested(text: String)
+
 @export var follow_distance: float = 48.0
 @export var follow_speed: float = 180.0
 @export var catch_up_distance: float = 420.0
@@ -35,4 +37,4 @@ func _physics_process(delta: float) -> void:
 	if _next_comment_at <= 0.0:
 		_next_comment_at = randf_range(comment_interval_min, comment_interval_max)
 		if not comments.is_empty():
-			print("Felix: ", comments[randi() % comments.size()])
+			comment_requested.emit(comments[randi() % comments.size()])

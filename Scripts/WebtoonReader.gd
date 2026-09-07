@@ -99,7 +99,6 @@ func _ready():
 	var saved = GameData.get_chapter_progress(current_chapter)
 	if saved > 0:
 		scroll_container.scroll_vertical = int(saved)
-		print("Restored scroll to: ", saved)
 
 	get_viewport().size_changed.connect(_on_viewport_size_changed)
 
@@ -683,7 +682,6 @@ func _on_play_pressed(entry: ChapterData.PanelEntry, panel_index: int):
 func restore_scroll_only():
 	await _wait_for_layout()
 	scroll_container.scroll_vertical = int(saved_scroll_position)
-	print("Back to story — restored scroll to: ", saved_scroll_position)
 
 
 func advance_past_playable():
