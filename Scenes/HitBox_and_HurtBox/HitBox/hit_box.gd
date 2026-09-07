@@ -3,6 +3,9 @@ extends Area2D
 var damage: int
 
 @export var main_body: Node2D
+@export var damage_type: StringName = &"physical"
+@export var knockback_direction: Vector2 = Vector2.ZERO
+@export var knockback_strength: float = 0.0
 
 
 func do_damage() -> int:
@@ -12,3 +15,9 @@ func do_damage() -> int:
 	else:
 		damage = 10
 		return damage
+
+
+func get_damage_info() -> DamageInfo:
+	return DamageInfo.new(
+		do_damage(), main_body, damage_type, knockback_direction, knockback_strength
+	)

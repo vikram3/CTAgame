@@ -5,12 +5,15 @@ signal health_updated(health)
 signal energy_updated(energy)
 signal health_depleated
 signal energy_depleated
+signal health_changed(current_health: float, max_health: float)
+signal died
 
 @export var stats: stats_resource
 @export var min_damage: float = 0.0
 
 var current_health: float
 var current_energy: float
+var is_dead: bool = false
 
 
 func _ready() -> void:
@@ -22,6 +25,7 @@ func initialize(character_stats: stats_resource) -> void:
 	stats = character_stats
 	current_health = stats.max_health
 	current_energy = stats.max_energy
+	is_dead = false
 
 
 # =================================
@@ -52,10 +56,19 @@ func _damage_deduction(damage: int) -> void:
 	if current_health <= 0:
 		current_health = 0
 		emit_signal("health_depleated")
+		if not is_dead:
+			is_dead = true
+			died.emit()
+	health_changed.emit(current_health, stats.max_health)
 
 
 func take_damage(damage: int) -> void:
 	_damage_deduction(damage)
+
+
+func take_damage_info(damage_info: DamageInfo) -> void:
+	if damage_info:
+		take_damage(damage_info.amount)
 
 
 # =================================

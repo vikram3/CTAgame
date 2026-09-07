@@ -1,0 +1,26 @@
+[gd_resource type="Resource" load_steps=3 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Enemies/EnemyData.gd" id="1_enemy_data"]
+[ext_resource type="Script" path="res://Scripts/Stats_Resource.gd" id="2_stats_resource"]
+
+[sub_resource type="Resource" id="StatsResource_skull_orange"]
+script = ExtResource("2_stats_resource")
+max_health = 100.0
+max_energy = 50.0
+damage = 15.0
+defense = 2.0
+crit_chance = 0.15
+crit_damage = 2.0
+move_speed = 100.0
+
+[resource]
+script = ExtResource("1_enemy_data")
+enemy_id = &"skull_orange"
+display_name = "Orange Skull"
+stats = SubResource("StatsResource_skull_orange")
+movement_speed = 30.0
+chase_speed = 100.0
+attack_type = &"melee"
+attack_damage = 25
+attack_range = 78.0
+death_behavior = &"animation"

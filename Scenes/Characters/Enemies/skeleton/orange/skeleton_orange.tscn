@@ -1,4 +1,4 @@
-[gd_scene load_steps=60 format=3 uid="uid://byjk18f2ujvhk"]
+[gd_scene load_steps=61 format=3 uid="uid://byjk18f2ujvhk"]
 
 [ext_resource type="PackedScene" uid="uid://dg6wi0x66ov55" path="res://Scenes/HitBox_and_HurtBox/HitBox/hit_box.tscn" id="1_2krmh"]
 [ext_resource type="Script" uid="uid://diigtsqlbjov3" path="res://Scenes/Characters/Enemies/skeleton/orange/skeleton_orange.gd" id="1_psj33"]
@@ -45,6 +45,7 @@
 [ext_resource type="Texture2D" uid="uid://bi46x4oj8sf8t" path="res://Assets/TopDown/light_beam_PNG29.png" id="42_nvja4"]
 [ext_resource type="Script" uid="uid://ba0i3u40ltfdw" path="res://Scripts/Stats_Resource.gd" id="43_aukii"]
 [ext_resource type="Script" uid="uid://b6f48w5ow40o7" path="res://Scenes/Levels/point_light_2d.gd" id="44_npwex"]
+[ext_resource type="Resource" path="res://Resources/Enemies/skull_orange_data.tres" id="45_enemy_data"]
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_pf0v8"]
 animations = [{
@@ -416,6 +417,7 @@ metadata/_custom_type_script = "uid://ba0i3u40ltfdw"
 [node name="skeleton_orange" type="CharacterBody2D" node_paths=PackedStringArray("idle_walk_timer", "floor_detector", "wall_detector", "body", "stats", "anim")]
 collision_layer = 16
 script = ExtResource("1_psj33")
+enemy_data = ExtResource("45_enemy_data")
 idle_walk_timer = NodePath("idle_and_walk")
 floor_detector = NodePath("body/floor_detector")
 wall_detector = NodePath("body/wall_detector")
@@ -448,6 +450,7 @@ disabled = true
 visible = false
 collision_layer = 0
 collision_mask = 4
+auto_receive_hits = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="body/HurtBox"]
 position = Vector2(0, 8)
