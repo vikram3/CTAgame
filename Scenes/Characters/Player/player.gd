@@ -1,4 +1,7 @@
 extends CharacterBody2D
+class_name CharacterController
+
+@export var character_data: CharacterData
 @export var projectile:PackedScene
 @export var force_decay:float = 750.0
 @export var body:Node2D
@@ -43,11 +46,13 @@ var is_invulnerable: bool = false
 var _invuln_timer: Timer
 
 
-func _ready():
+func _ready() -> void:
+	_apply_character_data()
 	Global.player = self
 	add_to_group("player")
 	cam_root = get_tree().get_first_node_in_group("camera")
-	health_bar._init_health(stats.stats.max_health)
+	if health_bar and stats and stats.stats:
+		health_bar._init_health(stats.stats.max_health)
 
 	_invuln_timer = Timer.new()
 	_invuln_timer.one_shot = true
@@ -63,6 +68,17 @@ func _ready():
 			stats.health_updated.connect(_on_player_stats_health_updated)
 		if stats.has_signal("health_depleated") and not stats.health_depleated.is_connected(_on_health_depleated):
 			stats.health_depleated.connect(_on_health_depleated)
+
+
+func _apply_character_data() -> void:
+	if character_data == null:
+		return
+
+	if character_data.projectile_scene:
+		projectile = character_data.projectile_scene
+
+	if stats and character_data.stats:
+		stats.initialize(character_data.stats)
 
 
 func _physics_process(delta):
@@ -123,18 +139,10 @@ func take_level_damage(damage: int, source_position: Vector2) -> void:
 	if is_dead or is_invulnerable:
 		return
 
-	# NOTE: this assumes `Stats` exposes a way to apply damage directly —
-	# mirroring how the other Player's hurt_box.apply_damage(...) ultimately
-	# reduces stats health. If your Stats resource calls this something
-	# else (e.g. stats.take_damage(damage)), update the method name below
-	# to match; the has_method() guard means this fails safely (with a
-	# warning) instead of crashing if neither name matches.
-	if stats and stats.has_method("apply_damage"):
-		stats.apply_damage(damage)
-	elif stats and stats.has_method("take_damage"):
+	if stats:
 		stats.take_damage(damage)
 	else:
-		push_warning("Player.take_level_damage: Stats has no apply_damage()/take_damage() method — damage was not applied. Update take_level_damage() to match your Stats API.")
+		push_warning("Player.take_level_damage: no Stats node is assigned; damage was not applied.")
 
 	var away := global_position - source_position
 	var knock_dir := away.normalized() if away.length() > 0.0 else Vector2.LEFT

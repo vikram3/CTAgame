@@ -7,7 +7,7 @@ var damage: int
 
 func do_damage() -> int:
 	if main_body != null:
-		damage = main_body.stats._damage_given()
+		damage = main_body.stats.get_damage()
 		return damage
 	else:
 		damage = 10

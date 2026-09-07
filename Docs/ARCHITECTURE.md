@@ -48,3 +48,10 @@ Do not merge these controllers in one migration. Phase 1 should establish only s
 - No gameplay, UI, autoload, scene-manager, player, level, resource, or asset file was moved in this phase.
 - `Stats.take_damage(damage)` is the public damage entry point for the existing platformer player bridge. It delegates to the established deduction implementation, preserving all current HurtBox callers.
 - The invalid null event in the `move_down` Input Map entry was removed. The existing S-key binding is unchanged.
+
+## Phase 2 Player Architecture Record
+
+- `CharacterController` is the reusable state-chart player controller used by `Scenes/Characters/Player/player.tscn`.
+- CT-specific identity, stats, and projectile data now live in `Resources/Characters/ct_character_data.tres` through `CharacterData`.
+- The top-down `td_player.tscn` stack remains unchanged for Level 1 and Level 2; it was not merged with the state-chart controller.
+- Shared HitBox and HurtBox scenes now call the public `Stats.get_damage()` and `Stats.take_damage()` APIs. Their existing calculation and signal behavior remain unchanged.

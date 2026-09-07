@@ -1,4 +1,4 @@
-[gd_scene load_steps=81 format=3 uid="uid://b8u54nwif8s4d"]
+[gd_scene load_steps=82 format=3 uid="uid://b8u54nwif8s4d"]
 
 [ext_resource type="Script" uid="uid://cahofonudbvxs" path="res://Scenes/Characters/Player/player.gd" id="1_cscr0"]
 [ext_resource type="PackedScene" uid="uid://dq6fpw1ybngv2" path="res://Scenes/Characters/Player/Projectile/fire_ball.tscn" id="2_j3cns"]
@@ -44,6 +44,7 @@
 [ext_resource type="Script" uid="uid://ba0i3u40ltfdw" path="res://Scripts/Stats_Resource.gd" id="33_me3gr"]
 [ext_resource type="Script" uid="uid://dkitpp2x2v3jj" path="res://Scenes/Characters/Player/State_Machine/States/parry.gd" id="42_oql2n"]
 [ext_resource type="PackedScene" uid="uid://blxokk1cv8b8m" path="res://Scenes/UI/Health_Bar/health_bar.tscn" id="55_oql2n"]
+[ext_resource type="Resource" path="res://Resources/Characters/ct_character_data.tres" id="56_character_data"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2vr1d"]
 radius = 3.95
@@ -1604,6 +1605,7 @@ metadata/_custom_type_script = "uid://ba0i3u40ltfdw"
 collision_layer = 2
 platform_on_leave = 2
 script = ExtResource("1_cscr0")
+character_data = ExtResource("56_character_data")
 projectile = ExtResource("2_j3cns")
 body = NodePath("Body")
 projectile_point = NodePath("Body/projectile_point")

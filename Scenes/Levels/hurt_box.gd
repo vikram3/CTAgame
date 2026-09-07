@@ -16,4 +16,4 @@ func apply_damage(damage: int) -> void:
 	if not stats:
 		push_warning("HurtBox cannot apply damage without a Stats reference.")
 		return
-	stats._damage_deduction(damage)
+	stats.take_damage(damage)

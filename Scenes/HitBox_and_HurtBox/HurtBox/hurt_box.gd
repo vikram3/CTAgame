@@ -7,4 +7,4 @@ func _ready() -> void:
 
 
 func apply_damage(damage: int) -> void:
-	stats._damage_deduction(damage)
+	stats.take_damage(damage)

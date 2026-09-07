@@ -15,8 +15,13 @@ var current_energy: float
 
 func _ready() -> void:
 	if stats:
-		current_health = stats.max_health
-		current_energy = stats.max_energy
+		initialize(stats)
+
+
+func initialize(character_stats: stats_resource) -> void:
+	stats = character_stats
+	current_health = stats.max_health
+	current_energy = stats.max_energy
 
 
 # =================================
@@ -30,6 +35,10 @@ func _damage_given() -> int:
 	# minimum damage clamp
 	damage = max(damage, min_damage)
 	return damage
+
+
+func get_damage() -> int:
+	return _damage_given()
 
 
 # =================================
