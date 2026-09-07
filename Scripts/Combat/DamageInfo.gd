@@ -23,3 +23,10 @@ func _init(
 	knockback_direction = direction
 	knockback_strength = strength
 	ignores_invulnerability = ignore_invulnerability
+
+
+func copy_with_amount(new_amount: int) -> DamageInfo:
+	return DamageInfo.new(
+		new_amount, source, damage_type, knockback_direction, knockback_strength,
+		ignores_invulnerability
+	)

@@ -360,6 +360,7 @@ visible = false
 collision_layer = 4
 collision_mask = 17
 main_body = NodePath("../..")
+damage_type = &"fire"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="body/Hit_Box"]
 shape = SubResource("CircleShape2D_j7wor")

@@ -19,7 +19,11 @@ func apply_damage(damage: int) -> void:
 func apply_hit(damage_info: DamageInfo) -> void:
 	if damage_info == null:
 		return
-	stats.take_damage_info(damage_info)
+	var combatant := get_parent().get_parent()
+	if combatant is EnemyBase:
+		combatant.take_hit(damage_info)
+	else:
+		stats.take_damage_info(damage_info)
 	hit_received.emit(damage_info)
 
 

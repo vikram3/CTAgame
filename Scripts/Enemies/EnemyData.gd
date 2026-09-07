@@ -9,6 +9,8 @@ class_name EnemyData
 @export var stats: stats_resource
 @export var invulnerability_time: float = 0.0
 @export var weaknesses: PackedStringArray = PackedStringArray()
+@export var weakness_damage_multiplier: float = 1.5
+@export var resistance_damage_multiplier: float = 0.5
 
 @export_category("Movement")
 @export var movement_speed: float = 0.0
