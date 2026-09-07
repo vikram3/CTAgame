@@ -50,7 +50,9 @@ func _init():
 		texture = PlaceholderTexture2D.new()
 
 func _ready():
-	if Engine.is_editor_hint():
+	# Baked textures are editor artifacts and are absent from the repository.
+	# Build the procedural texture at runtime when no imported texture exists.
+	if Engine.is_editor_hint() or texture == null or texture is PlaceholderTexture2D:
 		do_bake_logic()
 	if not Engine.is_editor_hint():
 		set_process(false)

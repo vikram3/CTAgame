@@ -17,7 +17,8 @@ before_page = 34
 transition_text = "A Barreldugo! Flex says get close - let's try it!"
 game_index = 1
 coins_reward = 40
-scene_path = "res://Scenes/Chapters/Chapter4/CH04_S02_CombatTutorial.tscn"
+# The current scene is a non-completing placeholder. Keep this segment gated
+# until its required enemy-category objective can report level_completed.
 
 [resource]
 script = ExtResource("1_chapter")

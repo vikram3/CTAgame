@@ -185,6 +185,7 @@ func _make_card(ch: Dictionary) -> Control:
 	var unlocked  = GameData.is_chapter_unlocked(ch.num)
 	var completed = GameData.is_chapter_fully_completed(ch.num)
 	var progress  = GameData.get_chapter_progress(ch.num) > 0
+	var unlock_cost := ChapterData.get_unlock_cost(ch.num)
 
 	# ── Shell ──────────────────────────────────────────────────
 	var card = PanelContainer.new()
@@ -243,7 +244,7 @@ func _make_card(ch: Dictionary) -> Control:
 	elif progress:
 		sub.text = "In progress"
 	elif not unlocked:
-		sub.text = "🪙 %d coins" % ch.coins_to_unlock
+		sub.text = "🪙 %d coins" % unlock_cost
 	else:
 		sub.text = "Ready"
 	col.add_child(sub)
@@ -257,9 +258,9 @@ func _make_card(ch: Dictionary) -> Control:
 		btn.pressed.connect(SceneManager.go_to_chapter.bind(ch.num))
 	else:
 		btn.text    = "🔓  Unlock"
-		btn.disabled = GameData.data.coins < ch.coins_to_unlock
+		btn.disabled = GameData.data.coins < unlock_cost
 		if btn.disabled:
-			btn.tooltip_text = "Need %d more 🪙" % (ch.coins_to_unlock - GameData.data.coins)
+			btn.tooltip_text = "Need %d more 🪙" % (unlock_cost - GameData.data.coins)
 		btn.pressed.connect(_on_unlock.bind(ch))
 	col.add_child(btn)
 
@@ -270,12 +271,13 @@ func _make_card(ch: Dictionary) -> Control:
 #  UNLOCK
 # ══════════════════════════════════════════════════════════════
 func _on_unlock(ch: Dictionary):
-	if GameData.spend_coins(ch.coins_to_unlock):
+	var unlock_cost := ChapterData.get_unlock_cost(ch.num)
+	if GameData.spend_coins(unlock_cost):
 		GameData.unlock_chapter(ch.num)
 		_populate()
 		_toast_show("🔓 Chapter %d unlocked!" % ch.num)
 	else:
-		_toast_show("Need %d more 🪙 to unlock" % (ch.coins_to_unlock - GameData.data.coins))
+		_toast_show("Need %d more 🪙 to unlock" % (unlock_cost - GameData.data.coins))
 
 
 # ══════════════════════════════════════════════════════════════

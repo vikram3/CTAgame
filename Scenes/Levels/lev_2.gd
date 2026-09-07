@@ -252,6 +252,11 @@ func _on_player_caught() -> void:
 		_status_label.text = caught_text
 	_freeze_skulls()
 
+	var has_completion_listener := not level_completed.get_connections().is_empty()
+	if has_completion_listener:
+		level_completed.emit(false)
+		return
+
 	get_tree().paused = true
 	if game_over_panel:
 		game_over_panel.show()

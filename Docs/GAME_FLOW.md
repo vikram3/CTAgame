@@ -32,7 +32,7 @@ Gameplay roots must expose `signal level_completed(success: bool)`. `true` recor
 
 `ChapterData` is retained as a compatibility adapter for `WebtoonReader`. It reads the resources and produces its established `PanelEntry` objects; story UI has no gameplay-specific controller knowledge.
 
-Chapter 1 uses the verified existing Level 1 and Level 2 scenes. Chapters 2 through 4 use their authored chapter scene paths. Chapter 5 through Chapter 8 retain their story placements and progression metadata, but their scene paths are intentionally blank because no corresponding playable scenes are present in this repository. `SceneManager` rejects that condition before the reader records a launch, rather than launching `proto_level.tscn` or altering progress.
+Chapter 1 uses the verified existing Level 1 and Level 2 scenes. Chapters 2 and 3, plus CH04_S01, use their authored, completable scene paths. CH04_S02 and Chapters 5 through Chapter 8 retain their story placements and progression metadata, but their scene paths are intentionally blank because no corresponding completable gameplay scene is present in this repository. `SceneManager` rejects that condition before the reader records a launch, rather than launching `proto_level.tscn` or altering progress.
 
 ## Progression Guarantees
 

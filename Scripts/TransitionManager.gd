@@ -15,6 +15,7 @@ var _segment_start_time:  float = 0.0   # internal
 
 
 func _ready() -> void:
+	process_mode = Node.PROCESS_MODE_ALWAYS
 	var canvas = CanvasLayer.new()
 	canvas.layer = 10
 	add_child(canvas)
@@ -93,6 +94,8 @@ func end_game_segment(success: bool) -> void:
 		game_instance.queue_free()
 		game_instance = null
 	
+	# LevelController scenes may pause on completion; the reader must resume.
+	get_tree().paused = false
 	await get_tree().create_timer(0.2).timeout
 	DisplayServer.screen_set_orientation(DisplayServer.SCREEN_PORTRAIT)
 	await get_tree().create_timer(0.3).timeout
