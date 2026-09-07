@@ -26,7 +26,7 @@ func _physics_process(delta: float) -> void:
 		_player = get_tree().get_first_node_in_group("player") as Node2D
 	if _player == null:
 		return
-	var direction := sign(_player.global_position.x - global_position.x)
+	var direction: float = sign(_player.global_position.x - global_position.x)
 	var target := _player.global_position - Vector2(direction * follow_distance, 0)
 	if global_position.distance_to(target) > catch_up_distance:
 		global_position = target
