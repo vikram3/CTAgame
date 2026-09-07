@@ -1,0 +1,24 @@
+[gd_resource type="Resource" load_steps=4 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Characters/CharacterData.gd" id="1_data"]
+[ext_resource type="Script" path="res://Scripts/Stats_Resource.gd" id="2_stats"]
+[ext_resource type="PackedScene" path="res://Scenes/Characters/Player/Projectile/fire_ball.tscn" id="3_boomerang"]
+
+[sub_resource type="Resource" id="StatsResource_alex"]
+script = ExtResource("2_stats")
+max_health = 90.0
+max_energy = 110.0
+damage = 1.0
+defense = 12.0
+crit_chance = 0.25
+crit_damage = 1.2
+move_speed = 120.0
+
+[resource]
+script = ExtResource("1_data")
+character_id = &"alex"
+display_name = "Alex"
+stats = SubResource("StatsResource_alex")
+projectile_scene = ExtResource("3_boomerang")
+shield_hits = 3
+close_range_damage_type = &"physical"
