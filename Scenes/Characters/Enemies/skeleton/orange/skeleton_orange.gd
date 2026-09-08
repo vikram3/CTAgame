@@ -31,6 +31,7 @@ var current_states:states = states.IDLE
 @export var body:Node2D
 @export var anim:AnimationPlayer
 @export var awareness_light: PointLight2D
+@export var awareness_indicator: Label
 
 @export var patrol_speed:float = 30.0
 @export var dash_speed:float = 80.0
@@ -332,6 +333,7 @@ func _process_chase(can_see_player: bool) -> void:
 	move_and_slide()
 	_face_towards(velocity)
 	_set_awareness_light(chase_light_color)
+	_set_awareness_indicator("!", chase_light_color)
 	if anim:
 		anim.play("walk")
 
@@ -340,6 +342,7 @@ func _start_suspicion() -> void:
 	_top_down_state = TopDownState.SUSPICIOUS
 	_suspicion_timer = suspicion_duration
 	_set_awareness_light(suspicious_light_color)
+	_set_awareness_indicator("!", suspicious_light_color)
 
 
 func _process_suspicion(delta: float) -> void:
@@ -354,6 +357,7 @@ func _process_suspicion(delta: float) -> void:
 	if _suspicion_timer <= 0.0:
 		_top_down_state = TopDownState.CHASE
 		_set_awareness_light(chase_light_color)
+		_set_awareness_indicator("!", chase_light_color)
 
 
 func _start_searching() -> void:
@@ -365,6 +369,7 @@ func _start_searching() -> void:
 	# First glance towards wherever the player was last headed.
 	_face_towards(_last_known_player_pos - global_position)
 	_set_awareness_light(suspicious_light_color)
+	_set_awareness_indicator("?", suspicious_light_color)
 
 
 func _process_search(delta: float) -> void:
@@ -388,6 +393,7 @@ func _process_search(delta: float) -> void:
 	if _search_timer <= 0.0 or done_looking:
 		_top_down_state = TopDownState.RETURN
 		_set_awareness_light(patrol_light_color)
+		_set_awareness_indicator("", patrol_light_color)
 
 
 ## After giving up the search, walk back to the very first spawn position
@@ -411,6 +417,7 @@ func _process_return(delta: float) -> void:
 	if anim:
 		anim.play("walk")
 	_set_awareness_light(patrol_light_color)
+	_set_awareness_indicator("", patrol_light_color)
 
 
 func _process_patrol(delta: float) -> void:
@@ -443,11 +450,19 @@ func _process_patrol(delta: float) -> void:
 	if anim:
 		anim.play("walk" if velocity.length() > 1.0 else "idle")
 	_set_awareness_light(patrol_light_color)
+	_set_awareness_indicator("", patrol_light_color)
 
 
 func _set_awareness_light(color: Color) -> void:
 	if awareness_light:
 		awareness_light.color = color
+
+
+func _set_awareness_indicator(symbol: String, color: Color) -> void:
+	if awareness_indicator:
+		awareness_indicator.visible = not symbol.is_empty()
+		awareness_indicator.text = symbol
+		awareness_indicator.modulate = color
 
 
 func _face_towards(dir: Vector2) -> void:

@@ -95,7 +95,8 @@ static func get_chapter(num: int) -> Array:
 					pd.text, pd.game_index, pd.coins_reward
 				))
 		var path = ChapterData.get_page_path(num, page)
-		panels.append(PanelEntry.new(PanelType.STATIC, path))
+		if path != "":
+			panels.append(PanelEntry.new(PanelType.STATIC, path))
 
 	# Triggers with before_page > page_count appended at the very end
 	for pd in playable_defs:
@@ -110,8 +111,9 @@ static func get_chapter(num: int) -> Array:
 
 
 # ── IMAGE PATH RESOLVER ───────────────────────────────────────────────────────
+# ── IMAGE PATH RESOLVER ───────────────────────────────────────────────────────
 static func get_page_path(chapter: int, page: int) -> String:
-	var page_str = str(page -1).pad_zeros(2)
+	var page_str = str(page - 1).pad_zeros(2)
 	var base = ""
 	match chapter:
 		1: base = "res://Assets/webtoon/ch1/" + page_str
@@ -129,10 +131,13 @@ static func get_page_path(chapter: int, page: int) -> String:
 	if ResourceLoader.exists(base + ".jpg"):
 		return base + ".jpg"
 	elif ResourceLoader.exists(base + ".png"):
-		return base + ".png"
+		return base + ".png"	
+	elif ResourceLoader.exists(base + ".webp"):
+		return base + ".webp"
 	else:
-		push_error("ChapterData: Image not found: %s (.jpg/.png)" % base)
-		return base + ".jpg"
+		# Webtoon folder intentionally missing during segment-only testing —
+		# skip silently instead of erroring.
+		return ""
 
 
 # ── CONVENIENCE HELPERS ───────────────────────────────────────────────────────

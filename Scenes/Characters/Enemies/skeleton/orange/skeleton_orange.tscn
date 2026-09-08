@@ -414,7 +414,7 @@ size = Vector2(80, 176)
 script = ExtResource("43_aukii")
 metadata/_custom_type_script = "uid://ba0i3u40ltfdw"
 
-[node name="skeleton_orange" type="CharacterBody2D" node_paths=PackedStringArray("idle_walk_timer", "floor_detector", "wall_detector", "body", "stats", "anim", "awareness_light")]
+[node name="skeleton_orange" type="CharacterBody2D" node_paths=PackedStringArray("idle_walk_timer", "floor_detector", "wall_detector", "body", "stats", "anim", "awareness_light", "awareness_indicator")]
 collision_layer = 16
 script = ExtResource("1_psj33")
 enemy_data = ExtResource("45_enemy_data")
@@ -425,6 +425,7 @@ body = NodePath("body")
 stats = NodePath("Stats")
 anim = NodePath("body/AnimationPlayer")
 awareness_light = NodePath("body/PointLight2D")
+awareness_indicator = NodePath("body/AwarenessIndicator")
 
 [node name="body" type="Node2D" parent="."]
 
@@ -491,6 +492,17 @@ texture = ExtResource("42_nvja4")
 texture_scale = 0.2
 script = ExtResource("44_npwex")
 flicker_amount = 0.05
+
+[node name="AwarenessIndicator" type="Label" parent="body"]
+visible = false
+z_index = 2
+position = Vector2(-12, -220)
+theme_override_colors/font_outline_color = Color(0.08, 0.02, 0.03, 1)
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 58
+text = "!"
+horizontal_alignment = 1
+vertical_alignment = 1
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 visible = false
