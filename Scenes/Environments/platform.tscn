@@ -1,0 +1,15 @@
+[gd_scene format=3 uid="uid://biysfhv4nlb0t"]
+
+[ext_resource type="Texture2D" uid="uid://cyd3i4suu3hmc" path="res://Assets/Video game/Backrounds/Assets/platform.png" id="1_67454"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_mlp5k"]
+size = Vector2(101.37, 44.21)
+
+[node name="platform" type="StaticBody2D" unique_id=15820963 groups=["platform"]]
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=853588185]
+texture = ExtResource("1_67454")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1889247910]
+shape = SubResource("RectangleShape2D_mlp5k")
+one_way_collision = true

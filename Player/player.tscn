@@ -1,4 +1,4 @@
-[gd_scene load_steps=81 format=3 uid="uid://b8u54nwif8s4d"]
+[gd_scene format=3 uid="uid://b8u54nwif8s4d"]
 
 [ext_resource type="Script" uid="uid://cahofonudbvxs" path="res://Player/player.gd" id="1_cscr0"]
 [ext_resource type="PackedScene" uid="uid://dq6fpw1ybngv2" path="res://Player/Projectile/fire_ball.tscn" id="2_j3cns"]
@@ -28,7 +28,6 @@
 [ext_resource type="Texture2D" uid="uid://43gqwqiivqht" path="res://Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-10.png" id="16_8bd3e"]
 [ext_resource type="Texture2D" uid="uid://chh4yipbv4sgc" path="res://Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-11.png" id="17_5qakp"]
 [ext_resource type="Script" uid="uid://c8aq6b4j1k7dr" path="res://Player/State_Machine/States/attacks.gd" id="17_7x37g"]
-[ext_resource type="SpriteFrames" uid="uid://rjpfq554dgbp" path="res://Resources/spriteframes/player.tres" id="18_ie76m"]
 [ext_resource type="Texture2D" uid="uid://ncxu75lsynfs" path="res://Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-12.png" id="18_j8mah"]
 [ext_resource type="Texture2D" uid="uid://c0k64fspgyw0g" path="res://Assets/Video game/Refrence/Assets/Impact/impact_1/sprite_8100-13.png" id="19_3spsx"]
 [ext_resource type="Script" uid="uid://oc8hbaxn0neb" path="res://Player/State_Machine/States/air_attacks.gd" id="19_cvakg"]
@@ -104,9 +103,9 @@ animations = [{
 "duration": 1.0,
 "texture": null
 }],
-"loop": false,
+"loop": 0,
 "name": &"Counter",
-"speed": 10.0
+"speed": 20.0
 }]
 
 [sub_resource type="Animation" id="Animation_23420"]
@@ -142,46 +141,22 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite:animation")
+tracks/2/path = NodePath("Sprite2D:region_rect")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Air_attack_1"]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite:frame")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Sprite2D:region_rect")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [Rect2(346, 6127, 274, 223), Rect2(21, 4427, 538, 215), Rect2(719, 4125, 688, 208), Rect2(21, 21, 396, 354), Rect2(1157, 26, 432, 435), Rect2(483, 524, 433, 587), Rect2(29, 1174, 433, 587)]
 }
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("Sprite2D:position")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Sprite2D:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 1,
@@ -190,7 +165,7 @@ tracks/5/keys = {
 
 [sub_resource type="Animation" id="Animation_p6wb4"]
 resource_name = "Air_Attack_2"
-length = 0.3
+length = 0.2
 step = 0.05
 tracks/0/type = "method"
 tracks/0/imported = false
@@ -199,7 +174,7 @@ tracks/0/path = NodePath("../State_Transition_Manager/Air_Attacks")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0.25),
+"times": PackedFloat32Array(0.2),
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
@@ -221,55 +196,31 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite:animation")
+tracks/2/path = NodePath("Sprite2D:region_rect")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.05, 0.1, 0.15, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
-"values": [&"Air_attack_2"]
+"values": [Rect2(437, 21, 304, 205), Rect2(1621, 21, 340, 205), Rect2(1294, 3774, 310, 330), Rect2(758, 5704, 255, 403), Rect2(21, 6127, 303, 382)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
 tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite:frame")
+tracks/3/path = NodePath("Sprite2D:position")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.05, 0.1, 0.15, 0.2, 0.25),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.05, 0.1, 0.15, 0.2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
-"values": [0, 1, 2, 3, 4, 5]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Sprite2D:region_rect")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.05, 0.1, 0.15, 0.2, 0.25),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [Rect2(437, 21, 304, 205), Rect2(1621, 21, 340, 205), Rect2(1294, 3774, 310, 330), Rect2(758, 5704, 255, 403), Rect2(1116, 4910, 305, 352), Rect2(21, 6127, 303, 382)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("Sprite2D:position")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.05, 0.1, 0.15, 0.2, 0.25),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [Vector2(-3.0000007, 0), Vector2(-5, 0), Vector2(-1.1920929e-07, -5.9999995), Vector2(0.9999999, -6), Vector2(-1, -6), Vector2(-5.9604645e-08, -9)]
+"values": [Vector2(-3.0000007, 0), Vector2(-5, 0), Vector2(-1.1920929e-07, -5.9999995), Vector2(0.9999999, -6), Vector2(-5.9604645e-08, -9)]
 }
 
 [sub_resource type="Animation" id="Animation_y3fvr"]
 resource_name = "Air_Attack_3"
-length = 0.6
+length = 0.35
 step = 0.05
 tracks/0/type = "method"
 tracks/0/imported = false
@@ -278,7 +229,7 @@ tracks/0/path = NodePath("../State_Transition_Manager/Air_Attacks")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0.4),
+"times": PackedFloat32Array(0.35),
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
@@ -300,91 +251,14 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite:animation")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Air_attack_3"]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite:frame")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6, 7]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Sprite2D:region_rect")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
-"times": PackedFloat32Array(0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [Rect2(313, 2516, 304, 205), Rect2(852, 3298, 341, 205), Rect2(482, 1132, 361, 275), Rect2(937, 482, 360, 252), Rect2(1395, 1132, 290, 412), Rect2(361, 1783, 338, 344), Rect2(1127, 1783, 395, 346), Rect2(21, 2150, 674, 346)]
-}
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("Sprite2D:position")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
-"times": PackedFloat32Array(0, 0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [Vector2(-3.0000007, 0), Vector2(-5, 0), Vector2(-6, -3.9999998), Vector2(-6, -2.9999998), Vector2(-5, -10.999999), Vector2(-2.0000002, -7), Vector2(3.9999993, -7), Vector2(9.999999, -7)]
-}
-
-[sub_resource type="Animation" id="Animation_qn1vu"]
-resource_name = "Air_Dash"
-length = 0.2
-step = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Air_dash"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
 tracks/2/path = NodePath("Sprite2D:region_rect")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.05, 0.099999994, 0.15, 0.2, 0.25, 0.3, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [Rect2(1182, 3051, 237, 201)]
+"values": [Rect2(313, 2516, 304, 205), Rect2(852, 3298, 341, 205), Rect2(937, 482, 360, 252), Rect2(482, 1132, 361, 275), Rect2(1395, 1132, 290, 412), Rect2(361, 1783, 338, 344), Rect2(1127, 1783, 395, 346), Rect2(21, 2150, 674, 346)]
 }
 tracks/3/type = "value"
 tracks/3/imported = false
@@ -393,6 +267,35 @@ tracks/3/path = NodePath("Sprite2D:position")
 tracks/3/interp = 1
 tracks/3/loop_wrap = true
 tracks/3/keys = {
+"times": PackedFloat32Array(0, 0.05, 0.099999994, 0.15, 0.2, 0.25, 0.3, 0.35),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [Vector2(-3.0000007, 0), Vector2(-5, 0), Vector2(-6, -2.9999998), Vector2(-6, -3.9999998), Vector2(-5, -10.999999), Vector2(-2.0000002, -7), Vector2(3.9999993, -7), Vector2(9.999999, -7)]
+}
+
+[sub_resource type="Animation" id="Animation_qn1vu"]
+resource_name = "Air_Dash"
+length = 0.1
+step = 0.1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [Rect2(1182, 3051, 237, 201)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
@@ -401,51 +304,27 @@ tracks/3/keys = {
 
 [sub_resource type="Animation" id="Animation_61squ"]
 resource_name = "Air_Dash_End"
-length = 0.2
+length = 0.1
 step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
+tracks/0/path = NodePath("Sprite2D:region_rect")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [&"Air_dash"]
+"values": [Rect2(21, 6795, 193, 210)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
+tracks/1/path = NodePath("Sprite2D:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite2D:region_rect")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Rect2(21, 6795, 193, 210)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite2D:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
@@ -454,39 +333,15 @@ tracks/3/keys = {
 
 [sub_resource type="Animation" id="Animation_1ujki"]
 resource_name = "Attack_1"
-length = 0.5
+length = 0.3
 step = 0.1
-tracks/0/type = "value"
+tracks/0/type = "method"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
+tracks/0/path = NodePath("../State_Transition_Manager/Attacks")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Attack_1"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("../State_Transition_Manager/Attacks")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
 "times": PackedFloat32Array(0.3),
 "transitions": PackedFloat32Array(1),
 "values": [{
@@ -494,37 +349,37 @@ tracks/2/keys = {
 "method": &"_combo_attack_window"
 }]
 }
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Hit_Box/Attack_1_2:disabled")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hit_Box/Attack_1_2:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1395433, 0.2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [true, false, true]
 }
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Sprite2D:region_rect")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:region_rect")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [Rect2(734, 3774, 280, 214), Rect2(719, 4125, 688, 208), Rect2(21, 4427, 538, 215), Rect2(871, 4426, 312, 217)]
 }
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("Sprite2D:position")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Sprite2D:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
@@ -533,77 +388,53 @@ tracks/5/keys = {
 
 [sub_resource type="Animation" id="Animation_gs6v2"]
 resource_name = "Attack_2"
-length = 0.5
+length = 0.3
 step = 0.1
-tracks/0/type = "value"
+tracks/0/type = "method"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
+tracks/0/path = NodePath("../State_Transition_Manager/Attacks")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Attack_2"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("../State_Transition_Manager/Attacks")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.4),
+"times": PackedFloat32Array(0.3),
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
 "method": &"_combo_attack_window"
 }]
 }
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Hit_Box/Attack_1_2:disabled")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hit_Box/Attack_1_2:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [true, false, true]
 }
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Sprite2D:position")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [Vector2(-1.0000005, 0), Vector2(-3.9999998, 0), Vector2(14.999998, 0), Vector2(17, 0)]
 }
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("Sprite2D:region_rect")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Sprite2D:region_rect")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
@@ -612,77 +443,53 @@ tracks/5/keys = {
 
 [sub_resource type="Animation" id="Animation_ywskp"]
 resource_name = "Attack_3"
-length = 0.7
+length = 0.5425
 step = 0.1
-tracks/0/type = "value"
+tracks/0/type = "method"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
+tracks/0/path = NodePath("../State_Transition_Manager/Attacks")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Attack_3"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6]
-}
-tracks/2/type = "method"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("../State_Transition_Manager/Attacks")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0.6),
+"times": PackedFloat32Array(0.5),
 "transitions": PackedFloat32Array(1),
 "values": [{
 "args": [],
 "method": &"_combo_attack_window"
 }]
 }
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Hit_Box/Attack_3:disabled")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Hit_Box/Attack_3:disabled")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [true, false, true]
 }
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Sprite2D:position")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("Sprite2D:position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
 "values": [Vector2(-1.9999981, 0), Vector2(-2.999998, 0), Vector2(-5, 0), Vector2(11.999998, -8.999999), Vector2(10, -1.1368684e-13)]
 }
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("Sprite2D:region_rect")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Sprite2D:region_rect")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1),
 "update": 1,
@@ -692,51 +499,26 @@ tracks/5/keys = {
 [sub_resource type="Animation" id="Animation_s2pun"]
 resource_name = "Block"
 length = 0.6
-loop_mode = 2
 step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
+tracks/0/path = NodePath("Sprite2D:region_rect")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Block"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite2D:region_rect")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [Rect2(21, 3298, 304, 205), Rect2(852, 3298, 341, 205), Rect2(182, 4126, 306, 280), Rect2(1788, 4909, 213, 222), Rect2(1385, 5704, 232, 208), Rect2(992, 6127, 236, 209)]
 }
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite2D:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
@@ -776,46 +558,22 @@ tracks/1/keys = {
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite:animation")
+tracks/2/path = NodePath("Sprite2D:region_rect")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Counter"]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite:frame")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6]
-}
-tracks/4/type = "value"
-tracks/4/imported = false
-tracks/4/enabled = true
-tracks/4/path = NodePath("Sprite2D:region_rect")
-tracks/4/interp = 1
-tracks/4/loop_wrap = true
-tracks/4/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.20000002, 0.3, 0.4, 0.5, 0.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [Rect2(346, 6127, 274, 223), Rect2(21, 4427, 538, 215), Rect2(719, 4125, 688, 208), Rect2(21, 21, 396, 354), Rect2(1157, 26, 432, 435), Rect2(483, 524, 433, 587), Rect2(29, 1174, 433, 587)]
 }
-tracks/5/type = "value"
-tracks/5/imported = false
-tracks/5/enabled = true
-tracks/5/path = NodePath("Sprite2D:position")
-tracks/5/interp = 1
-tracks/5/loop_wrap = true
-tracks/5/keys = {
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("Sprite2D:position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.20000002, 0.3, 0.4, 0.5, 0.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 1,
@@ -829,46 +587,22 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
+tracks/0/path = NodePath("Sprite2D:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [&"Air_dash"]
+"values": [Vector2(-6.9999995, 0)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
+tracks/1/path = NodePath("Sprite2D:region_rect")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite2D:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Vector2(-6.9999995, 0)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite2D:region_rect")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
@@ -882,46 +616,22 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
+tracks/0/path = NodePath("Sprite2D:region_rect")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
-"values": [&"Air_dash"]
+"values": [Rect2(21, 6795, 193, 210)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
+tracks/1/path = NodePath("Sprite2D:position")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [0]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite2D:region_rect")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [Rect2(21, 6795, 193, 210)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite2D:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
 "times": PackedFloat32Array(0),
 "transitions": PackedFloat32Array(1),
 "update": 1,
@@ -935,46 +645,22 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
+tracks/0/path = NodePath("Sprite2D:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Dead"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite2D:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [Vector2(-9.536743e-07, 0), Vector2(-5.684342e-14, -3.9999998), Vector2(-4, -0.99999994), Vector2(-6, 0), Vector2(-6, -3.9999998), Vector2(-4, -1)]
 }
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite2D:region_rect")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:region_rect")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
@@ -989,46 +675,22 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
+tracks/0/path = NodePath("Sprite2D:region_rect")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Double_jump_main"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [0, 1, 2]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite2D:region_rect")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [Rect2(1513, 2805, 164, 166), Rect2(396, 3053, 168, 167), Rect2(23, 3053, 159, 156)]
 }
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite2D:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
@@ -1042,46 +704,22 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
+tracks/0/path = NodePath("Sprite2D:region_rect")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Fall_Main"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [0, 1]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite2D:region_rect")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
 "values": [Rect2(345, 3297, 136, 207), Rect2(1559, 2150, 222, 279)]
 }
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite2D:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1),
 "transitions": PackedFloat32Array(1, 1),
 "update": 1,
@@ -1090,55 +728,43 @@ tracks/3/keys = {
 
 [sub_resource type="Animation" id="Animation_wxr8p"]
 resource_name = "Hurt"
-length = 0.684
+length = 0.6
 step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
+tracks/0/path = NodePath("Sprite2D:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
+"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [&"Hurt"]
+"values": [Vector2(-1.4210855e-14, -3.0000005), Vector2(-1.4210855e-14, -4.0000005), Vector2(-1.4210855e-14, -4.0000005), Vector2(-1.4210855e-14, -4.0000005), Vector2(-1.4210855e-14, -4.0000005), Vector2(-1.4210855e-14, -4.0000005), Vector2(-1.4210855e-14, -4.0000005)]
 }
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
+tracks/1/path = NodePath("Sprite2D:region_rect")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
 "update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6]
+"values": [Rect2(1657, 2516, 144, 215), Rect2(1213, 3297, 177, 221), Rect2(21, 5296, 176, 230), Rect2(21, 5296, 176, 230), Rect2(1641, 5705, 194, 238), Rect2(1249, 6127, 193, 226), Rect2(1086, 6529, 188, 245)]
 }
 tracks/2/type = "value"
 tracks/2/imported = false
 tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite2D:position")
+tracks/2/path = NodePath(".:position")
 tracks/2/interp = 1
 tracks/2/loop_wrap = true
 tracks/2/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
+"times": PackedFloat32Array(0, 0.6),
+"transitions": PackedFloat32Array(1, 1),
 "update": 1,
-"values": [Vector2(-1.4210855e-14, -3.0000005), Vector2(-1.4210855e-14, -4.0000005), Vector2(-1.4210855e-14, -4.0000005), Vector2(-1.4210855e-14, -4.0000005), Vector2(-1.4210855e-14, -4.0000005), Vector2(-1.4210855e-14, -4.0000005), Vector2(-1.4210855e-14, -4.0000005)]
-}
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite2D:region_rect")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [Rect2(1657, 2516, 144, 215), Rect2(1213, 3297, 177, 221), Rect2(21, 5296, 176, 230), Rect2(21, 5296, 176, 230), Rect2(1641, 5705, 194, 238), Rect2(1249, 6127, 193, 226), Rect2(1086, 6529, 188, 245)]
+"values": [Vector2(0, 3), Vector2(0, 0)]
 }
 
 [sub_resource type="Animation" id="Animation_3spsx"]
@@ -1149,46 +775,22 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
+tracks/0/path = NodePath("Sprite2D:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Idle_Main"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6, 7]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite2D:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [Vector2(-8.4703295e-22, -4.7683716e-07), Vector2(-8.4703295e-22, -4.7683716e-07), Vector2(-8.4703295e-22, -4.7683716e-07), Vector2(-8.4703295e-22, -4.7683716e-07), Vector2(-8.4703295e-22, -4.7683716e-07), Vector2(-8.4703295e-22, -4.7683716e-07)]
 }
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite2D:region_rect")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:region_rect")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1),
 "update": 1,
@@ -1202,46 +804,22 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
+tracks/0/path = NodePath("Sprite2D:region_rect")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Jump_main"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
-"transitions": PackedFloat32Array(1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite2D:region_rect")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
 "values": [Rect2(1439, 3051, 164, 224), Rect2(1812, 3053, 164, 219), Rect2(1213, 3297, 177, 221), Rect2(345, 3297, 136, 207)]
 }
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite2D:position")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3),
 "transitions": PackedFloat32Array(1, 1, 1, 1),
 "update": 1,
@@ -1355,46 +933,22 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
+tracks/0/path = NodePath("Sprite2D:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Run_Main"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6, 7]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite2D:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
 "values": [Vector2(-8.4703295e-22, -4.7683716e-07), Vector2(-8.4703295e-22, -4.7683716e-07), Vector2(-8.4703295e-22, -4.7683716e-07), Vector2(-8.4703295e-22, -4.7683716e-07), Vector2(-8.4703295e-22, -4.7683716e-07), Vector2(-8.4703295e-22, -4.7683716e-07), Vector2(-8.4703295e-22, -4.7683716e-07), Vector2(-8.4703295e-22, -4.7683716e-07)]
 }
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite2D:region_rect")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:region_rect")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7),
 "transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
 "update": 1,
@@ -1408,46 +962,22 @@ step = 0.1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
+tracks/0/path = NodePath("Sprite2D:position")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Run_End"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 1,
-"values": [0, 1, 2]
-}
-tracks/2/type = "value"
-tracks/2/imported = false
-tracks/2/enabled = true
-tracks/2/path = NodePath("Sprite2D:position")
-tracks/2/interp = 1
-tracks/2/loop_wrap = true
-tracks/2/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
 "values": [Vector2(-8.4703295e-22, -4.7683716e-07), Vector2(-8.4703295e-22, -4.7683716e-07), Vector2(-8.4703295e-22, -4.7683716e-07)]
 }
-tracks/3/type = "value"
-tracks/3/imported = false
-tracks/3/enabled = true
-tracks/3/path = NodePath("Sprite2D:region_rect")
-tracks/3/interp = 1
-tracks/3/loop_wrap = true
-tracks/3/keys = {
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:region_rect")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
 "times": PackedFloat32Array(0, 0.1, 0.2),
 "transitions": PackedFloat32Array(1, 1, 1),
 "update": 1,
@@ -1458,89 +988,17 @@ tracks/3/keys = {
 resource_name = "Special_Attack_Chargeup"
 length = 0.7
 step = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Special_Attack_Chargeup"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6]
-}
 
 [sub_resource type="Animation" id="Animation_fw07t"]
 resource_name = "Special_Attack_Release"
 length = 1.3
 step = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Special_Attack_Release"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.90000004, 1, 1.1, 1.2),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 1, 2, 3, 4, 5, 6, 8, 9, 10, 11, 12, 14]
-}
 
 [sub_resource type="Animation" id="Animation_roksr"]
 resource_name = "charged_up"
 length = 0.2
 loop_mode = 1
 step = 0.1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Sprite:animation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [&"Special_Attack_Chargeup"]
-}
-tracks/1/type = "value"
-tracks/1/imported = false
-tracks/1/enabled = true
-tracks/1/path = NodePath("Sprite:frame")
-tracks/1/interp = 1
-tracks/1/loop_wrap = true
-tracks/1/keys = {
-"times": PackedFloat32Array(0, 0.1),
-"transitions": PackedFloat32Array(1, 1),
-"update": 1,
-"values": [5, 6]
-}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_23420"]
 _data = {
@@ -1591,6 +1049,9 @@ size = Vector2(49, 51)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_me3gr"]
 size = Vector2(6, 18)
 
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_ie76m"]
+size = Vector2(8, 20)
+
 [sub_resource type="Resource" id="Resource_2iqoh"]
 script = ExtResource("33_me3gr")
 max_energy = 100.0
@@ -1600,7 +1061,7 @@ crit_chance = 0.4
 crit_damage = 1.1
 metadata/_custom_type_script = "uid://ba0i3u40ltfdw"
 
-[node name="Player" type="CharacterBody2D" node_paths=PackedStringArray("body", "projectile_point", "state_manager", "state_chart", "stats", "anim", "health_bar", "hurt_box") groups=["player"]]
+[node name="Player" type="CharacterBody2D" unique_id=775591814 node_paths=PackedStringArray("body", "projectile_point", "state_manager", "state_chart", "stats", "anim", "health_bar", "hurt_box", "check_hit") groups=["player"]]
 collision_layer = 2
 platform_on_leave = 2
 script = ExtResource("1_cscr0")
@@ -1613,15 +1074,15 @@ stats = NodePath("Player_Stats")
 anim = NodePath("Body/AnimationPlayer")
 health_bar = NodePath("CanvasLayer/HealthBar")
 hurt_box = NodePath("Body/HurtBox/CollisionShape2D")
+check_hit = NodePath("Body/check_hit/CollisionShape2D")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visible = false
-position = Vector2(0.37, -0.595)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1304895075]
+position = Vector2(1, 0)
 shape = SubResource("CapsuleShape2D_2vr1d")
 
-[node name="Body" type="Node2D" parent="."]
+[node name="Body" type="Node2D" parent="." unique_id=137920805]
 
-[node name="impact_effect" type="AnimatedSprite2D" parent="Body"]
+[node name="impact_effect" type="AnimatedSprite2D" parent="Body" unique_id=673601628]
 z_index = 1
 material = SubResource("CanvasItemMaterial_u2yf0")
 position = Vector2(10.000001, -11)
@@ -1630,565 +1091,562 @@ scale = Vector2(0.20000003, 0.44100004)
 sprite_frames = SubResource("SpriteFrames_2qsty")
 animation = &"Counter"
 frame = 15
+frame_progress = 1.0
 
-[node name="Sprite" type="AnimatedSprite2D" parent="Body"]
-visible = false
-position = Vector2(0, -0.29)
-scale = Vector2(0.09, 0.09)
-sprite_frames = ExtResource("18_ie76m")
-animation = &"Run_Main"
-frame = 6
-
-[node name="Sprite2D" type="Sprite2D" parent="Body"]
+[node name="Sprite2D" type="Sprite2D" parent="Body" unique_id=1289634679]
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("21_dy65m")
 region_enabled = true
 region_rect = Rect2(346, 6127, 274, 223)
 
-[node name="AnimationPlayer" type="AnimationPlayer" parent="Body"]
-libraries = {
-&"": SubResource("AnimationLibrary_23420")
-}
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Body" unique_id=1737731364]
+libraries/ = SubResource("AnimationLibrary_23420")
 
-[node name="Hit_Box" parent="Body" instance=ExtResource("13_nafmd")]
+[node name="Hit_Box" parent="Body" unique_id=389682369 instance=ExtResource("13_nafmd")]
 visible = false
 position = Vector2(1, -3)
 collision_layer = 4
 collision_mask = 16
 script = null
 
-[node name="Attack_1_2" type="CollisionShape2D" parent="Body/Hit_Box"]
+[node name="Attack_1_2" type="CollisionShape2D" parent="Body/Hit_Box" unique_id=2114240233]
 position = Vector2(19, 2)
 shape = SubResource("RectangleShape2D_46w32")
 disabled = true
 debug_color = Color(0.9822014, 0, 0.3684829, 0.41960785)
 
-[node name="Attack_3" type="CollisionShape2D" parent="Body/Hit_Box"]
+[node name="Attack_3" type="CollisionShape2D" parent="Body/Hit_Box" unique_id=372866094]
 position = Vector2(23.5, -5)
 shape = SubResource("RectangleShape2D_eiaiy")
 disabled = true
 debug_color = Color(0.9822014, 0, 0.3684829, 0.41960785)
 
-[node name="Air_Attack_1" type="CollisionShape2D" parent="Body/Hit_Box"]
+[node name="Air_Attack_1" type="CollisionShape2D" parent="Body/Hit_Box" unique_id=257490398]
 position = Vector2(14.5, 0)
 shape = SubResource("RectangleShape2D_nafmd")
 disabled = true
 debug_color = Color(0.94990975, 0.22640273, 1.92523e-07, 0.41960785)
 
-[node name="Air_Attack_2" type="CollisionShape2D" parent="Body/Hit_Box"]
+[node name="Air_Attack_2" type="CollisionShape2D" parent="Body/Hit_Box" unique_id=628813535]
 position = Vector2(6.5, -5)
 shape = SubResource("RectangleShape2D_cflke")
 disabled = true
 debug_color = Color(0.94990975, 0.22640273, 1.92523e-07, 0.41960785)
 
-[node name="Air_Attack_3" type="CollisionShape2D" parent="Body/Hit_Box"]
+[node name="Air_Attack_3" type="CollisionShape2D" parent="Body/Hit_Box" unique_id=375981989]
 position = Vector2(19.5, -7)
 shape = SubResource("RectangleShape2D_4yec0")
 disabled = true
 debug_color = Color(0.94990975, 0.22640273, 1.92523e-07, 0.41960785)
 
-[node name="Counter_Attack" type="CollisionShape2D" parent="Body/Hit_Box"]
+[node name="Counter_Attack" type="CollisionShape2D" parent="Body/Hit_Box" unique_id=1850092813]
 position = Vector2(22.5, -14.5)
 shape = SubResource("RectangleShape2D_oql2n")
 disabled = true
 
-[node name="HurtBox" parent="Body" instance=ExtResource("14_cflke")]
+[node name="HurtBox" parent="Body" unique_id=628863311 instance=ExtResource("14_cflke")]
 visible = false
 collision_layer = 0
 collision_mask = 8
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Body/HurtBox"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Body/HurtBox" unique_id=504719325]
 shape = SubResource("RectangleShape2D_me3gr")
 debug_color = Color(0, 0.6442519, 0.29058477, 0.41960785)
 
-[node name="projectile_point" type="Node2D" parent="Body"]
+[node name="projectile_point" type="Node2D" parent="Body" unique_id=285425210]
 position = Vector2(8, -6)
 
-[node name="StateChart" type="Node" parent="."]
+[node name="check_hit" type="Area2D" parent="Body" unique_id=1287051251]
+collision_layer = 0
+collision_mask = 8
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Body/check_hit" unique_id=1272975287]
+position = Vector2(1, 0)
+shape = SubResource("RectangleShape2D_ie76m")
+
+[node name="StateChart" type="Node" parent="." unique_id=147368464]
 script = ExtResource("3_1mdwi")
 metadata/_custom_type_script = "uid://couw105c3bde4"
 
-[node name="root" type="Node" parent="StateChart"]
+[node name="root" type="Node" parent="StateChart" unique_id=629188469]
 script = ExtResource("4_8gg06")
 initial_state = NodePath("Ground_state")
 
-[node name="Ground_state" type="Node" parent="StateChart/root"]
+[node name="Ground_state" type="Node" parent="StateChart/root" unique_id=2041244760]
 script = ExtResource("4_8gg06")
 initial_state = NodePath("Idle")
 
-[node name="Idle" type="Node" parent="StateChart/root/Ground_state"]
+[node name="Idle" type="Node" parent="StateChart/root/Ground_state" unique_id=1744890500]
 script = ExtResource("5_cscr0")
 
-[node name="run" type="Node" parent="StateChart/root/Ground_state/Idle"]
+[node name="run" type="Node" parent="StateChart/root/Ground_state/Idle" unique_id=1294444759]
 script = ExtResource("6_plevq")
 to = NodePath("../../Run")
 event = &"run"
 delay_in_seconds = "0.0"
 
-[node name="attack" type="Node" parent="StateChart/root/Ground_state/Idle"]
+[node name="attack" type="Node" parent="StateChart/root/Ground_state/Idle" unique_id=1533825265]
 script = ExtResource("6_plevq")
 to = NodePath("../../Attacks")
 event = &"attack"
 delay_in_seconds = "0.0"
 
-[node name="dash" type="Node" parent="StateChart/root/Ground_state/Idle"]
+[node name="dash" type="Node" parent="StateChart/root/Ground_state/Idle" unique_id=1332171093]
 script = ExtResource("6_plevq")
 to = NodePath("../../Ground_Dash")
 event = &"dash"
 delay_in_seconds = "0.0"
 
-[node name="block" type="Node" parent="StateChart/root/Ground_state/Idle"]
+[node name="block" type="Node" parent="StateChart/root/Ground_state/Idle" unique_id=1771781293]
 script = ExtResource("6_plevq")
 to = NodePath("../../Block")
 event = &"block"
 delay_in_seconds = "0.0"
 
-[node name="Run" type="Node" parent="StateChart/root/Ground_state"]
+[node name="Run" type="Node" parent="StateChart/root/Ground_state" unique_id=1126614523]
 script = ExtResource("5_cscr0")
 
-[node name="idle" type="Node" parent="StateChart/root/Ground_state/Run"]
+[node name="idle" type="Node" parent="StateChart/root/Ground_state/Run" unique_id=1164283746]
 script = ExtResource("6_plevq")
 to = NodePath("../../Idle")
 event = &"idle"
 delay_in_seconds = "0.0"
 
-[node name="attack" type="Node" parent="StateChart/root/Ground_state/Run"]
+[node name="attack" type="Node" parent="StateChart/root/Ground_state/Run" unique_id=141678277]
 script = ExtResource("6_plevq")
 to = NodePath("../../Attacks")
 event = &"attack"
 delay_in_seconds = "0.0"
 
-[node name="dash" type="Node" parent="StateChart/root/Ground_state/Run"]
+[node name="dash" type="Node" parent="StateChart/root/Ground_state/Run" unique_id=13679377]
 script = ExtResource("6_plevq")
 to = NodePath("../../Ground_Dash")
 event = &"dash"
 delay_in_seconds = "0.0"
 
-[node name="block" type="Node" parent="StateChart/root/Ground_state/Run"]
+[node name="block" type="Node" parent="StateChart/root/Ground_state/Run" unique_id=78680572]
 script = ExtResource("6_plevq")
 to = NodePath("../../Block")
 event = &"block"
 delay_in_seconds = "0.0"
 
-[node name="Ground_Dash" type="Node" parent="StateChart/root/Ground_state"]
+[node name="Ground_Dash" type="Node" parent="StateChart/root/Ground_state" unique_id=310707765]
 script = ExtResource("5_cscr0")
 
-[node name="idle" type="Node" parent="StateChart/root/Ground_state/Ground_Dash"]
+[node name="idle" type="Node" parent="StateChart/root/Ground_state/Ground_Dash" unique_id=600487098]
 script = ExtResource("6_plevq")
 to = NodePath("../../Idle")
 event = &"idle"
 delay_in_seconds = "0.0"
 
-[node name="run" type="Node" parent="StateChart/root/Ground_state/Ground_Dash"]
+[node name="run" type="Node" parent="StateChart/root/Ground_state/Ground_Dash" unique_id=1892363473]
 script = ExtResource("6_plevq")
 to = NodePath("../../Run")
 event = &"run"
 delay_in_seconds = "0.0"
 
-[node name="attack" type="Node" parent="StateChart/root/Ground_state/Ground_Dash"]
+[node name="attack" type="Node" parent="StateChart/root/Ground_state/Ground_Dash" unique_id=1677479580]
 script = ExtResource("6_plevq")
 to = NodePath("../../Attacks")
 event = &"attack"
 delay_in_seconds = "0.06"
 
-[node name="block" type="Node" parent="StateChart/root/Ground_state/Ground_Dash"]
+[node name="block" type="Node" parent="StateChart/root/Ground_state/Ground_Dash" unique_id=47069424]
 script = ExtResource("6_plevq")
-to = NodePath("../../Attacks")
+to = NodePath("../../Block")
 event = &"block"
-delay_in_seconds = "0.04
-"
+delay_in_seconds = "0.04"
 
-[node name="Block" type="Node" parent="StateChart/root/Ground_state"]
+[node name="Block" type="Node" parent="StateChart/root/Ground_state" unique_id=1528707064]
 script = ExtResource("5_cscr0")
 
-[node name="idle" type="Node" parent="StateChart/root/Ground_state/Block"]
+[node name="idle" type="Node" parent="StateChart/root/Ground_state/Block" unique_id=539669817]
 script = ExtResource("6_plevq")
 to = NodePath("../../Idle")
 event = &"idle"
 delay_in_seconds = "0.0"
 
-[node name="run" type="Node" parent="StateChart/root/Ground_state/Block"]
+[node name="run" type="Node" parent="StateChart/root/Ground_state/Block" unique_id=886993351]
 script = ExtResource("6_plevq")
 to = NodePath("../../Run")
 event = &"run"
 delay_in_seconds = "0.0"
 
-[node name="parry" type="Node" parent="StateChart/root/Ground_state/Block"]
+[node name="parry" type="Node" parent="StateChart/root/Ground_state/Block" unique_id=1488334661]
 script = ExtResource("6_plevq")
 to = NodePath("../../Parry")
 event = &"parry"
 delay_in_seconds = "0.0"
 
-[node name="Parry" type="Node" parent="StateChart/root/Ground_state"]
+[node name="Parry" type="Node" parent="StateChart/root/Ground_state" unique_id=1049086183]
 script = ExtResource("5_cscr0")
 
-[node name="counter" type="Node" parent="StateChart/root/Ground_state/Parry"]
+[node name="counter" type="Node" parent="StateChart/root/Ground_state/Parry" unique_id=252031202]
 script = ExtResource("6_plevq")
 to = NodePath("../../Counter")
 event = &"counter"
 delay_in_seconds = "0.0"
 
-[node name="idle" type="Node" parent="StateChart/root/Ground_state/Parry"]
+[node name="idle" type="Node" parent="StateChart/root/Ground_state/Parry" unique_id=752436037]
 script = ExtResource("6_plevq")
 to = NodePath("../../Idle")
 event = &"idle"
 delay_in_seconds = "0.0"
 
-[node name="run" type="Node" parent="StateChart/root/Ground_state/Parry"]
+[node name="run" type="Node" parent="StateChart/root/Ground_state/Parry" unique_id=872731862]
 script = ExtResource("6_plevq")
 to = NodePath("../../Run")
 event = &"run"
 delay_in_seconds = "0.0"
 
-[node name="Counter" type="Node" parent="StateChart/root/Ground_state"]
+[node name="Counter" type="Node" parent="StateChart/root/Ground_state" unique_id=1855021075]
 script = ExtResource("5_cscr0")
 
-[node name="idle" type="Node" parent="StateChart/root/Ground_state/Counter"]
+[node name="idle" type="Node" parent="StateChart/root/Ground_state/Counter" unique_id=1100558993]
 script = ExtResource("6_plevq")
 to = NodePath("../../Idle")
 event = &"idle"
 delay_in_seconds = "0.0"
 
-[node name="run" type="Node" parent="StateChart/root/Ground_state/Counter"]
+[node name="run" type="Node" parent="StateChart/root/Ground_state/Counter" unique_id=1952821523]
 script = ExtResource("6_plevq")
 to = NodePath("../../Run")
 event = &"run"
 delay_in_seconds = "0.0"
 
-[node name="Attacks" type="Node" parent="StateChart/root/Ground_state"]
+[node name="Attacks" type="Node" parent="StateChart/root/Ground_state" unique_id=1874486255]
 script = ExtResource("4_8gg06")
 initial_state = NodePath("Combo_1")
 
-[node name="Combo_1" type="Node" parent="StateChart/root/Ground_state/Attacks"]
+[node name="Combo_1" type="Node" parent="StateChart/root/Ground_state/Attacks" unique_id=758952132]
 script = ExtResource("5_cscr0")
 
-[node name="next" type="Node" parent="StateChart/root/Ground_state/Attacks/Combo_1"]
+[node name="next" type="Node" parent="StateChart/root/Ground_state/Attacks/Combo_1" unique_id=1007562816]
 script = ExtResource("6_plevq")
 to = NodePath("../../Combo_2")
 event = &"next"
 delay_in_seconds = "0.0"
 
-[node name="Combo_2" type="Node" parent="StateChart/root/Ground_state/Attacks"]
+[node name="Combo_2" type="Node" parent="StateChart/root/Ground_state/Attacks" unique_id=367171899]
 script = ExtResource("5_cscr0")
 
-[node name="next" type="Node" parent="StateChart/root/Ground_state/Attacks/Combo_2"]
+[node name="next" type="Node" parent="StateChart/root/Ground_state/Attacks/Combo_2" unique_id=2106302583]
 script = ExtResource("6_plevq")
 to = NodePath("../../Combo_3")
 event = &"next"
 delay_in_seconds = "0.0"
 
-[node name="Combo_3" type="Node" parent="StateChart/root/Ground_state/Attacks"]
+[node name="Combo_3" type="Node" parent="StateChart/root/Ground_state/Attacks" unique_id=945365002]
 script = ExtResource("5_cscr0")
 
-[node name="next" type="Node" parent="StateChart/root/Ground_state/Attacks/Combo_3"]
+[node name="next" type="Node" parent="StateChart/root/Ground_state/Attacks/Combo_3" unique_id=2065198823]
 script = ExtResource("6_plevq")
 to = NodePath("../../Combo_1")
 event = &"next"
 delay_in_seconds = "0.0"
 
-[node name="to_idle" type="Node" parent="StateChart/root/Ground_state/Attacks"]
+[node name="to_idle" type="Node" parent="StateChart/root/Ground_state/Attacks" unique_id=1736910514]
 script = ExtResource("6_plevq")
 to = NodePath("../../Idle")
 event = &"idle"
 delay_in_seconds = "0.0"
 
-[node name="to_run" type="Node" parent="StateChart/root/Ground_state/Attacks"]
+[node name="to_run" type="Node" parent="StateChart/root/Ground_state/Attacks" unique_id=1297029960]
 script = ExtResource("6_plevq")
 to = NodePath("../../Run")
 event = &"run"
 delay_in_seconds = "0.0"
 
-[node name="block" type="Node" parent="StateChart/root/Ground_state/Attacks"]
+[node name="block" type="Node" parent="StateChart/root/Ground_state/Attacks" unique_id=1904654826]
 script = ExtResource("6_plevq")
 to = NodePath("../../Block")
 event = &"block"
 delay_in_seconds = "0.0"
 
-[node name="to_air_state" type="Node" parent="StateChart/root/Ground_state"]
+[node name="to_air_state" type="Node" parent="StateChart/root/Ground_state" unique_id=792271779]
 script = ExtResource("6_plevq")
 to = NodePath("../../Air_State")
 event = &"air"
 delay_in_seconds = "0.0"
 
-[node name="to_hurt" type="Node" parent="StateChart/root/Ground_state"]
+[node name="to_hurt" type="Node" parent="StateChart/root/Ground_state" unique_id=33878474]
 script = ExtResource("6_plevq")
 to = NodePath("../../Hurt")
 event = &"hurt"
 delay_in_seconds = "0.0"
 
-[node name="to_dead" type="Node" parent="StateChart/root/Ground_state"]
+[node name="to_dead" type="Node" parent="StateChart/root/Ground_state" unique_id=1104906308]
 script = ExtResource("6_plevq")
 to = NodePath("../../Dead")
 event = &"dead"
 delay_in_seconds = "0.0"
 
-[node name="Air_State" type="Node" parent="StateChart/root"]
+[node name="Air_State" type="Node" parent="StateChart/root" unique_id=1162021972]
 script = ExtResource("4_8gg06")
 initial_state = NodePath("Jump")
 
-[node name="Jump" type="Node" parent="StateChart/root/Air_State"]
+[node name="Jump" type="Node" parent="StateChart/root/Air_State" unique_id=339212605]
 script = ExtResource("5_cscr0")
 
-[node name="fall" type="Node" parent="StateChart/root/Air_State/Jump"]
+[node name="fall" type="Node" parent="StateChart/root/Air_State/Jump" unique_id=445184880]
 script = ExtResource("6_plevq")
 to = NodePath("../../Fall")
 event = &"fall"
 delay_in_seconds = "0.0"
 
-[node name="double_jump" type="Node" parent="StateChart/root/Air_State/Jump"]
+[node name="double_jump" type="Node" parent="StateChart/root/Air_State/Jump" unique_id=1785383457]
 script = ExtResource("6_plevq")
 to = NodePath("../../Double_Jump")
 event = &"double_jump"
 delay_in_seconds = "0.0"
 
-[node name="attack" type="Node" parent="StateChart/root/Air_State/Jump"]
+[node name="attack" type="Node" parent="StateChart/root/Air_State/Jump" unique_id=1613213238]
 script = ExtResource("6_plevq")
 to = NodePath("../../Air_Attacks")
 event = &"attack"
 delay_in_seconds = "0.0"
 
-[node name="dash" type="Node" parent="StateChart/root/Air_State/Jump"]
+[node name="dash" type="Node" parent="StateChart/root/Air_State/Jump" unique_id=659102549]
 script = ExtResource("6_plevq")
 to = NodePath("../../Air_Dash")
 event = &"dash"
 delay_in_seconds = "0.0"
 
-[node name="Double_Jump" type="Node" parent="StateChart/root/Air_State"]
+[node name="Double_Jump" type="Node" parent="StateChart/root/Air_State" unique_id=472118577]
 script = ExtResource("5_cscr0")
 
-[node name="fall" type="Node" parent="StateChart/root/Air_State/Double_Jump"]
+[node name="fall" type="Node" parent="StateChart/root/Air_State/Double_Jump" unique_id=1501979226]
 script = ExtResource("6_plevq")
 to = NodePath("../../Fall")
 event = &"fall"
 delay_in_seconds = "0.0"
 
-[node name="attack" type="Node" parent="StateChart/root/Air_State/Double_Jump"]
+[node name="attack" type="Node" parent="StateChart/root/Air_State/Double_Jump" unique_id=1196924158]
 script = ExtResource("6_plevq")
 to = NodePath("../../Air_Attacks")
 event = &"attack"
 delay_in_seconds = "0.0"
 
-[node name="dash" type="Node" parent="StateChart/root/Air_State/Double_Jump"]
+[node name="dash" type="Node" parent="StateChart/root/Air_State/Double_Jump" unique_id=339599333]
 script = ExtResource("6_plevq")
 to = NodePath("../../Air_Dash")
 event = &"dash"
 delay_in_seconds = "0.0"
 
-[node name="Fall" type="Node" parent="StateChart/root/Air_State"]
+[node name="Fall" type="Node" parent="StateChart/root/Air_State" unique_id=1274892348]
 script = ExtResource("5_cscr0")
 
-[node name="double_jump" type="Node" parent="StateChart/root/Air_State/Fall"]
+[node name="double_jump" type="Node" parent="StateChart/root/Air_State/Fall" unique_id=1698188177]
 script = ExtResource("6_plevq")
 to = NodePath("../../Double_Jump")
 event = &"double_jump"
 delay_in_seconds = "0.0"
 
-[node name="jump" type="Node" parent="StateChart/root/Air_State/Fall"]
+[node name="jump" type="Node" parent="StateChart/root/Air_State/Fall" unique_id=1874992600]
 script = ExtResource("6_plevq")
 to = NodePath("../../Jump")
 event = &"jump"
 delay_in_seconds = "0.0"
 
-[node name="attack" type="Node" parent="StateChart/root/Air_State/Fall"]
+[node name="attack" type="Node" parent="StateChart/root/Air_State/Fall" unique_id=1017435268]
 script = ExtResource("6_plevq")
 to = NodePath("../../Air_Attacks")
 event = &"attack"
 delay_in_seconds = "0.0"
 
-[node name="dash" type="Node" parent="StateChart/root/Air_State/Fall"]
+[node name="dash" type="Node" parent="StateChart/root/Air_State/Fall" unique_id=749159769]
 script = ExtResource("6_plevq")
 to = NodePath("../../Air_Dash")
 event = &"dash"
 delay_in_seconds = "0.0"
 
-[node name="Air_Attacks" type="Node" parent="StateChart/root/Air_State"]
+[node name="Air_Attacks" type="Node" parent="StateChart/root/Air_State" unique_id=1223400304]
 script = ExtResource("4_8gg06")
 initial_state = NodePath("Combo_1")
 
-[node name="Combo_1" type="Node" parent="StateChart/root/Air_State/Air_Attacks"]
+[node name="Combo_1" type="Node" parent="StateChart/root/Air_State/Air_Attacks" unique_id=240190552]
 script = ExtResource("5_cscr0")
 
-[node name="next" type="Node" parent="StateChart/root/Air_State/Air_Attacks/Combo_1"]
+[node name="next" type="Node" parent="StateChart/root/Air_State/Air_Attacks/Combo_1" unique_id=2134538043]
 script = ExtResource("6_plevq")
 to = NodePath("../../Combo_2")
 event = &"next"
 delay_in_seconds = "0.0"
 
-[node name="Combo_2" type="Node" parent="StateChart/root/Air_State/Air_Attacks"]
+[node name="Combo_2" type="Node" parent="StateChart/root/Air_State/Air_Attacks" unique_id=1054620977]
 script = ExtResource("5_cscr0")
 
-[node name="next" type="Node" parent="StateChart/root/Air_State/Air_Attacks/Combo_2"]
+[node name="next" type="Node" parent="StateChart/root/Air_State/Air_Attacks/Combo_2" unique_id=1564481084]
 script = ExtResource("6_plevq")
 to = NodePath("../../Combo_3")
 event = &"next"
 delay_in_seconds = "0.0"
 
-[node name="Combo_3" type="Node" parent="StateChart/root/Air_State/Air_Attacks"]
+[node name="Combo_3" type="Node" parent="StateChart/root/Air_State/Air_Attacks" unique_id=140539871]
 script = ExtResource("5_cscr0")
 
-[node name="double_jump" type="Node" parent="StateChart/root/Air_State/Air_Attacks"]
+[node name="double_jump" type="Node" parent="StateChart/root/Air_State/Air_Attacks" unique_id=1216105372]
 script = ExtResource("6_plevq")
 to = NodePath("../../Double_Jump")
 event = &"double_jump"
 delay_in_seconds = "0.0"
 
-[node name="fall" type="Node" parent="StateChart/root/Air_State/Air_Attacks"]
+[node name="fall" type="Node" parent="StateChart/root/Air_State/Air_Attacks" unique_id=1987335893]
 script = ExtResource("6_plevq")
 to = NodePath("../../Fall")
 event = &"fall"
 delay_in_seconds = "0.0"
 
-[node name="Air_Dash" type="Node" parent="StateChart/root/Air_State"]
+[node name="Air_Dash" type="Node" parent="StateChart/root/Air_State" unique_id=6082095]
 script = ExtResource("5_cscr0")
 
-[node name="double_jump" type="Node" parent="StateChart/root/Air_State/Air_Dash"]
+[node name="double_jump" type="Node" parent="StateChart/root/Air_State/Air_Dash" unique_id=295218368]
 script = ExtResource("6_plevq")
 to = NodePath("../../Double_Jump")
 event = &"double_jump"
 delay_in_seconds = "0.0"
 
-[node name="fall" type="Node" parent="StateChart/root/Air_State/Air_Dash"]
+[node name="fall" type="Node" parent="StateChart/root/Air_State/Air_Dash" unique_id=1326075759]
 script = ExtResource("6_plevq")
 to = NodePath("../../Fall")
 event = &"fall"
 delay_in_seconds = "0.0"
 
-[node name="attack" type="Node" parent="StateChart/root/Air_State/Air_Dash"]
+[node name="attack" type="Node" parent="StateChart/root/Air_State/Air_Dash" unique_id=1973174795]
 script = ExtResource("6_plevq")
 to = NodePath("../../Air_Attacks")
 event = &"attack"
 delay_in_seconds = "0.0"
 
-[node name="to_ground_state" type="Node" parent="StateChart/root/Air_State"]
+[node name="to_ground_state" type="Node" parent="StateChart/root/Air_State" unique_id=1714425745]
 script = ExtResource("6_plevq")
 to = NodePath("../../Ground_state")
 event = &"ground"
 delay_in_seconds = "0.0"
 
-[node name="to_hurt" type="Node" parent="StateChart/root/Air_State"]
+[node name="to_hurt" type="Node" parent="StateChart/root/Air_State" unique_id=1605941824]
 script = ExtResource("6_plevq")
 to = NodePath("../../Hurt")
 event = &"hurt"
 delay_in_seconds = "0.0"
 
-[node name="to_dead" type="Node" parent="StateChart/root/Air_State"]
+[node name="to_dead" type="Node" parent="StateChart/root/Air_State" unique_id=671559875]
 script = ExtResource("6_plevq")
 to = NodePath("../../Dead")
 event = &"dead"
 delay_in_seconds = "0.0"
 
-[node name="Hurt" type="Node" parent="StateChart/root"]
+[node name="Hurt" type="Node" parent="StateChart/root" unique_id=556373823]
 script = ExtResource("5_cscr0")
 
-[node name="to_dead" type="Node" parent="StateChart/root/Hurt"]
+[node name="to_dead" type="Node" parent="StateChart/root/Hurt" unique_id=1073472205]
 script = ExtResource("6_plevq")
 to = NodePath("../../Dead")
 event = &"dead"
 delay_in_seconds = "0.0"
 
-[node name="to_ground_state" type="Node" parent="StateChart/root/Hurt"]
+[node name="to_ground_state" type="Node" parent="StateChart/root/Hurt" unique_id=1838059006]
 script = ExtResource("6_plevq")
 to = NodePath("../../Ground_state")
 event = &"ground"
 delay_in_seconds = "0.0"
 
-[node name="to_air_state" type="Node" parent="StateChart/root/Hurt"]
+[node name="to_air_state" type="Node" parent="StateChart/root/Hurt" unique_id=375565261]
 script = ExtResource("6_plevq")
 to = NodePath("../../Air_State")
 event = &"air"
 delay_in_seconds = "0.0"
 
-[node name="Dead" type="Node" parent="StateChart/root"]
+[node name="Dead" type="Node" parent="StateChart/root" unique_id=837606797]
 script = ExtResource("5_cscr0")
 
-[node name="Jump_and_Gravity_Manager" type="Node" parent="."]
+[node name="Jump_and_Gravity_Manager" type="Node" parent="." unique_id=370593902]
 script = ExtResource("10_xcbxy")
+air_speed = 100.0
+fall_gravity = 500.0
+gravity = 350.0
+double_jump_velocity = -250.0
+jump_velocity = -290.0
 jump_buffer_time = 0.2
 
-[node name="State_Transition_Manager" type="Node" parent="."]
+[node name="State_Transition_Manager" type="Node" parent="." unique_id=8662933]
 script = ExtResource("8_plevq")
 
-[node name="Idle" type="Node" parent="State_Transition_Manager"]
+[node name="Idle" type="Node" parent="State_Transition_Manager" unique_id=2096343679]
 script = ExtResource("9_sdxbo")
 
-[node name="Run" type="Node" parent="State_Transition_Manager"]
+[node name="Run" type="Node" parent="State_Transition_Manager" unique_id=309413028]
 script = ExtResource("10_p06rw")
-speed = 42.0
-accel = 30.0
 
-[node name="Block" type="Node" parent="State_Transition_Manager" node_paths=PackedStringArray("counter_timer")]
+[node name="Block" type="Node" parent="State_Transition_Manager" unique_id=1302691733 node_paths=PackedStringArray("counter_timer")]
 script = ExtResource("25_ywskp")
 counter_timer = NodePath("../../Counter_Timer")
 
-[node name="Parry" type="Node" parent="State_Transition_Manager" node_paths=PackedStringArray("impact_effect")]
+[node name="Parry" type="Node" parent="State_Transition_Manager" unique_id=2109361212 node_paths=PackedStringArray("impact_effect")]
 script = ExtResource("42_oql2n")
 impact_effect = NodePath("../../Body/impact_effect")
 
-[node name="Counter" type="Node" parent="State_Transition_Manager"]
+[node name="Counter" type="Node" parent="State_Transition_Manager" unique_id=664008235]
 script = ExtResource("26_ywskp")
 
-[node name="Jump" type="Node" parent="State_Transition_Manager"]
+[node name="Jump" type="Node" parent="State_Transition_Manager" unique_id=91537691]
 script = ExtResource("13_aencf")
 
-[node name="Double_Jump" type="Node" parent="State_Transition_Manager"]
+[node name="Double_Jump" type="Node" parent="State_Transition_Manager" unique_id=508288503]
 script = ExtResource("14_c5nky")
 
-[node name="Fall" type="Node" parent="State_Transition_Manager"]
+[node name="Fall" type="Node" parent="State_Transition_Manager" unique_id=686151403]
 script = ExtResource("15_xcbxy")
 
-[node name="Attacks" type="Node" parent="State_Transition_Manager" node_paths=PackedStringArray("attack_cooldown_timer")]
+[node name="Attacks" type="Node" parent="State_Transition_Manager" unique_id=1544029122 node_paths=PackedStringArray("attack_cooldown_timer")]
 script = ExtResource("17_7x37g")
-fire_combo = 1
 attack_cooldown_timer = NodePath("../../Attack_CoolDown_Timer")
-anim_speed = 1.42
 
-[node name="Air_Attacks" type="Node" parent="State_Transition_Manager" node_paths=PackedStringArray("attack_cooldown_timer")]
+[node name="Air_Attacks" type="Node" parent="State_Transition_Manager" unique_id=1595166108 node_paths=PackedStringArray("attack_cooldown_timer")]
 script = ExtResource("19_cvakg")
-fire_combo = 1
-attack_cooldown_timer = NodePath("../../Attack_CoolDown_Timer")
-anim_speed = 1.33
+attack_cooldown_timer = NodePath("../../Air_Attack_CoolDown_Timer")
 
-[node name="Ground_Dash" type="Node" parent="State_Transition_Manager"]
+[node name="Ground_Dash" type="Node" parent="State_Transition_Manager" unique_id=2141482981]
 script = ExtResource("22_23420")
 starting_anim_name = &"Dash"
 endng_anim_name = &"Dash_End"
 
-[node name="Air_Dash" type="Node" parent="State_Transition_Manager"]
+[node name="Air_Dash" type="Node" parent="State_Transition_Manager" unique_id=472186806]
 script = ExtResource("25_roksr")
 dash_force = 600.0
 starting_anim_name = &"Air_Dash"
 endng_anim_name = &"Air_Dash_End"
 
-[node name="Hurt" type="Node" parent="State_Transition_Manager" node_paths=PackedStringArray("hurt_box")]
+[node name="Hurt" type="Node" parent="State_Transition_Manager" unique_id=657450270 node_paths=PackedStringArray("hurt_box")]
 script = ExtResource("29_46w32")
 hurt_box = NodePath("../../Body/HurtBox")
 
-[node name="Dead" type="Node" parent="State_Transition_Manager"]
+[node name="Dead" type="Node" parent="State_Transition_Manager" unique_id=872380454]
 script = ExtResource("30_eiaiy")
 
-[node name="Player_Stats" parent="." instance=ExtResource("32_4yec0")]
+[node name="Player_Stats" parent="." unique_id=1490566883 instance=ExtResource("32_4yec0")]
 stats = SubResource("Resource_2iqoh")
 min_damage = 2.0
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1790627460]
 
-[node name="HealthBar" parent="CanvasLayer" instance=ExtResource("55_oql2n")]
+[node name="HealthBar" parent="CanvasLayer" unique_id=1966337054 instance=ExtResource("55_oql2n")]
 offset_left = 19.0
 offset_top = 8.0
 offset_right = 169.0
 offset_bottom = 26.0
 
-[node name="Attack_CoolDown_Timer" type="Timer" parent="."]
+[node name="Attack_CoolDown_Timer" type="Timer" parent="." unique_id=1103915134]
 process_callback = 0
-wait_time = 0.45
+wait_time = 0.35
 one_shot = true
 
-[node name="Air_Attack_CoolDown_Timer" type="Timer" parent="."]
+[node name="Air_Attack_CoolDown_Timer" type="Timer" parent="." unique_id=1465622301]
 process_callback = 0
-wait_time = 0.45
+wait_time = 0.4
 one_shot = true
 
-[node name="Counter_Timer" type="Timer" parent="."]
+[node name="Counter_Timer" type="Timer" parent="." unique_id=1880576901]
 process_callback = 0
 wait_time = 0.3
 one_shot = true
@@ -2197,6 +1655,7 @@ one_shot = true
 [connection signal="animation_finished" from="Body/AnimationPlayer" to="State_Transition_Manager/Ground_Dash" method="_on_animation_player_animation_finished"]
 [connection signal="animation_finished" from="Body/AnimationPlayer" to="State_Transition_Manager/Air_Dash" method="_on_animation_player_animation_finished"]
 [connection signal="area_entered" from="Body/HurtBox" to="State_Transition_Manager/Hurt" method="_on_hurt_box_area_entered"]
+[connection signal="area_entered" from="Body/check_hit" to="State_Transition_Manager/Block" method="_on_check_hit_area_entered"]
 [connection signal="state_physics_processing" from="StateChart/root/Ground_state" to="Jump_and_Gravity_Manager" method="_on_ground_state_state_physics_processing"]
 [connection signal="state_physics_processing" from="StateChart/root/Ground_state" to="State_Transition_Manager" method="_on_ground_state_state_physics_processing"]
 [connection signal="state_entered" from="StateChart/root/Ground_state/Idle" to="State_Transition_Manager/Idle" method="_on_idle_state_entered"]
@@ -2209,11 +1668,13 @@ one_shot = true
 [connection signal="state_exited" from="StateChart/root/Ground_state/Ground_Dash" to="State_Transition_Manager/Ground_Dash" method="_on_dash_state_exited"]
 [connection signal="state_physics_processing" from="StateChart/root/Ground_state/Ground_Dash" to="State_Transition_Manager/Ground_Dash" method="_on_dash_state_physics_processing"]
 [connection signal="state_entered" from="StateChart/root/Ground_state/Block" to="State_Transition_Manager/Block" method="_on_block_state_entered"]
+[connection signal="state_exited" from="StateChart/root/Ground_state/Block" to="State_Transition_Manager/Block" method="_on_block_state_exited"]
 [connection signal="state_physics_processing" from="StateChart/root/Ground_state/Block" to="State_Transition_Manager/Block" method="_on_block_state_physics_processing"]
 [connection signal="state_entered" from="StateChart/root/Ground_state/Parry" to="State_Transition_Manager/Parry" method="_on_parry_state_entered"]
 [connection signal="state_exited" from="StateChart/root/Ground_state/Parry" to="State_Transition_Manager/Parry" method="_on_parry_state_exited"]
 [connection signal="state_physics_processing" from="StateChart/root/Ground_state/Parry" to="State_Transition_Manager/Parry" method="_on_parry_state_physics_processing"]
 [connection signal="state_entered" from="StateChart/root/Ground_state/Counter" to="State_Transition_Manager/Counter" method="_on_counter_state_entered"]
+[connection signal="state_exited" from="StateChart/root/Ground_state/Counter" to="State_Transition_Manager/Counter" method="_on_counter_state_exited"]
 [connection signal="state_entered" from="StateChart/root/Ground_state/Attacks/Combo_1" to="State_Transition_Manager/Attacks" method="_on_combo_1_state_entered"]
 [connection signal="state_exited" from="StateChart/root/Ground_state/Attacks/Combo_1" to="State_Transition_Manager/Attacks" method="_on_combo_state_exited"]
 [connection signal="state_physics_processing" from="StateChart/root/Ground_state/Attacks/Combo_1" to="State_Transition_Manager/Attacks" method="_on_combo_state_physics_processing"]

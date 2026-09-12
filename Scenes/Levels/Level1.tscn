@@ -406,7 +406,6 @@ region_rect = Rect2(2019, 2763, 565, 639)
 position = Vector2(72, 144)
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
-visible = false
 position = Vector2(344, 232)
 collision_mask = 0
 
@@ -429,10 +428,12 @@ shape = SubResource("RectangleShape2D_ta6m8")
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(126, -88)
 shape = SubResource("RectangleShape2D_1uvqt")
+one_way_collision = true
 
 [node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(158, -118)
 shape = SubResource("RectangleShape2D_1uvqt")
+one_way_collision = true
 
 [node name="CollisionShape2D5" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(-459.25, -118.75)
@@ -445,6 +446,7 @@ shape = SubResource("RectangleShape2D_57lp3")
 [node name="CollisionShape2D6" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(357.5, -103)
 shape = SubResource("RectangleShape2D_n5ptj")
+one_way_collision = true
 
 [node name="CollisionShape2D10" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(781, -309.5)
@@ -461,6 +463,7 @@ shape = SubResource("RectangleShape2D_77iba")
 [node name="CollisionShape2D13" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(509.5, -109)
 shape = SubResource("RectangleShape2D_67y36")
+one_way_collision = true
 
 [node name="CollisionShape2D14" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(1010, -87.5)

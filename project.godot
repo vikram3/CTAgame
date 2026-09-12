@@ -8,13 +8,17 @@
 
 config_version=5
 
+[animation]
+
+compatibility/default_parent_skeleton_in_mesh_instance_3d=true
+
 [application]
 
 config/name="Prototype"
 config/description="this is a prototype for a game"
 config/version="1.0"
 run/main_scene="uid://ck42ujmxyg137"
-config/features=PackedStringArray("4.5", "Mobile")
+config/features=PackedStringArray("4.7", "Mobile")
 boot_splash/image="uid://cv3kn4kw85384"
 config/icon="res://icon.svg"
 config/image=""
@@ -41,7 +45,7 @@ window/handheld/orientation=1
 
 [editor]
 
-movie_writer/movie_file="C:/Users/singh/Videos/video.avi"
+movie_writer/movie_file="/home/cachy/Videos/game_play/boss_test.avi"
 
 [editor_plugins]
 
@@ -53,6 +57,7 @@ player=""
 spawn_points=""
 camera=""
 scene_loader=""
+platform=""
 
 [input]
 
@@ -107,6 +112,5 @@ projectile={
 [rendering]
 
 textures/canvas_textures/default_texture_filter=3
-renderer/rendering_method="mobile"
 textures/vram_compression/import_etc2_astc=true
 textures/lossless_compression/force_png=true

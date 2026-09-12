@@ -1,6 +1,6 @@
 extends Node
 
-@export var speed:float = 100.0
+@export var speed:float = 170.0
 @export var accel:float = 80.0
 
 func _on_run_state_entered():

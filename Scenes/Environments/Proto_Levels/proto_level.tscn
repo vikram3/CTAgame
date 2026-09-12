@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://4rcg0sc2sq8o"]
+[gd_scene format=3 uid="uid://4rcg0sc2sq8o"]
 
 [ext_resource type="Script" uid="uid://bhqfgi6bf0oo2" path="res://Scenes/Environments/Proto_Levels/proto_level.gd" id="1_fehhy"]
 [ext_resource type="PackedScene" uid="uid://dmkxl3vi3shkq" path="res://Scenes/Environments/Proto_Levels/Moving_Platforms/moving_platform.tscn" id="2_x6i8t"]
@@ -27,37 +27,37 @@ size = Vector2(864, 112)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_1uvqt"]
 size = Vector2(20, 98)
 
-[node name="Proto_Level" type="Node2D"]
+[node name="Proto_Level" type="Node2D" unique_id=654553545]
 script = ExtResource("1_fehhy")
 
-[node name="MovingPlatforms" type="Node2D" parent="."]
+[node name="MovingPlatforms" type="Node2D" parent="." unique_id=1363870591]
 
-[node name="MovingPlatform" parent="MovingPlatforms" instance=ExtResource("2_x6i8t")]
+[node name="MovingPlatform" parent="MovingPlatforms" unique_id=1351955851 instance=ExtResource("2_x6i8t")]
 position = Vector2(1080, -40)
 move_type = 1
 move_limit = 450.0
 wait_time = 5.0
 
-[node name="MovingPlatform2" parent="MovingPlatforms" instance=ExtResource("2_x6i8t")]
+[node name="MovingPlatform2" parent="MovingPlatforms" unique_id=222968981 instance=ExtResource("2_x6i8t")]
 position = Vector2(1216, -40)
 move_type = 1
 speed = 100.0
 move_limit = 450.0
 wait_time = 5.0
 
-[node name="MovingPlatform3" parent="MovingPlatforms" instance=ExtResource("2_x6i8t")]
+[node name="MovingPlatform3" parent="MovingPlatforms" unique_id=3233703 instance=ExtResource("2_x6i8t")]
 position = Vector2(1336, -312)
 move_type = 1
 speed = 120.0
 move_limit = 600.0
 wait_time = 6.0
 
-[node name="MovingPlatform5" parent="MovingPlatforms" instance=ExtResource("2_x6i8t")]
+[node name="MovingPlatform5" parent="MovingPlatforms" unique_id=488607380 instance=ExtResource("2_x6i8t")]
 position = Vector2(623, -113)
 move_type = 1
 move_limit = 150.0
 
-[node name="Cam_Root" parent="." instance=ExtResource("4_xb7bf")]
+[node name="Cam_Root" parent="." unique_id=1126978741 instance=ExtResource("4_xb7bf")]
 position = Vector2(64, 136)
 
 [node name="Camera2D" parent="Cam_Root" index="0"]
@@ -69,7 +69,7 @@ visible = true
 [node name="CollisionShape2D" parent="Cam_Root/Dead_Zone" index="0"]
 shape = SubResource("RectangleShape2D_q6u4j")
 
-[node name="TransitionArea" parent="." instance=ExtResource("5_q6u4j")]
+[node name="TransitionArea" parent="." unique_id=1802204169 instance=ExtResource("5_q6u4j")]
 position = Vector2(902, 60.000004)
 scale = Vector2(1.2, 1.2)
 
@@ -77,144 +77,144 @@ scale = Vector2(1.2, 1.2)
 position = Vector2(-106.66666, -9.166664)
 shape = SubResource("RectangleShape2D_fehhy")
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1611735180]
 
-[node name="ExitButton" type="Button" parent="CanvasLayer"]
+[node name="ExitButton" type="Button" parent="CanvasLayer" unique_id=1803403097]
 offset_left = 156.0
 offset_top = 96.0
 offset_right = 164.0
 offset_bottom = 104.0
 
-[node name="ExitZone" type="Area2D" parent="."]
+[node name="ExitZone" type="Area2D" parent="." unique_id=1490400756]
 position = Vector2(717, 69)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="ExitZone"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ExitZone" unique_id=576336692]
 shape = SubResource("RectangleShape2D_tkxru")
 
-[node name="control" type="CanvasLayer" parent="."]
+[node name="control" type="CanvasLayer" parent="." unique_id=1135545552]
 
-[node name="TouchScreenButton" type="TouchScreenButton" parent="control"]
+[node name="TouchScreenButton" type="TouchScreenButton" parent="control" unique_id=130777457]
 position = Vector2(46, 172.00002)
 scale = Vector2(0.1, 0.1)
 texture_normal = ExtResource("9_1uvqt")
 action = "right"
 
-[node name="TouchScreenButton2" type="TouchScreenButton" parent="control"]
+[node name="TouchScreenButton2" type="TouchScreenButton" parent="control" unique_id=2031993559]
 position = Vector2(4.0000076, 171)
 scale = Vector2(0.1, 0.1)
 texture_normal = ExtResource("8_ta6m8")
 action = "left"
 
-[node name="TouchScreenButton3" type="TouchScreenButton" parent="control"]
+[node name="TouchScreenButton3" type="TouchScreenButton" parent="control" unique_id=1168548854]
 position = Vector2(272.99997, 136)
 scale = Vector2(0.1, 0.1)
 texture_normal = ExtResource("10_oe30g")
 action = "jump"
 
-[node name="ParallaxBackground" type="ParallaxBackground" parent="."]
+[node name="ParallaxBackground" type="ParallaxBackground" parent="." unique_id=1543288995]
 scroll_ignore_camera_zoom = true
 
-[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground"]
+[node name="ParallaxLayer" type="ParallaxLayer" parent="ParallaxBackground" unique_id=1937094244]
 
-[node name="SkyBackgroundNight" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer"]
+[node name="SkyBackgroundNight" type="Sprite2D" parent="ParallaxBackground/ParallaxLayer" unique_id=1141178647]
 position = Vector2(1, 431)
 texture = ExtResource("10_ta6m8")
 
-[node name="ENV" type="Node2D" parent="."]
+[node name="ENV" type="Node2D" parent="." unique_id=702487212]
 z_index = -1
 
-[node name="BgAssetsNight3" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight3" type="Sprite2D" parent="ENV" unique_id=1324345028]
 position = Vector2(42.000015, 156)
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(2584, 1720, 856, 392)
 
-[node name="BgAssetsNight11" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight11" type="Sprite2D" parent="ENV" unique_id=325121563]
 position = Vector2(431, 192)
 scale = Vector2(0.5432433, 0.5432433)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(2144, 208, 1608, 296)
 
-[node name="BgAssetsNight18" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight18" type="Sprite2D" parent="ENV" unique_id=1507096653]
 position = Vector2(-655, 192)
 scale = Vector2(0.5432433, 0.5432433)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(2144, 208, 1608, 296)
 
-[node name="BgAssetsNight8" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight8" type="Sprite2D" parent="ENV" unique_id=1028075960]
 position = Vector2(555, 37.999985)
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(1352, 296, 184, 1040)
 
-[node name="BgAssetsNight9" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight9" type="Sprite2D" parent="ENV" unique_id=1965923304]
 position = Vector2(-316, 21)
 scale = Vector2(0.37731954, 0.37731954)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(144, 1488, 1096, 776)
 
-[node name="BgAssetsNight10" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight10" type="Sprite2D" parent="ENV" unique_id=1240236950]
 position = Vector2(203, 21)
 scale = Vector2(0.37731954, 0.37731954)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(144, 1488, 1096, 776)
 
-[node name="BgAssetsNight16" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight16" type="Sprite2D" parent="ENV" unique_id=545013648]
 position = Vector2(709, 54)
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(61, 2381, 1951, 1073)
 
-[node name="BgAssetsNight5" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight5" type="Sprite2D" parent="ENV" unique_id=1526717069]
 position = Vector2(622.18823, 127.799995)
 scale = Vector2(0.15294121, 0.15294121)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(184, 504, 536, 408)
 
-[node name="BgAssetsNight14" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight14" type="Sprite2D" parent="ENV" unique_id=1275865433]
 position = Vector2(703.00006, 127.799995)
 scale = Vector2(0.15294121, 0.15294121)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(184, 504, 536, 408)
 
-[node name="BgAssetsNight" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight" type="Sprite2D" parent="ENV" unique_id=190143023]
 position = Vector2(117.00001, 111)
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(61, 2381, 1951, 1073)
 
-[node name="BgAssetsNight13" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight13" type="Sprite2D" parent="ENV" unique_id=193198352]
 position = Vector2(252, 142)
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(2584, 1720, 856, 392)
 
-[node name="BgAssetsNight15" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight15" type="Sprite2D" parent="ENV" unique_id=465412817]
 position = Vector2(784, 127.799995)
 scale = Vector2(0.15294121, 0.15294121)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(184, 504, 536, 408)
 
-[node name="BgAssetsNight7" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight7" type="Sprite2D" parent="ENV" unique_id=209616507]
 position = Vector2(-53.000004, 116)
 scale = Vector2(0.42499995, 0.42499995)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(3784, 240, 288, 752)
 
-[node name="BgAssetsNight17" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight17" type="Sprite2D" parent="ENV" unique_id=1755693000]
 position = Vector2(-174.00002, 116.00001)
 scale = Vector2(0.42499995, 0.42499995)
 texture = ExtResource("11_1uvqt")
@@ -222,35 +222,35 @@ flip_h = true
 region_enabled = true
 region_rect = Rect2(3784, 240, 288, 752)
 
-[node name="BgAssetsNight6" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight6" type="Sprite2D" parent="ENV" unique_id=714639306]
 position = Vector2(811.00006, 59.000004)
 scale = Vector2(0.1, 0.1)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(3432, 552, 296, 752)
 
-[node name="BgAssetsNight12" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight12" type="Sprite2D" parent="ENV" unique_id=350141763]
 position = Vector2(494, 106)
 scale = Vector2(0.1, 0.1668919)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(2144, 208, 1608, 296)
 
-[node name="BgAssetsNight4" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight4" type="Sprite2D" parent="ENV" unique_id=2088741423]
 position = Vector2(465, 136.3)
 scale = Vector2(0.1, 0.1668919)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(2144, 208, 1608, 296)
 
-[node name="BgAssetsNight19" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight19" type="Sprite2D" parent="ENV" unique_id=1166234627]
 position = Vector2(465, 136.3)
 scale = Vector2(0.1, 0.1668919)
 texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(2144, 208, 1608, 296)
 
-[node name="BgAssetsNight2" type="Sprite2D" parent="ENV"]
+[node name="BgAssetsNight2" type="Sprite2D" parent="ENV" unique_id=104613320]
 z_index = 2
 position = Vector2(564, 83)
 scale = Vector2(0.24419926, 0.24419926)
@@ -258,30 +258,30 @@ texture = ExtResource("11_1uvqt")
 region_enabled = true
 region_rect = Rect2(2019, 2763, 565, 639)
 
-[node name="Player" parent="." instance=ExtResource("10_1uvqt")]
+[node name="Player" parent="." unique_id=343304937 instance=ExtResource("10_1uvqt")]
 position = Vector2(72, 144)
 
-[node name="StaticBody2D" type="StaticBody2D" parent="."]
+[node name="StaticBody2D" type="StaticBody2D" parent="." unique_id=122737764]
 position = Vector2(344, 232)
 collision_mask = 0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D" unique_id=1058491004]
 position = Vector2(96, -16)
 shape = SubResource("RectangleShape2D_ta6m8")
 
-[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D"]
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="StaticBody2D" unique_id=882630017]
 position = Vector2(48, -120)
 shape = SubResource("RectangleShape2D_1uvqt")
 
-[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D"]
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="StaticBody2D" unique_id=1647260187]
 position = Vector2(-344, -120)
 shape = SubResource("RectangleShape2D_1uvqt")
 
-[node name="enemies" type="Node2D" parent="."]
+[node name="enemies" type="Node2D" parent="." unique_id=349688404]
 position = Vector2(280, 136.00002)
 scale = Vector2(0.1, 0.1)
 
-[node name="skeleton_orange" parent="enemies" instance=ExtResource("11_oe30g")]
+[node name="skeleton_orange" parent="enemies" unique_id=1667744930 instance=ExtResource("11_oe30g")]
 position = Vector2(416, 64)
 
 [editable path="Cam_Root"]

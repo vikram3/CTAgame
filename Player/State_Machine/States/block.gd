@@ -1,51 +1,83 @@
 extends Node
 @export var counter_timer: Timer
+
 var hit: bool = false
-var block_end_requested := false
+var block_active := false
+var block_animation_done := false
 var can_parry_now: bool = false
 
 func _on_block_state_entered() -> void:
-	counter_timer.start()
-	block_end_requested = false
+	block_active = true
+	block_animation_done = false
 	hit = false
+	can_parry_now = true
+	counter_timer.start()
 	
 	get_parent().check_hit.disabled = false
 	get_parent().hurt_box.disabled = true
 	get_parent().parent.can_attack = true
 	get_parent().parent.can_ground_dash = true
-	get_parent().anim.play("Block")
-
+	get_parent().anim.play("Block",-1,1.5)
+	
+	var finished_anim: StringName = await get_parent().anim.animation_finished
+	if !block_active or finished_anim != &"Block":
+		return
+	
+	block_animation_done = true
+	
 func _on_block_state_physics_processing(delta: float) -> void:
 	get_parent().parent.velocity = Vector2.ZERO
 	
-	# Perfect parry during window
-	if can_parry_now and hit:
-		hit = false
+	if counter_timer.is_stopped() or counter_timer.time_left <= 0.0:
 		can_parry_now = false
-		get_parent().parent.parried = true
-		block_end_requested = true
-		_show_perfect_parry_feedback()
-		return
 	
-	if hit and counter_timer.time_left > 0:
+	if hit:
 		hit = false
-		get_parent().parent.parried = true
-		block_end_requested = true
-		return
+		if can_parry_now:
+			_trigger_parry()
+			_show_perfect_parry_feedback()
+			return
 	
-	if !block_end_requested and counter_timer.time_left <= 0:
-		block_end_requested = true
-	
-	if block_end_requested:
-		_end_block()
+	if block_animation_done:
+		_finish_block(true)
 
-func _end_block():
-	block_end_requested = false
+func _on_block_state_exited() -> void:
+	if block_active:
+		_finish_block(false)
+
+func _trigger_parry() -> void:
+	block_active = false
+	block_animation_done = false
+	can_parry_now = false
+	counter_timer.stop()
+	
+	get_parent().parent.parried = true
+	get_parent().check_hit.disabled = true
+	get_parent().hurt_box.disabled = true
+	get_parent().state_chart.send_event("parry")
+
+func _finish_block(send_transition: bool) -> void:
+	block_active = false
+	block_animation_done = false
+	can_parry_now = false
+	counter_timer.stop()
+	
 	get_parent().parent.can_block = true
 	get_parent().check_hit.disabled = true
 	get_parent().hurt_box.disabled = false
+	
+	if !send_transition:
+		return
+	
+	if get_parent().parent._set_direction().x != 0:
+		get_parent().state_chart.send_event("run")
+	else:
+		get_parent().state_chart.send_event("idle")
 
 func _on_check_hit_area_entered(area: Area2D) -> void:
+	if !block_active:
+		return
+	
 	hit = true
 
 func enable_parry_window() -> void:

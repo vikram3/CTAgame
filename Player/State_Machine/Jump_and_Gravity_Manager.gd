@@ -45,6 +45,9 @@ func _on_air_state_state_physics_processing(delta):
 	if !parent.can_air_dash:
 		return
 	
+	if parent.suspend_air_physics:
+		return
+	
 	# Buffer jump input
 	if Input.is_action_just_pressed("jump"):
 		jump_buffer = jump_buffer_time

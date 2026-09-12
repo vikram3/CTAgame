@@ -47,13 +47,17 @@ func _on_ground_state_state_physics_processing(delta):
 	
 	if Input.is_action_just_pressed("block"):
 		parent.can_block = false
+		state_chart.send_event("block")
+		return
 	
 	if !parent.can_attack:
 		state_chart.send_event("attack")
 		return
 	
-	if Input.is_action_just_pressed("Attack"):
+	if parent.consume_attack_buffer():
 		parent.can_attack = false
+		state_chart.send_event("attack")
+		return
 	
 	if !parent.can_ground_dash:
 		state_chart.send_event("dash")
@@ -61,6 +65,8 @@ func _on_ground_state_state_physics_processing(delta):
 	
 	if Input.is_action_just_pressed("dash"):
 		parent.can_ground_dash = false
+		state_chart.send_event("dash")
+		return
 	
 	if parent._set_direction().x != 0:
 		state_chart.send_event("run")
@@ -72,8 +78,10 @@ func _on_air_state_state_physics_processing(delta):
 		state_chart.send_event("attack")
 		return
 	
-	if Input.is_action_just_pressed("Attack"):
+	if parent.consume_attack_buffer():
 		parent.can_attack = false
+		state_chart.send_event("attack")
+		return
 	
 	if !parent.can_air_dash:
 		state_chart.send_event("dash")
@@ -81,6 +89,8 @@ func _on_air_state_state_physics_processing(delta):
 	
 	if Input.is_action_just_pressed("dash"):
 		parent.can_air_dash = false
+		state_chart.send_event("dash")
+		return
 	
 	if parent.velocity.y >= 0.0:
 		state_chart.send_event("fall")
